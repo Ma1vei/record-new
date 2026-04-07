@@ -248,6 +248,247 @@ body {
     font-weight: 400;
 }
 
+.status {
+    position: relative;
+    max-width: 1920px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 100px;
+    padding-top: 300px;
+    background: #0f0f0f;
+    height: 1630px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.status-scroll-hint {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: #fff;
+    font-family: "Roboto", sans-serif;
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: -0.32px;
+    margin-bottom: 60px;
+    margin-top: 20px;
+}
+
+.status-scroll-hint img {
+    width: 19px;
+    height: 12px;
+    transform: scaleX(-1);
+    margin-top: 10px;
+}
+
+.status-title-main {
+    margin: 0 0 40px 0;
+    color: #7b7b7b;
+    text-transform: uppercase;
+    font-family: "Roboto", sans-serif;
+    font-size: 77.698px;
+    line-height: 77.698px;
+    letter-spacing: -4.6619px;
+    font-weight: 400;
+    transition: color 260ms ease, transform 260ms ease, letter-spacing 260ms ease;
+    transform-origin: left top;
+}
+
+.status-title-main.is-active {
+    color: #ffffff;
+    transform: scale(1.493);
+    letter-spacing: -6.96px;
+}
+
+.status-title-sub {
+    margin: 0 0 40px 0;
+    color: #7b7b7b;
+    text-transform: uppercase;
+    font-family: "Roboto", sans-serif;
+    font-size: 77.698px;
+    line-height: 77.698px;
+    letter-spacing: -4.6619px;
+    font-weight: 400;
+    cursor: pointer;
+    transition: opacity 260ms ease, color 260ms ease, transform 260ms ease;
+    transform-origin: left top;
+}
+
+.status-title-sub.is-active {
+    color: #ffffff;
+    transform: scale(1.055);
+}
+
+.status-quote {
+    position: absolute;
+    top: 300px;
+    right: 150px;
+    width: 427px;
+    min-height: 90px;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 350ms ease-out;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.status-quote.is-active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.status-quote.is-leaving {
+    opacity: 0;
+    transform: translateY(-30px);
+    pointer-events: none;
+}
+
+.status-quote p {
+    margin: 0;
+    padding: 0 28px;
+    text-align: center;
+    color: #fff;
+    font-family: "Manrope", sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+    line-height: normal;
+}
+
+.status-quote .u {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    font-weight: 600;
+}
+
+.status-quote .muted {
+    color: #cecece;
+    font-weight: 400;
+}
+
+.status-quote p span:not(.u):not(.muted) {
+    font-weight: 400;
+}
+
+.status-bracket {
+    position: absolute;
+    top: 0;
+    width: 16.146px;
+    height: 89.953px;
+}
+
+.status-bracket.left {
+    left: 5px;
+}
+
+.status-bracket.right {
+    right: 5px;
+    transform: scaleX(-1);
+}
+
+.status-footer {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translate(-50%, 0);
+    text-align: center;
+    text-transform: uppercase;
+    font-family: "Roboto", sans-serif;
+    font-size: clamp(100px, 14vw, 268.608px);
+    font-weight: 300;
+    line-height: 1;
+    letter-spacing: -0.06em;
+    color: transparent;
+    background: linear-gradient(180deg, #f5c3a0, #f1a775);
+    -webkit-background-clip: text;
+    background-clip: text;
+    z-index: 6;
+    white-space: nowrap;
+}
+
+.status-statue-stage {
+    position: absolute;
+    top: 80%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+}
+
+.status-statue-img {
+    display: block;
+    width: auto;
+    height: 2600px;
+    pointer-events: none;
+    transform-origin: center center;
+    will-change: transform;
+}
+
+.status-statue-overlay {
+    position: absolute;
+    z-index: 15;
+    pointer-events: none;
+}
+
+.status-statue-overlay--award {
+    top: 40%;
+    left: 100px;
+}
+
+.status-award-main {
+    margin: 0;
+    color: transparent;
+    font-family: "Roboto", sans-serif;
+    font-size: 38.197px;
+    font-weight: 400;
+    line-height: normal;
+    background: linear-gradient(180deg, #dc1924, #9e050e);
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+.status-award-sub {
+    margin: 10px 0 0;
+    max-width: 342px;
+    text-align: right;
+    color: rgba(255, 255, 255, 0.48);
+    font-family: "Manrope", sans-serif;
+    font-size: 24.973px;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.status-statue-overlay--date {
+    top: 44%;
+    right: 0;
+}
+
+.status-date-main {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.48);
+    font-family: "Roboto", sans-serif;
+    font-size: 45px;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.status-date-sub {
+    margin: 10px 0 0;
+    color: transparent;
+    font-family: "Manrope", sans-serif;
+    font-size: 27px;
+    font-weight: 400;
+    line-height: normal;
+    background: linear-gradient(180deg, #f5c3a0, #f1a775);
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+
 @media (max-width: 1700px) {
     .title-top, .title-bottom {
         font-size: 100px;
@@ -296,6 +537,22 @@ body {
         font-size: 18px;
         line-height: 18px;
     }
+
+    .status {
+        height: 1430px;
+    }
+
+    .status-statue-img {
+        height: 2100px;
+    }
+
+    .status-title-main, .status-title-sub {
+        font-size: 65px;
+    }
+
+    .status-statue-overlay--award {
+        left: 10px;
+    }
 }
 
 @media (max-width: 1520px) {
@@ -336,6 +593,57 @@ body {
     .timer-card .label {
         font-size: 15px;
         line-height: 15px;
+    }
+
+    .status {
+        padding-top: 300px;
+        height: 1230px;
+    }
+
+    .status-statue-img {
+        height: 1900px;
+    }
+
+    .status-title-main, .status-title-sub {
+        font-size: 55px;
+        margin-bottom: 20px;
+    }
+
+    .status-quote {
+        right: 100px;
+        width: 340px;
+        min-height: 55px;
+    }
+
+    .status-quote p {
+        font-size: 18px;
+    }
+
+    .status-statue-overlay--award {
+        width: 255px;
+        left: 60px;
+    }
+
+    .status-award-main {
+        font-size: 28px;
+        width: 255px;
+    }
+
+    .status-date-sub {
+        font-size: 17px;
+    }
+
+    .status-date-main {
+        font-size: 28px;
+    }
+
+    .status-award-sub {
+        font-size: 17px;
+        line-height: 17px;
+    }
+
+    .status-bracket {
+        height: 80px;
     }
 }
 
@@ -461,5 +769,92 @@ body {
 
     .timer-card:nth-child(2) {
         margin-top: 109px;
+    }
+
+    .status {
+        padding: 0;
+        padding-top: 50px;
+    }
+
+    .status-title-main, .status-title-sub {
+        font-size: 36px;
+        text-align: center;
+    }
+
+    .status-statue-stage, .status-quote {
+        position: relative;
+        transform: none;
+        top: unset;
+        left: unset;
+        right: unset;
+        bottom: unset;
+    }
+
+    .status-scroll-hint {
+        display: none;
+    }
+
+    .status-quote {
+        margin: 0 auto;
+        margin-top: 20px;
+    }
+
+    .status-statue-img {
+        height: 1022px;
+    }
+
+    .status-quote-black, .status-quote-ruby {
+        display: none;
+    }
+
+    .status-statue-stage {
+        margin-top: 30px;
+        width: 375px;
+        margin: 0 auto;
+        overflow: visible;
+    }
+    
+    .status-statue-overlay--award, .status-statue-overlay--date {
+        left: unset;
+        top: unset;
+        right: unset;
+    }
+
+    .status-statue-overlay--award {
+        left: -10px;
+        top: 80px;
+        width: 135px;
+    }
+
+    .status-statue-overlay--date {
+        right: 10px;
+        top: 330px;
+    }
+
+    .status-award-main {
+        font-size: 15px;
+        width: 140px;
+    }
+
+    .status-date-sub {
+        font-size: 13px;
+        margin-top: 5px;
+    }
+
+    .status-date-main {
+        font-size: 21px;
+    }
+
+    .status-award-sub {
+        margin-top: 5px;
+        font-size: 11px;
+        line-height: 11px;
+    }
+}
+
+@media (max-width: 590px) {
+    .status-footer {
+        font-size: 67px;
+        bottom: 56px;
     }
 }
