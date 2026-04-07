@@ -6,6 +6,8 @@
   font-display: swap;
 }
 
+
+
 :root {
   --bg-color: #0a0a0a;
   --text-white: #ffffff;
@@ -80,8 +82,6 @@ body {
 
 .main-content {
     height: 65vh;
-    padding-top: 100px;
-    padding-bottom: 50px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -488,11 +488,220 @@ body {
     background-clip: text;
 }
 
+/* Screen Promo Section */
+.screen-promo {
+    position: relative;
+    width: 100%;
+    background: #f9f0e8;
+    overflow: hidden;
+    z-index: 4;
+    height: 100vh;
+}
+
+.screen-promo::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 120%;
+    height: 100vh;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg preserveAspectRatio='none' width='100%25' height='100%25' viewBox='0 0 2794 1317' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cline x1='0' y1='0' x2='2794' y2='1317' stroke='rgba(82,58,37,0.27)' stroke-width='1.5'/%3E%3Cline x1='2794' y1='0' x2='0' y2='1317' stroke='rgba(82,58,37,0.27)' stroke-width='1.5'/%3E%3Cline x1='51' y1='658.5' x2='2743' y2='658.5' stroke='rgba(82,58,37,0.27)' stroke-width='1.5'/%3E%3C/svg%3E");
+    z-index: 0;
+    background-size: cover;
+    transform: translateX(-50%);
+}
+
+/* Promo Header */
+.promo-header {
+    position: relative;
+    width: 100%;
+    max-width: 1920px;
+    margin: 0 auto;
+    padding: 100px 60px 80px;
+    text-align: center;
+    z-index: 2;
+}
+
+.promo-author {
+    margin: 0 0 10px;
+    color: #0f0f0f;
+    text-align: center;
+    font-family: "Roboto", sans-serif;
+    font-size: 36px;
+    font-weight: 300;
+    line-height: 43px;
+    letter-spacing: -2.16px;
+}
+
+.promo-role {
+    margin: 0 0 60px;
+    color: #868686;
+    text-align: center;
+    font-family: "Roboto", sans-serif;
+    font-size: 25px;
+    font-weight: 400;
+    line-height: 26px;
+    letter-spacing: 0.75px;
+}
+
+.promo-title {
+    margin: 0 auto;
+    max-width: 1517px;
+    color: #523a25;
+    text-align: center;
+    text-transform: uppercase;
+    font-family: "Roboto", sans-serif;
+    font-size: 87px;
+    font-weight: 300;
+    line-height: 94px;
+    letter-spacing: -5.23px;
+}
+
+.promo-title-line {
+    display: block;
+    white-space: nowrap;
+    width: 100%;
+    text-align: center;
+}
+
+.promo-title-line-2 {
+    margin-top: 0;
+}
+
+.promo-word-split {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0;
+}
+
+.promo-word-split .part-1,
+.promo-word-split .part-2 {
+    display: inline-block;
+}
+
+.promo-word-split .promo-word-o {
+    display: inline-block;
+    flex: 0 0 auto;
+    margin: 0 0.03em 0 0.10em;
+    padding: 0;
+    color: #523a25;
+    font-family: 'druzhok', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 0.9;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    transform: rotate(180deg) scaleY(-1);
+    transform-origin: center;
+    font-size: 1.05em;
+    vertical-align: baseline;
+}
+
+
+/* Promo Content */
+.promo-content {
+    position: absolute;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1920px;
+    margin: 0 auto;
+    padding: 80px 100px 120px;
+    z-index: 2;
+}
+
+.promo-item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border-radius: 8px;
+}
+
+.promo-item::before {
+    content: '';
+    position: absolute;
+    inset: -24px -32px;
+    border-radius: 12px;
+    background: rgba(235, 224, 210, 0);
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+    transition: backdrop-filter 0.5s ease, background 0.5s ease;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.promo-item.is-over-text::before {
+    background: rgba(235, 224, 210, 0.4);
+    backdrop-filter: blur(32px);
+    -webkit-backdrop-filter: blur(32px);
+}
+
+.promo-card {
+    display: block;
+    width: 100%;
+    max-width: 469px;
+    height: 285px;
+    border-radius: 5px;
+    object-fit: cover;
+}
+
+.promo-card-1 {
+    border-radius: 4.572px;
+}
+
+.promo-copy {
+    display: block;
+    margin: 12px 0 0;
+    color: #523a25;
+    font-family: "Manrope", sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+    line-height: normal;
+    max-width: 469px;
+}
+
+.promo-copy .muted {
+    color: rgba(82, 58, 37, 0.59);
+}
+
+.promo-copy .under {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.promo-copy-1 {
+    max-width: 469px;
+}
+
+.promo-copy-2 {
+    max-width: 427px;
+}
+
+.promo-copy-3 {
+    max-width: 424px;
+}
+
+.promo-copy-4 {
+    max-width: 425px;
+}
+
+.promo-item-2 {
+    transform: translate(80px, 250px);
+}
+
+.promo-item-3 {
+    transform: translate(-80px, -220px);
+}
+
+.promo-item-4 {
+    transform: translateY(50px);
+}
 
 @media (max-width: 1700px) {
     .title-top, .title-bottom {
         font-size: 100px;
-        line-height: 100px;
     }
 
     .gradient-text {
@@ -502,7 +711,6 @@ body {
     .main-content {
         min-height: 400px;
         height: 60vh;
-        padding-top: 50px;
     }
 
     .badge {
@@ -645,6 +853,12 @@ body {
     .status-bracket {
         height: 80px;
     }
+    .promo-title span{
+        font-size: 70px;
+    }
+    .promo-copy {
+        font-size: 16px;
+    }
 }
 
 /* Планшет/Телефон */
@@ -658,6 +872,27 @@ body {
         radial-gradient(circle at 50% 42%, rgba(255, 212, 132, 0.08), transparent 20%),
         linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 18%),
         linear-gradient(180deg, #0b0b0d 0%, #111113 56%, #09090a 100%);
+    }
+
+    .promo-role {
+        font-size: 22px;
+    }
+
+    .promo-title span{
+        font-size: 50px;
+        line-height: normal;
+    }
+
+    .promo-author {
+        font-size: 32px;
+    }
+
+    .promo-content {
+        flex-direction: column;
+    }
+
+    .promo-item {
+        transform: none;
     }
 
     .main-content {
@@ -850,6 +1085,49 @@ body {
         font-size: 11px;
         line-height: 11px;
     }
+    .promo-item {
+        width: 469px;
+    }
+}
+
+@media (max-width: 900px) {
+    .promo-title span {
+        line-height: 32.9px;
+        font-size: 30px;
+        letter-spacing: -6%;
+    }
+     
+    .promo-author  {
+        font-size: 18px;
+          margin: 0;
+        line-height: normal;
+    }
+
+    .promo-role {
+        font-size: 14px;
+    }
+    .promo-role {
+        margin-bottom: 38px;
+    }
+    .promo-header {
+        padding: 0;
+        padding-top: 78px;
+        width: 95%;
+        margin: auto;
+        text-align: center;
+    }
+    .promo-title-line {
+        text-wrap: auto;
+    }
+    .promo-item {
+        width: 350px;
+        padding: 14px;
+        border: 1px solid #CBCBCB;
+        margin-bottom: 10px;
+    }
+    .promo-role {
+        line-height: 15px;
+    }
 }
 
 @media (max-width: 590px) {
@@ -857,4 +1135,6 @@ body {
         font-size: 67px;
         bottom: 56px;
     }
+   
 }
+
