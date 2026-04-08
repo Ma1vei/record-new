@@ -74,13 +74,14 @@ function initSalesSlider() {
   };
 
   // Initialize Swiper
+  const isMobile = window.innerWidth <= 1200;
   const swiper = new window.Swiper(salesGalleryMain, {
-    slidesPerView: "auto",
-    spaceBetween: 30,
+    slidesPerView: isMobile ? 1 : "auto",
+    spaceBetween: isMobile ? 0 : 30,
     speed: 1100,
     loop: false,
-    centeredSlides: false,
-    slidesOffsetAfter: window.innerWidth <= 1200 ? 0 : 100,
+    centeredSlides: isMobile,
+    slidesOffsetAfter: isMobile ? 0 : 100,
     allowTouchMove: true,
     grabCursor: true,
     resistance: true,

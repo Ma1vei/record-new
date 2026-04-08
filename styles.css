@@ -1461,7 +1461,8 @@ body {
     display: inline-block;
     padding-inline: 0.06em;
     padding-top: 0.12em;
-    font-family: "druzhok", var(--font-accent), sans-serif;
+    font-family: Druzhok;
+    margin-right: -20px;
     font-size: 139px;
     line-height: 1;
     letter-spacing: -6.98px;
@@ -1478,7 +1479,7 @@ body {
     max-width: 704px;
     height: 1px;
     margin: 0 auto 40px;
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255);
 }
 
 .sales-copy {
@@ -1648,7 +1649,8 @@ body {
 .sales-nominee-top-o {
     display: inline-block;
     color: #fff;
-    font-family: "druzhok", var(--font-accent), sans-serif;
+    font-family: Druzhok;
+    margin-right: -20px;
     font-size: 130px;
     line-height: 0.9;
     transform: rotate(180deg) scaleY(-1);
@@ -1665,7 +1667,8 @@ body {
 .sales-nominee-o {
     display: inline-block;
     color: #fff;
-    font-family: "druzhok", var(--font-accent), sans-serif;
+    font-family: Druzhok;
+    margin-right: -10px;
     font-size: 130px;
     line-height: 0.9;
     transform: rotate(180deg) scaleY(-1);
@@ -1936,6 +1939,22 @@ left: 0;
     display: block;
 }
 
+.sales-info-badge-mobile {
+    display: none;
+}
+
+.sales-info-badge-desktop {
+    display: block;
+}
+
+.sales-info-place-badge-single {
+    position: absolute;
+    left: -14px;
+    top: -88px;
+    width: 84px;
+    height: 84px;
+}
+
 .sales-info-place-badge-back {
     left: -2.17px;
     top: -74.99px;
@@ -1957,6 +1976,14 @@ left: 0;
     height: 29px;
 }
 
+.sales-info-hosts-badge-single {
+    position: absolute;
+    left: -18px;
+    top: -85px;
+    width: 85px;
+    height: 85px;
+}
+
 .sales-info-hosts-badge-back {
     left: -6.03px;
     top: -71.83px;
@@ -1976,6 +2003,14 @@ left: 0;
     top: -56.82px;
     width: 25.798px;
     height: 29.798px;
+}
+
+.sales-info-org-badge-single {
+    position: absolute;
+    left: -14px;
+    top: -88px;
+    width: 84px;
+    height: 84px;
 }
 
 .sales-info-org-badge-group {
@@ -2037,14 +2072,16 @@ left: 0;
      position: relative;
      margin-top: 300px;
      margin-bottom: 244px;
+     padding-top: 40px;
 }
 
 .sales-nominee-sides {
     position: absolute;
+    padding-top: 40px;
     left: 0;
     top: 0;
     width: 100%;
-    height: 100%;
+    height: 600px;
 }
 
 .sales-nominee-sides img {
@@ -2053,17 +2090,19 @@ left: 0;
 }
 
 .sales-ceremony {
-    height: 100vh;
+    min-height: 100vh;
     position: relative;
     max-width: 1920px;
     margin: auto;
 }
 
 .sales-wrapp-info {
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
     margin-top: 195px;
+    padding-bottom: 100px;
 }
 
 .sales-info1 {
@@ -2076,9 +2115,6 @@ left: 0;
 
 .sales-info3 {
     transform: translate(236px, -110px);
-}
-@media (max-width: 1800px) {
-    
 }
 
 @media (max-width: 1700px) {
@@ -2099,6 +2135,10 @@ left: 0;
     .main-content {
         min-height: 400px;
         height: 60vh;
+    }
+
+    .sales-nominee-sides {
+        height: 500px;
     }
 
     .badge {
@@ -2179,6 +2219,8 @@ left: 0;
 
     .sales-nominee-title {
         font-size: 100px;
+        letter-spacing: -6%;
+        line-height: 100px;
     }
     .sales-nominee-top-o {
         font-size: 100px;
@@ -2198,10 +2240,12 @@ left: 0;
 
 @media (max-width: 1520px) {
     .sales-nominee-title {
-        font-size: 90px;
+        font-size: 80px;
+        letter-spacing: -6%;
+        line-height: 70px;
     }
     .sales-nominee-top-o {
-        font-size: 90px;
+        font-size: 80px;
     }
     .sales-nominee-note {
         font-size: 22px;
@@ -2212,7 +2256,7 @@ left: 0;
         font-size: 20px;
     }
     .sales-nominee-o {
-        font-size: 90px;
+        font-size: 80px;
     }
     .sales-gallery-slide.swiper-slide {
         height: 83%;
@@ -2221,7 +2265,17 @@ left: 0;
         width: 550px;
     }
     .sales-col-left {
-        height: 83%;
+        height: 690px;
+        width: 50%;
+    }
+
+    .sales-nominee-cta {
+        margin-top: 200px;
+        margin-bottom: 144px;
+    }
+
+    .sales-col-right {
+        max-width: 45%;
     }
     .sales-title {
         font-size: 100px;
@@ -2231,6 +2285,16 @@ left: 0;
     }
     .sales-copy {
         font-size: 18px;
+        max-width: 500px;
+        margin-left: 0;
+    }
+
+    .sales-nominee-sides {
+        height: 420px;
+    }
+
+    .sales-bottom {
+        margin-top: auto;
     }
     .sales-conditions {
         font-size: 18px;
@@ -2418,16 +2482,16 @@ left: 0;
 
 @media(max-width: 1370px) {
      .sales-ceremony-title {
-        padding-left: 50px;
+        
     }
     .sales-info1 {
-        transform: translate(-60px, 104px);
+        transform: translate(-60px, 14px);
     }
     .sales-info2 {
         transform: translate(0, 104px);
     }
     .sales-info3 {
-        transform: translate(50px, -84px);
+        transform: translate(50px, -104px);
     }
 }
 
@@ -2488,23 +2552,144 @@ left: 0;
         font-size: 70px;
     }
 
+    .sales-info-place-badge-single {
+
+        top: 6px;
+        left: 17px;
+    }
  
 
     .sales-wrapp-info {
         flex-direction: column;
+        align-items: center;
+        gap: 13px;
+        padding-top: 500px;
+        padding-bottom: 50px;
+        overflow: visible;
     }
 
-    .sales-info1 {
-        transform: none;
+    .sales-info {
+        position: relative;
+        left: auto !important;
+        top: auto !important;
         width: 275px;
+        height: 60px;
+        overflow: visible;
     }
+
+    .sales-info-label {
+        font-size: 11px;
+        left: 83px;
+        top: 8px;
+    }
+
+    .sales-info-place-badge-front {
+        width: 48px;
+        height: 48px;
+    }
+
+    .sales-info-place-badge-back {
+        width: 48px;
+        height: 48px;
+    }
+
+    .sales-info-value.sales-info-value-small img {
+        width: 112px;
+        height: 43px;
+    }
+
+    .sales-info-value {
+        font-size: 15px;
+        top: 24px;
+        left: 84px;
+    }
+
+    .sales-info-org-badge-single {
+        top: 20px;
+        left: 17px;
+    }
+
     .sales-info2 {
-        transform: none;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
         width: 275px;
+        overflow: visible;
     }
+
+    .sales-info-hosts-1 {
+        width: 275px;
+        height: 90px;
+        padding-bottom: 10px;
+        border-bottom: none;
+    }
+
+    .sales-info-hosts-2 {
+        position: absolute;
+        width: 275px;
+        height: auto;
+        border: none;
+        background: transparent;
+        margin-top: 0 !important;
+        padding-top: 5px;
+        top: 50px !important;
+    }
+
+    .sales-info-hosts-2::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 86px;
+        right: 60px;
+        height: 0.5px;
+        width: 132px;
+        background-color: #523A2596;
+    }
+
+    .sales-info-hosts-badge-single {
+        top: 23px;
+        left: 17px;
+    }
+
+    .sales-info {
+        backdrop-filter: unset;
+    }
+
+    .sales-info-hosts-2 .sales-info-value {
+        position: relative;
+        left: 84px;
+        top: 0;
+    }
+
+    .sales-info-org {
+        width: 275px;
+        height: 80px;
+    }
+
+    .sales-info1,
+    .sales-info2,
     .sales-info3 {
         transform: none;
-        width: 275px;
+    }
+
+    .sales-info-badge-desktop {
+        display: none;
+    }
+
+    .sales-info-badge-mobile {
+        display: block;
+    }
+
+    .sales-info-place-badge-single,
+    .sales-info-hosts-badge-single,
+    .sales-info-org-badge-single {
+        width: 49px;
+        height: 49px;
+    }
+
+    .sales-info-badge-mobile foreignObject div {
+        backdrop-filter: none !important;
     }
 
     .sales-top-layout {
@@ -2527,14 +2712,202 @@ left: 0;
         margin: auto;
     }
     .sales-top-layout {
+        max-width: 375px;
+        margin: 0 auto;
         padding: 0;
     }
+
+    .sales-col-left {
+        width: 335px;
+        height: auto;
+    }
+
+    .sales-conditions {
+        margin-top: 0;
+        width: 295px;
+        height: 70px;
+        font-size: 16px;
+    }
+
+    .sales-nav-buttons {
+        display: none;
+    }
+
+    .sales-slider-controls {
+        position: absolute;
+        top: 364px;
+        right: 20px;
+    }
+
+    .sales-meta {
+        font-size: 12px;
+    }
+
+    .sales-copy {
+        margin: 0;
+    }
+
+    .sales-gallery-slide.swiper-slide {
+        height: 100% !important;
+    }
+
+    .sales-col-right {
+        max-width: 335px;
+        height: 320px;
+    }
+
+    .sales-gallery {
+        border-radius: 0;   
+    }
+
+    .sales-top-layout {
+        position: relative;
+        align-items: center;
+        gap: 17px;
+    }
+
+    .sales-title, .sales-title-o {
+        font-size: 45px;
+        letter-spacing: -6%;
+    }
+
+    .sales-header h2 {
+        margin-bottom: 10px;
+    }
+
+    .sales-line {
+        margin-bottom: 30px;
+    }
+
+    .sales-copy {
+        max-width: none;
+        font-size: 15px;
+    }
+
+    .sales-bottom {
+        margin-top: 25px;
+    }
+
+    .sales-title-o {
+        margin-left: -8px;
+        padding-left: 12px;
+    }
+
+    .sales-gallery-main.swiper {
+        height: 320px;
+    }
+
+    .screen-sales {
+        padding-top: 40px;
+    }
+
+    .sales-nominee-cta {
+        max-width: 360px;
+        margin: 0 auto;
+    }
+
+    .sales-nominee-title {
+        font-size: 49px;
+        line-height: 49px;
+        letter-spacing: -6%;
+    }
+
+    .sales-nominee-top-o {
+        font-size: 51px;
+        margin-left: -10px;
+    }
+
+    .sales-nominee-o {
+        font-size: 51px;
+        margin-right: -5px;
+    }
+
+    .sales-nominee-title {
+        text-align: center;
+    }
+
+    .sales-nominee-line-bottom {
+        width: 350px;
+        margin: 0 auto;
+        margin-left: 17px;
+    }
+
+    .sales-nominee-note {
+        font-size: 16px;
+        max-width: 292px;
+        margin: 23px auto;
+        white-space: wrap;
+    }
+
+    .sales-nominee-btn {
+        width: 295px;
+        height: 70px;
+        font-size: 16px;
+    }
+
+    .sales-nominee-cta {
+        margin-top: 100px;
+        padding-bottom: 52px;
+    }
+
+    .sales-nominee-sides {
+        height: 400px;
+    }
+
+    .sales-nominee-letter-right {
+        text-align: left;
+    }
+
     .sales-gallery-slide.swiper-slide {
         height: 83%;
     }
-    
-    .sales-col-left {
-        
+
+    .sales-ceremony {
+        height: 780px;
+        max-width: 400px;
+        margin: 0 auto;
+        min-height: auto;
+    }
+
+    .sales-ceremony-title {
+        padding-top: 260px;
+    }
+
+    .sales-bg-city {
+        filter: contrast(4);
+        width: 800px;
+        height: 600px;
+        left: 80%;
+        transform: translateX(-50%);
+    }
+
+    .sales-star-1 {
+        left: 63%;
+        margin-left: -220px;
+        top: 100px;
+        width: 50px;
+        height: 50px;
+    }
+
+    .sales-star-2 {
+        left: 48%;
+        margin-left: 180px;
+        top: 160px;
+        width: 35px;
+        height: 35px;
+    }
+
+    .sales-star-3 {
+        display: none;
+    }
+
+    .sales-star-4 {
+        display: none;
+    }
+
+    .sales-wrapp-info {
+        margin-top: 0;
+        padding-top: 600px;
     }
     .sales-copy {
         margin-left: 0;
