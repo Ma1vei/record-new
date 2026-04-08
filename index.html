@@ -348,7 +348,7 @@
             </div>
         </section>
 
-      <section class="screen screen-sales" id="salesScreen" aria-labelledby="salesMainTitle">
+        <section class="screen screen-sales" id="salesScreen" aria-labelledby="salesMainTitle">
             
             <div class="sales-top-layout">
             
@@ -489,6 +489,52 @@
 
         </section>
 
+        <section class="book">
+        <div class="media-book-stage">
+          <iframe
+            class="media-book-frame"
+            id="mediaBookFrame"
+            src="./book/dist/index.html"
+            title="Интерактивный журнал"
+            loading="eager"
+            scrolling="no"
+          ></iframe>
+          <div
+            class="media-book-interaction-layer"
+            id="mediaBookInteractionLayer"
+            aria-hidden="true"
+          ></div>
+          <div
+            class="media-book-scroll-shim"
+            id="mediaBookScrollShim"
+            aria-hidden="true"
+          ></div>
+        </div>
+
+        <!-- Контент поверх журнала (текст и кнопки) -->
+        <div class="media-content-overlay">
+          <div class="media-title-group">
+            <h2 class="media-title media-title-main reveal-text">СМИ</h2>
+            <div class="media-title-line2">
+              <h2 class="media-title media-title-accent reveal-text wdg">
+                <span class="media-title-o reveal-text">о</span>&nbsp;ПРЕМИИ
+              </h2>
+            </div>
+          </div>
+
+          <div class="media-scroll-hint">
+            <span id="mediaScrollHintText">ЛИСТАЙ ВПРАВО</span>
+            <svg width="19" height="10" viewBox="0 0 19 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 4.70518L5.5 4.70516L17.5 4.70516M17.5 4.70516L12.9286 0.362305M17.5 4.70516L12.9286 9.04802" stroke="#523A25"/>
+            </svg>
+          </div>
+
+          <div class="media-book-overlay" id="mediaBookOverlay">
+            <button class="media-book-overlay-btn media-book-overlay-prev" id="mediaBookOverlayPrev" aria-label="Предыдущая страница">&#8592; НАЗАД</button>
+            <button class="media-book-overlay-btn media-book-overlay-next" id="mediaBookOverlayNext" aria-label="Следующая страница">ВПЕРЁД &#8594;</button>
+          </div>
+        </div>
+        </section>
     </main>
     
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
