@@ -1367,194 +1367,324 @@
             data-interview-subtitle="Архив материалов за все периоды"
           ></button>
         </section>
-        <section class="screen screen-media-library">
-        <div class="reviews-media-library-wrapper">
-          <h2 class="reviews-media-library">МЕДИАТЕКА</h2>
 
-          <img
-            class="reviews-media-arc reviews-media-arc-top"
-            src="./assets/reviews_arc_top.svg"
-            alt=""
-          />
-          <img
-            class="reviews-media-arc reviews-media-arc-bottom"
-            src="./assets/reviews_arc_bottom.svg"
-            alt=""
-          />
 
-          <div class="reviews-media-stream media-lib-carousel" id="mediaLibCarousel" aria-label="Медиатека">
-            <!-- Ряд 1 -->
-            <div class="media-lib-row">
-              <div class="media-lib-scene">
-                <div class="media-lib-ring" id="mediaLibRing0">
-                  <div class="media-lib-slide"><img src="./assets/images/reviews/reviews_stream_01.webp" alt="" decoding="async" /></div>
-                  <div class="media-lib-slide"><img src="./assets/images/reviews/reviews_stream_02.webp" alt="Медиатека 1" decoding="async" /></div>
-                  <div class="media-lib-slide"><img src="./assets/images/reviews/reviews_stream_03.webp" alt="Медиатека 2" decoding="async" /></div>
-                  <div class="media-lib-slide"><img src="./assets/images/reviews/reviews_stream_04.webp" alt="" decoding="async" /></div>
-                  <div class="media-lib-slide"><img src="./assets/images/reviews/reviews_stream_05.webp" alt="Медиатека 3" decoding="async" /></div>
-                  <div class="media-lib-slide"><img src="./assets/images/reviews/reviews_stream_11.webp" alt="" decoding="async" /></div>
-                  <div class="media-lib-slide"><img src="./assets/images/reviews/reviews_stream_12.webp" alt="" decoding="async" /></div>
-                  <div class="media-lib-slide"><img src="./assets/images/reviews/reviews_stream_13.webp" alt="" decoding="async" /></div>
+
+        <section class="screen screen-reviews" id="reviewsScreen" data-reviews-tab="official">
+          <div class="reviews-sticky-wrapper">
+            <section class="canvas reviews-media" aria-labelledby="reviewsTitle">
+              <div class="reviews-media-head">
+              
+
+              <h2 class="reviews-media-title" id="reviewsTitle">
+                <span class="reviews-media-title-top">ЧТО О НАС</span>
+                <span class="reviews-media-title-anchor">
+                  <span class="reviews-media-title-bottom">ГОВОРЯТ</span>
+                </span>
+              </h2>
+              <nav class="reviews-media-tabs" role="tablist" aria-label="Категории отзывов">
+                <ul role="presentation" style="list-style: none; display: flex; padding: 0; margin: 0;">
+                  <li role="presentation">
+                    <button
+                      class="reviews-media-tab reviews-media-tab-active"
+                      type="button"
+                      role="tab"
+                      aria-selected="true"
+                      aria-controls="reviewsOfficialStage"
+                      id="tab-official"
+                      data-reviews-tab="official"
+                    >
+                      <span>Официальные письма</span>
+                      <img src="./assets/reviews_arrow.svg" alt="" aria-hidden="true" />
+                    </button>
+                  </li>
+                  <li role="presentation">
+                    <button
+                      class="reviews-media-tab"
+                      type="button"
+                      role="tab"
+                      aria-selected="false"
+                      aria-controls="reviewsGratitudeGallery"
+                      id="tab-gratitude"
+                      data-reviews-tab="gratitude"
+                    >
+                      <span>Благодарности</span>
+                      <img src="./assets/reviews_arrow.svg" alt="" aria-hidden="true" />
+                    </button>
+                  </li>
+                  <li role="presentation">
+                    <button
+                      class="reviews-media-tab"
+                      type="button"
+                      role="tab"
+                      aria-selected="false"
+                      aria-controls="reviewsFeedbackStage"
+                      id="tab-feedback"
+                      data-reviews-tab="feedback"
+                    >
+                      <span>Отзывы</span>
+                      <img src="./assets/reviews_arrow.svg" alt="" aria-hidden="true" />
+                    </button>
+                  </li>
+                </ul>
+              </nav>
+              </div>
+        
+              <div 
+                class="reviews-media-stage reviews-media-stage-official" 
+                id="reviewsOfficialStage" 
+                role="tabpanel" 
+                aria-labelledby="tab-official"
+              >
+                <div class="reviews-scroll-container">
+                  <article class="reviews-slide" data-slide="0">
+                    <div class="reviews-portrait-wrapper">
+                      <img class="reviews-portrait-img" src="./assets/images/reviews/reviews_portrait.webp" alt="Фото М.А. Фомина" />
+                    </div>
+        
+                    <div class="reviews-letter-wrapper">
+                      <img class="reviews-letter-frame" src="./assets/reviews_gratitude_frames.png" alt="" aria-hidden="true" />
+                      <img class="reviews-letter-img" src="./assets/images/reviews/reviews_letter.webp" alt="Скан официального письма" />
+                    </div>
+        
+                    <header class="reviews-person-info">
+                      <h3>М.А. Фомин</h3>
+                      <p>Заместитель Председателя Правительства Московской области — министр строительного комплекса Московской области</p>
+                    </header>
+                  </article>
+        
+                  <article class="reviews-slide" data-slide="1">
+                    <div class="reviews-portrait-wrapper">
+                      <img class="reviews-portrait-img" src="./assets/images/reviews/Rectangle_6870.webp" alt="Фото Имя Фамилия" />
+                    </div>
+                    <div class="reviews-letter-wrapper">
+                      <img class="reviews-letter-frame" src="./assets/reviews_gratitude_frames.png" alt="" aria-hidden="true" />
+                      <img class="reviews-letter-img" src="./assets/images/reviews/Rectangle_6868.webp" alt="Скан письма" />
+                    </div>
+                    <header class="reviews-person-info">
+                      <h3>Имя Фамилия</h3>
+                      <p>Должность и описание второго человека</p>
+                    </header>
+                  </article>
                 </div>
               </div>
-            </div>
-            <!-- Ряд 2 -->
-            <div class="media-lib-row">
-              <div class="media-lib-scene">
-                <div class="media-lib-ring" id="mediaLibRing1">
-                  <div class="media-lib-slide"><img src="./assets/images/reviews/reviews_stream_06.webp" alt="Медиатека 4" decoding="async" /></div>
-                  <div class="media-lib-slide"><img src="./assets/images/reviews/reviews_stream_07.webp" alt="Медиатека 5" decoding="async" /></div>
-                  <div class="media-lib-slide"><img src="./assets/images/reviews/reviews_stream_08.webp" alt="" decoding="async" /></div>
-                  <div class="media-lib-slide"><img src="./assets/images/reviews/reviews_stream_09.webp" alt="Медиатека 6" decoding="async" /></div>
-                  <div class="media-lib-slide"><img src="./assets/images/reviews/reviews_stream_10.webp" alt="" decoding="async" /></div>
-                  <div class="media-lib-slide"><img src="./assets/images/reviews/reviews_stream_14.webp" alt="" decoding="async" /></div>
-                  <div class="media-lib-slide"><img src="./assets/images/reviews/reviews_stream_15.webp" alt="" decoding="async" /></div>
-                  <div class="media-lib-slide"><img src="./assets/images/reviews/reviews_stream_01.webp" alt="" decoding="async" /></div>
+        
+              <div 
+                class="reviews-media-stage reviews-media-stage-gratitude" 
+                id="reviewsGratitudeGallery" 
+                role="tabpanel" 
+                aria-labelledby="tab-gratitude" 
+                hidden
+              >
+                <div class="reviews-gratitude-gallery" aria-label="Галерея благодарностей">
+                  <figure class="reviews-gratitude-card" data-gratitude-card data-gratitude-index="0">
+                    <img class="reviews-gratitude-card-frame" src="./assets/images/reviews/reviews_gratitude_frame.webp" alt="" aria-hidden="true" />
+                    <img class="reviews-gratitude-card-image" src="./assets/images/reviews/reviews_gratitude_1.webp" alt="Благодарственное письмо от организации" />
+                  </figure>
+                  </div>
+        
+                <div class="reviews-gratitude-cursor" id="reviewsGratitudeCursor" aria-hidden="true">
+                  <img class="reviews-gratitude-cursor-ring" src="./assets/reviews_gratitude_cursor_circle.svg" alt="" />
+                  <img class="reviews-gratitude-cursor-arrow" src="./assets/reviews_gratitude_cursor_arrow.svg" alt="" />
                 </div>
               </div>
-            </div>
-            <!-- Ряд 3 -->
-            <div class="media-lib-row">
-              <div class="media-lib-scene">
-                <div class="media-lib-ring" id="mediaLibRing2">
-                  <div class="media-lib-slide"><img src="./assets/images/reviews/reviews_stream_11.webp" alt="" decoding="async" /></div>
-                  <div class="media-lib-slide"><img src="./assets/images/reviews/reviews_stream_12.webp" alt="Медиатека 7" decoding="async" /></div>
-                  <div class="media-lib-slide"><img src="./assets/images/reviews/reviews_stream_13.webp" alt="Медиатека 8" decoding="async" /></div>
-                  <div class="media-lib-slide"><img src="./assets/images/reviews/reviews_stream_14.webp" alt="" decoding="async" /></div>
-                  <div class="media-lib-slide"><img src="./assets/images/reviews/reviews_stream_15.webp" alt="Медиатека 9" decoding="async" /></div>
-                  <div class="media-lib-slide"><img src="./assets/images/reviews/reviews_stream_02.webp" alt="" decoding="async" /></div>
-                  <div class="media-lib-slide"><img src="./assets/images/reviews/reviews_stream_03.webp" alt="" decoding="async" /></div>
-                  <div class="media-lib-slide"><img src="./assets/images/reviews/reviews_stream_05.webp" alt="" decoding="async" /></div>
+        
+              <div 
+                class="reviews-media-stage reviews-media-stage-feedback" 
+                id="reviewsFeedbackStage" 
+                role="tabpanel" 
+                aria-labelledby="tab-feedback" 
+                hidden
+              >
+                <div class="reviews-feedback-list" role="region" aria-live="polite">
+                  <img class="reviews-feedback-card" src="./assets/images/reviews/reviews_feedback_center.webp" alt="Отзыв Ольги Галагиной" data-feedback-card data-feedback-index="0" />
+                  </div>
+        
+                <nav class="reviews-feedback-controls">
+                  <button class="reviews-feedback-nav reviews-feedback-nav-left" type="button" aria-label="Предыдущий отзыв">
+                    <img class="reviews-feedback-nav-ring" src="./assets/4febf0c3e3c37be3e5c904c66b5a026ba72cc5ae.svg" alt="" aria-hidden="true" />
+                    <img class="reviews-feedback-nav-icon" src="./assets/17830c88a928c3e47f6f6900ace88431311bda0c.svg" alt="" aria-hidden="true" />
+                  </button>
+                  <button class="reviews-feedback-nav reviews-feedback-nav-right" type="button" aria-label="Следующий отзыв">
+                    <img class="reviews-feedback-nav-ring" src="./assets/64ea3491d70e751b0b4d9e607d15505bb3c1b766.svg" alt="" aria-hidden="true" />
+                    <img class="reviews-feedback-nav-icon" src="./assets/a0e06579757b5f495cfec4ac59b801a9e6411816.svg" alt="" aria-hidden="true" />
+                  </button>
+                </nav>
+              </div>
+        
+            </section>
+          </div>
+        </section>
+
+        <section class="screen screen-news" id="newsScreen" aria-labelledby="news-title-id">
+          <div class="news-wrapp">
+            <h2 class="news-title" id="news-title-id">
+              <span class="news-title-word">
+                <span class="part-1">Н</span>
+                <span class="news-title-o">O</span>
+                <span class="part-2">ВОСТИ /</span>
+                <span class="news-title-tail">СТАТЬИ</span>
+              </span>
+            </h2>
+        
+            <nav class="news-tabs" role="tablist" aria-label="Категории новостей">
+              <button
+                class="news-tab is-active"
+                type="button"
+                role="tab"
+                aria-selected="true"
+                aria-controls="newsTrack"
+                id="tab-all"
+              >
+                <span>Все</span>
+                <img src="./assets/videoteka_tab_arrow.svg" alt="" aria-hidden="true" />
+              </button>
+
+              <div class="news-tabs-dropdown" id="newsTabsDropdown">
+                <div class="news-tabs-dropdown-list">
+                <button class="news-tab news-tab-option-all" type="button" role="tab" aria-selected="true" aria-controls="newsTrack">
+                  <span>Все</span>
+                  <img src="./assets/news_tab_arrow_brown.svg" alt="" aria-hidden="true" />
+                </button>
+
+                <button class="news-tab" type="button" role="tab" aria-selected="false" aria-controls="newsTrack">
+                  <span>Новости</span>
+                  <img src="./assets/news_tab_arrow_brown.svg" alt="" aria-hidden="true" />
+                </button>
+
+                <button class="news-tab" type="button" role="tab" aria-selected="false" aria-controls="newsTrack">
+                  <span>Полезное</span>
+                  <img src="./assets/news_tab_arrow_brown.svg" alt="" aria-hidden="true" />
+                </button>
+
+                <button class="news-tab" type="button" role="tab" aria-selected="false" aria-controls="newsTrack">
+                  <span>Премьеры</span>
+                  <img src="./assets/news_tab_arrow_brown.svg" alt="" aria-hidden="true" />
+                </button>
+
+                <button class="news-tab" type="button" role="tab" aria-selected="false" aria-controls="newsTrack">
+                  <span>Экспертная колонка</span>
+                  <img src="./assets/news_tab_arrow_brown.svg" alt="" aria-hidden="true" />
+                </button>
+
+                <button class="news-tab" type="button" role="tab" aria-selected="false" aria-controls="newsTrack">
+                  <span>Новости номинантов</span>
+                  <img src="./assets/news_tab_arrow_brown.svg" alt="" aria-hidden="true" />
+                </button>
+
+                <button class="news-tab" type="button" role="tab" aria-selected="false" aria-controls="newsTrack">
+                  <span>Аналитика</span>
+                  <img src="./assets/news_tab_arrow_brown.svg" alt="" aria-hidden="true" />
+                </button>
+
+                <button class="news-tab" type="button" role="tab" aria-selected="false" aria-controls="newsTrack">
+                  <span>Обзоры</span>
+                  <img src="./assets/news_tab_arrow_brown.svg" alt="" aria-hidden="true" />
+                </button>
                 </div>
+              </div>
+            </nav>
+        
+            <div
+              class="news-gallery"
+              id="newsGallery"
+              role="region"
+              aria-label="Галерея новостей"
+            >
+              <div class="news-track" id="newsTrack" role="tabpanel" aria-labelledby="tab-all">
+                
+                <article class="news-card" data-news-card>
+                  <img
+                    class="news-card-image"
+                    src="./assets/images/news/news_article_1.webp"
+                    alt="Премия Рекорды Рынка Недвижимости зафиксировала цены 2025 года"
+                    loading="lazy"
+                  />
+                  <h3>Премия “Рекорды Рынка Недвижимости” зафиксировала цены 2025 года до 15 февраля</h3>
+                  <p><time datetime="2026-01-22">22.01.2026</time></p>
+                </article>
+        
+                <article class="news-card" data-news-card>
+                  <img
+                    class="news-card-image"
+                    src="./assets/images/news/news_article_2.webp"
+                    alt="Инструкция по выбору пакета участия"
+                    loading="lazy"
+                  />
+                  <h3>Как выбрать пакет для участия в премии?</h3>
+                  <p><time datetime="2026-01-25">25.01.2026</time></p>
+                </article>
+        
+                <article class="news-card" data-news-card>
+                  <img
+                    class="news-card-image"
+                    src="./assets/images/news/news_article_3.webp"
+                    alt="Ребрендинг Московского Бизнес Клуба"
+                    loading="lazy"
+                  />
+                  <h3>Московский Бизнес Клуб запускает ребрендинг в 2026 году</h3>
+                  <p><time datetime="2026-01-22">22.01.2026</time></p>
+                </article>
+        
+                <article class="news-card" data-news-card>
+                  <img
+                    class="news-card-image"
+                    src="./assets/images/news/news_article_2.webp"
+                    alt="Сравнение тарифов"
+                    loading="lazy"
+                  />
+                  <h3>Сравнение пакетов и карточка номинанта</h3>
+                  <p><time datetime="2026-01-20">20.01.2026</time></p>
+                </article>
+        
+                <article class="news-card" data-news-card>
+                  <img
+                    class="news-card-image"
+                    src="./assets/images/news/news_article_1.webp"
+                    alt="Главные премьеры сезона"
+                    loading="lazy"
+                  />
+                  <h3>Итоги церемонии и ключевые премьеры сезона</h3>
+                  <p><time datetime="2026-01-18">18.01.2026</time></p>
+                </article>
+        
+              </div>
+        
+              <div class="news-cursor" id="newsCursor" aria-hidden="true">
+                <img class="news-cursor-ring" src="./assets/news_cursor_circle.svg" alt="" />
+                <img class="news-cursor-arrow" src="./assets/news_cursor_arrow.svg" alt="" />
               </div>
             </div>
           </div>
+        </section>
 
-          <div class="reviews-media-film" aria-hidden="true">
-            <img
-              class="reviews-media-film-image"
-              src="./assets/images/reviews/Group_10.webp"
-              alt=""
-            />
-          </div>
 
-          <div
-            class="reviews-media-dates reviews-media-ticker"
-            aria-label="Хронология медиатеки"
-          >
-            <div class="reviews-media-ticker-track">
-              <div class="reviews-media-ticker-set">
-                <div class="reviews-media-ticker-chip">
-                  <span>2010 год</span
-                  ><img src="./assets/reviews_arrow.svg" alt="" />
-                </div>
-                <div class="reviews-media-ticker-chip">
-                  <span>2011 год</span
-                  ><img src="./assets/reviews_arrow.svg" alt="" />
-                </div>
-                <div class="reviews-media-ticker-chip">
-                  <span>2012 год</span
-                  ><img src="./assets/reviews_arrow.svg" alt="" />
-                </div>
-                <div class="reviews-media-ticker-chip">
-                  <span>2013 год</span
-                  ><img src="./assets/reviews_arrow.svg" alt="" />
-                </div>
-                <div class="reviews-media-ticker-chip">
-                  <span>2014 год</span
-                  ><img src="./assets/reviews_arrow.svg" alt="" />
-                </div>
-                <div class="reviews-media-ticker-chip">
-                  <span>2015 год</span
-                  ><img src="./assets/reviews_arrow.svg" alt="" />
-                </div>
-                <div class="reviews-media-ticker-chip">
-                  <span>2016 год</span
-                  ><img src="./assets/reviews_arrow.svg" alt="" />
-                </div>
-                <div class="reviews-media-ticker-chip">
-                  <span>2017 год</span
-                  ><img src="./assets/reviews_arrow.svg" alt="" />
-                </div>
-                <div class="reviews-media-ticker-chip">
-                  <span>2018 год</span
-                  ><img src="./assets/reviews_arrow.svg" alt="" />
-                </div>
-                <div class="reviews-media-ticker-chip">
-                  <span>2019 год</span
-                  ><img src="./assets/reviews_arrow.svg" alt="" />
-                </div>
-                <div class="reviews-media-ticker-chip">
-                  <span>2020 год</span
-                  ><img src="./assets/reviews_arrow.svg" alt="" />
-                </div>
-                <div class="reviews-media-ticker-chip">
-                  <span>2021 год</span
-                  ><img src="./assets/reviews_arrow.svg" alt="" />
-                </div>
-                <div class="reviews-media-ticker-chip">
-                  <span>2022 год</span
-                  ><img src="./assets/reviews_arrow.svg" alt="" />
-                </div>
-              </div>
-              <div class="reviews-media-ticker-set" aria-hidden="true">
-                <div class="reviews-media-ticker-chip">
-                  <span>2010 год</span
-                  ><img src="./assets/reviews_arrow.svg" alt="" />
-                </div>
-                <div class="reviews-media-ticker-chip">
-                  <span>2011 год</span
-                  ><img src="./assets/reviews_arrow.svg" alt="" />
-                </div>
-                <div class="reviews-media-ticker-chip">
-                  <span>2012 год</span
-                  ><img src="./assets/reviews_arrow.svg" alt="" />
-                </div>
-                <div class="reviews-media-ticker-chip">
-                  <span>2013 год</span
-                  ><img src="./assets/reviews_arrow.svg" alt="" />
-                </div>
-                <div class="reviews-media-ticker-chip">
-                  <span>2014 год</span
-                  ><img src="./assets/reviews_arrow.svg" alt="" />
-                </div>
-                <div class="reviews-media-ticker-chip">
-                  <span>2015 год</span
-                  ><img src="./assets/reviews_arrow.svg" alt="" />
-                </div>
-                <div class="reviews-media-ticker-chip">
-                  <span>2016 год</span
-                  ><img src="./assets/reviews_arrow.svg" alt="" />
-                </div>
-                <div class="reviews-media-ticker-chip">
-                  <span>2017 год</span
-                  ><img src="./assets/reviews_arrow.svg" alt="" />
-                </div>
-                <div class="reviews-media-ticker-chip">
-                  <span>2018 год</span
-                  ><img src="./assets/reviews_arrow.svg" alt="" />
-                </div>
-                <div class="reviews-media-ticker-chip">
-                  <span>2019 год</span
-                  ><img src="./assets/reviews_arrow.svg" alt="" />
-                </div>
-                <div class="reviews-media-ticker-chip">
-                  <span>2020 год</span
-                  ><img src="./assets/reviews_arrow.svg" alt="" />
-                </div>
-                <div class="reviews-media-ticker-chip">
-                  <span>2021 год</span
-                  ><img src="./assets/reviews_arrow.svg" alt="" />
-                </div>
-                <div class="reviews-media-ticker-chip">
-                  <span>2022 год</span
-                  ><img src="./assets/reviews_arrow.svg" alt="" />
-                </div>
-              </div>
-            </div>
+
+
+        <section class="screen-organizer" id="organizerScreen" aria-labelledby="organizerTitle">
+          <div class="organizer-decor" aria-hidden="true">
+            <img class="organizer-bg-grid" src="./assets/фонПатерн.svg" alt="" style="right: 0; bottom: 0;">
+            <img class="organizer-mark" src="./assets/images/organizer/organizer_mark.webp" alt="">
+            <img class="organizer-pattern" src="assets/organizer_pattern.svg" alt="" height="391px" width="1098px" style="left: 100px; top: 120px;">
           </div>
-        </div>
-      </section>
+        
+          <!-- <h2 class="organizer-title" id="organizerTitle">
+            <span>МОСКОВСКИЙ</span>
+            <span>БИЗНЕС</span>
+            <span>КЛУБ</span>
+          </h2> -->
+          <div class="organizer-content">
+            
+           <div>
+            <p class="organizer-kicker">Организатор премии</p>
+            <p class="organizer-award-name">РЕКОРДЫ РЫНКА НЕДВИЖИМОСТИ</p>
+           </div>
+        
+          
+          </div>
+        </section>
+
+
     </main>
     
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>

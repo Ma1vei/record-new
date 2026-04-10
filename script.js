@@ -217,11 +217,7 @@ function initAdvertSlider() {
 
   function getSlideParams() {
     const width = window.innerWidth;
-    if (width <= 480) {
-      return { slideWidth: 380, gap: 20 };
-    } else if (width <= 768) {
-      return { slideWidth: 220, gap: 18 };
-    } else if (width <= 1200) {
+    if (width <= 1200) {
       return { slideWidth: 277, gap: 15 };
     } else {
       return { slideWidth: 431, gap: 39 };
@@ -520,149 +516,166 @@ function initInterviewPeriods() {
   interviewPeriodNext?.addEventListener("click", openNextPeriods);
 }
 
+function initNewsGallery() {
+  const NEWS_DROPDOWN_BREAKPOINT = 1200;
+  const newsGallery = document.getElementById("newsGallery");
+  const newsTrack = document.getElementById("newsTrack");
+  const newsTabs = document.querySelector(".news-tabs");
+  const newsTabsDropdown = document.getElementById("newsTabsDropdown");
+  const newsTabsTrigger = document.querySelector(".news-tab");
+  const newsTabButtons = [...document.querySelectorAll(".news-tab")];
+  const newsCursor = document.getElementById("newsCursor");
+  const newsCards = [...document.querySelectorAll("[data-news-card]")];
+
+  if (!newsGallery || !newsTrack || !newsCards.length) return;
+
+  const STEP_LOCK_MS = 820;
+  const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
+
+  const getNewsSlideMetrics = () => {
+    const scope = newsGallery.closest(".screen-news") || document.documentElement;
+    const s = getComputedStyle(scope);
+    const width = parseFloat(s.getPropertyValue("--news-card-width"));
+    const gap = parseFloat(s.getPropertyValue("--news-card-gap"));
+    const cardWidth = Number.isFinite(width) && width > 0 ? width : 400;
+    const cardGap = Number.isFinite(gap) ? gap : 40;
+    return { width: cardWidth, step: cardWidth + cardGap };
+  };
+  let newsActiveIndex = window.innerWidth <= 480 ? 0 : (newsCards.length >= 3 ? 1 : 0);
+  let newsStepLocked = false;
+  let newsStepUnlockTimer = 0;
+
+  const getNewsIndexBounds = () => {
+    if (window.innerWidth <= 480 || newsCards.length < 3) {
+      return { minIndex: 0, maxIndex: Math.max(0, newsCards.length - 1) };
+    }
+    return { minIndex: 1, maxIndex: Math.max(1, newsCards.length - 2) };
+  };
+
+  const renderNewsGallery = () => {
+    const { width: cardWidth, step: cardStep } = getNewsSlideMetrics();
+    if (window.innerWidth <= NEWS_DROPDOWN_BREAKPOINT) {
+      newsTrack.style.removeProperty("--news-track-shift-px");
+      newsTrack.style.setProperty(
+        "transform",
+        `translateX(${-newsActiveIndex * cardStep}px)`
+      );
+      return;
+    }
+    newsTrack.style.removeProperty("transform");
+    const galleryRect = newsGallery.getBoundingClientRect();
+    const viewportCenterX = window.innerWidth * 0.5;
+    const viewportCenterInGallery = viewportCenterX - galleryRect.left;
+    const centeredShiftPx = viewportCenterInGallery - (cardWidth * 0.5) - (newsActiveIndex * cardStep);
+    newsTrack.style.setProperty("--news-track-shift-px", `${centeredShiftPx}px`);
+  };
+
+  const setNewsActiveIndex = (nextIndex) => {
+    const { minIndex, maxIndex } = getNewsIndexBounds();
+    newsActiveIndex = clamp(nextIndex, minIndex, maxIndex);
+    renderNewsGallery();
+  };
+
+  const stepNewsGallery = (direction) => {
+    if (!direction || newsStepLocked || newsCards.length < 2) return false;
+    newsStepLocked = true;
+    window.clearTimeout(newsStepUnlockTimer);
+    newsStepUnlockTimer = window.setTimeout(() => {
+      newsStepLocked = false;
+    }, STEP_LOCK_MS);
+    setNewsActiveIndex(newsActiveIndex + direction);
+    return true;
+  };
+
+  setNewsActiveIndex(newsActiveIndex);
+
+  if (newsTabs && newsTabsTrigger && newsTabButtons.length) {
+    newsTabsTrigger.setAttribute("aria-expanded", "false");
+    newsTabsTrigger.addEventListener("click", (event) => {
+      if (window.innerWidth > NEWS_DROPDOWN_BREAKPOINT) return;
+      event.preventDefault();
+      const next = !newsTabs.classList.contains("is-expanded");
+      newsTabs.classList.toggle("is-expanded", next);
+      newsTabsTrigger.setAttribute("aria-expanded", next ? "true" : "false");
+    });
+
+  }
+
+  const updateCursor = (event) => {
+    if (window.innerWidth <= 480) return;
+    const rect = newsGallery.getBoundingClientRect();
+    const scale = rect.width / newsGallery.offsetWidth;
+    const localX = clamp((event.clientX - rect.left) / scale, 0, newsGallery.offsetWidth);
+    const localY = clamp((event.clientY - rect.top) / scale, 0, newsGallery.offsetHeight);
+    const isLeftZone = localX < newsGallery.offsetWidth * 0.5;
+    newsGallery.classList.add("is-cursor-active");
+    newsGallery.classList.toggle("is-left-zone", isLeftZone);
+    newsGallery.classList.toggle("is-right-zone", !isLeftZone);
+    if (newsCursor) {
+      newsCursor.style.setProperty("left", `${localX}px`);
+      newsCursor.style.setProperty("top", `${localY}px`);
+    }
+  };
+
+  newsGallery.addEventListener("pointerenter", updateCursor);
+  newsGallery.addEventListener("pointermove", updateCursor);
+  newsGallery.addEventListener("pointerleave", () => {
+    newsGallery.classList.remove("is-cursor-active", "is-left-zone", "is-right-zone");
+  });
+
+  let pointerActive = false;
+  let pointerStartX = 0;
+  let pointerStartY = 0;
+  let lastSwipeAt = 0;
+  const swipeThresholdPx = 32;
+  const swipeClickSuppressMs = 420;
+
+  newsGallery.addEventListener("pointerdown", (event) => {
+    if (window.innerWidth > 480 || event.pointerType === "mouse") return;
+    pointerActive = true;
+    pointerStartX = event.clientX;
+    pointerStartY = event.clientY;
+  });
+
+  newsGallery.addEventListener("pointerup", (event) => {
+    if (!pointerActive) return;
+    const dx = event.clientX - pointerStartX;
+    const dy = event.clientY - pointerStartY;
+    if (Math.abs(dx) >= swipeThresholdPx && Math.abs(dx) > Math.abs(dy)) {
+      if (stepNewsGallery(dx < 0 ? 1 : -1)) {
+        lastSwipeAt = Date.now();
+      }
+    }
+    pointerActive = false;
+  });
+
+  newsGallery.addEventListener("pointercancel", () => {
+    pointerActive = false;
+  });
+
+  newsGallery.addEventListener("click", (event) => {
+    if (window.innerWidth <= 480 && Date.now() - lastSwipeAt < swipeClickSuppressMs) return;
+    const rect = newsGallery.getBoundingClientRect();
+    const localX = event.clientX - rect.left;
+    stepNewsGallery(localX < rect.width * 0.5 ? -1 : 1);
+  });
+
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > NEWS_DROPDOWN_BREAKPOINT && newsTabs?.classList.contains("is-expanded")) {
+      newsTabs.classList.remove("is-expanded");
+      newsTabsTrigger?.setAttribute("aria-expanded", "false");
+    }
+    if (window.innerWidth <= NEWS_DROPDOWN_BREAKPOINT && newsTabsDropdown) {
+      newsTabsDropdown.scrollTop = 0;
+    }
+    setNewsActiveIndex(newsActiveIndex);
+  });
+}
+
 // Initialize interview on page load
 document.addEventListener("DOMContentLoaded", () => {
   initInterviewInteractions();
   initInterviewDots();
   initInterviewPeriods();
+  initNewsGallery();
 });
-
-// ============================================
-// MEDIA LIBRARY 3D CAROUSEL
-// ============================================
-
-function initMediaLibCarousel() {
-  const carousel = document.getElementById('mediaLibCarousel');
-  if (!carousel) return;
-
-  const rings = [
-    document.getElementById('mediaLibRing0'),
-    document.getElementById('mediaLibRing1'),
-    document.getElementById('mediaLibRing2'),
-  ].filter(Boolean);
-  if (!rings.length) return;
-
-  let currentAngle = 0;
-
-  function getSlideParams() {
-    const vw = window.innerWidth;
-    const isMobile = vw <= 1200;
-    return {
-      slideWidth: Math.round(vw * (isMobile ? 0.58 : 0.35)),
-      gap: Math.round(vw * (isMobile ? 0.16 : 0.02)),
-    };
-  }
-
-  function initRing(ring, rowIndex) {
-    const slides = [...ring.querySelectorAll('.media-lib-slide')];
-    const n = slides.length;
-    const { slideWidth, gap } = getSlideParams();
-    const slideHeight = Math.round(window.innerHeight * 0.25);
-    const theta = 360 / n;
-    const radius = Math.round(((slideWidth + gap) / 2) / Math.tan(Math.PI / n));
-    const phaseOffset = rowIndex === 1 ? theta / 2 : 0;
-
-    slides.forEach((slide, i) => {
-      slide.style.width = slideWidth + 'px';
-      slide.style.marginLeft = `-${slideWidth / 2}px`;
-      slide.style.marginTop = `-${slideHeight / 2}px`;
-      slide.style.transform = `rotateY(${theta * i + phaseOffset}deg) translateZ(${radius}px)`;
-    });
-
-    return { slides, n, theta, radius, phaseOffset };
-  }
-
-  const ringData = rings.map((ring, i) => initRing(ring, i));
-
-  function updateAll() {
-    rings.forEach((ring, ri) => {
-      const { slides, n, theta, radius, phaseOffset } = ringData[ri];
-      ring.style.transform = `rotateY(${currentAngle}deg)`;
-
-      let activeIndex = Math.round((currentAngle + phaseOffset) / theta) * -1;
-      activeIndex = ((activeIndex % n) + n) % n;
-
-      slides.forEach((slide, i) => {
-        let dist = Math.abs(i - activeIndex);
-        dist = Math.min(dist, n - dist);
-        const base = `rotateY(${theta * i + phaseOffset}deg) translateZ(${radius}px)`;
-        const maxDist = Math.floor(n / 2);
-        const isFar = dist > maxDist / 2;
-        const opacity = isFar ? Math.max(0.45, 1 - (dist / maxDist) * 0.55) : Math.max(0.75, 1 - (dist / maxDist) * 0.25);
-        slide.style.opacity = opacity.toFixed(2);
-        slide.style.transform = base;
-      });
-    });
-  }
-
-  updateAll();
-
-  let velocity = 0;
-  let isDragging = false;
-  let lastX = 0;
-  let lastTime = 0;
-  let rafId = 0;
-
-  const AUTO_SPEED = 0.08;
-
-  function spin() {
-    if (isDragging) return;
-    if (Math.abs(velocity) > 0.01) {
-      currentAngle += velocity;
-      velocity *= 0.94;
-    } else {
-      velocity = 0;
-      currentAngle += AUTO_SPEED;
-    }
-    updateAll();
-    rafId = requestAnimationFrame(spin);
-  }
-
-  carousel.addEventListener('pointerdown', (e) => {
-    isDragging = true;
-    lastX = e.clientX;
-    lastTime = performance.now();
-    velocity = 0;
-    cancelAnimationFrame(rafId);
-    carousel.setPointerCapture(e.pointerId);
-  });
-
-  carousel.addEventListener('pointermove', (e) => {
-    if (!isDragging) return;
-    const now = performance.now();
-    const dx = e.clientX - lastX;
-    const dt = now - lastTime || 1;
-    const { theta } = ringData[0];
-    const { slideWidth, gap } = getSlideParams();
-    const degPerPx = theta / (slideWidth + gap);
-    currentAngle += dx * degPerPx;
-    velocity = dx * degPerPx * (16 / dt);
-    lastX = e.clientX;
-    lastTime = now;
-    updateAll();
-  });
-
-  carousel.addEventListener('pointerup', () => {
-    isDragging = false;
-    rafId = requestAnimationFrame(spin);
-  });
-
-  carousel.addEventListener('pointercancel', () => {
-    isDragging = false;
-    rafId = requestAnimationFrame(spin);
-  });
-
-  rafId = requestAnimationFrame(spin);
-
-  let resizeTimer;
-  window.addEventListener('resize', () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => {
-      rings.forEach((ring, i) => { ringData[i] = initRing(ring, i); });
-      updateAll();
-    }, 200);
-  });
-}
-
-// Initialize media library carousel
-initMediaLibCarousel();

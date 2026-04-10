@@ -16,6 +16,8 @@ yarn.lock
 
 # Build outputs
 dist/
+!book/dist/
+!book/dist/**
 build/
 *.log
 
