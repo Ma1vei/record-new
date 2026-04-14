@@ -258,13 +258,13 @@ async function initHero3D() {
     backgroundSpawnConfig.forEach((args) => spawn(...args));
 
     // ─── Модели №1 (2 слева, 2 справа) ───────────────────────────────
-    const N1_H = isMobileHero ? 66 : 134;
+    const N1_H = isMobileHero ? 88 : 134;
     function spawnN1(gltfSrc, wx, wy, wz, tiltDeg, op, brighten, color) {
       const mesh = gltfSrc.scene.clone(true);
       prepareModelForViewer(mesh, renderer);
       _box.setFromObject(mesh); _box.getSize(_size); _box.getCenter(_center);
       const natDim = Math.max(_size.x, _size.y, _size.z, 0.001);
-      const sizeMultiplier = isMobileHero ? 1.02 : 1.5;
+      const sizeMultiplier = isMobileHero ? 1.14 : 1.5;
       const scale = (N1_H * PX) / natDim * sizeMultiplier;
       mesh.scale.set(scale, scale, scale);
       mesh.rotation.order = 'YXZ';
@@ -289,6 +289,7 @@ async function initHero3D() {
       mesh.traverse(c => {
         if (c.isMesh && c.material) {
           c.material = c.material.clone();
+          if (isMobileHero) c.material.side = THREE.DoubleSide;
           if (op < 1) { c.material.transparent = true; c.material.opacity = op; }
           if (color) {
             c.material.map = null;
@@ -311,7 +312,15 @@ async function initHero3D() {
       const g = new THREE.Group();
       g.position.set(wx, wy, wz);
       g.quaternion.copy(homeQuat);
-      g.add(mesh); scene.add(g);
+      if (isMobileHero) {
+        const flip = new THREE.Group();
+        flip.scale.x = -1;
+        flip.add(mesh);
+        g.add(flip);
+      } else {
+        g.add(mesh);
+      }
+      scene.add(g);
 
       const rb = world.createRigidBody(
         RAPIER.RigidBodyDesc.dynamic()

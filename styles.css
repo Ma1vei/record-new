@@ -128,6 +128,104 @@ body {
     }
 }
 
+/*
+ * Моб. меню: кольца по очереди (вспышка → пауза 1.75s → …).
+ * Доля таймлайна на одну вспышку: 1.2 / (3 * (1.2 + 1.75)) ≈ 13.559%.
+ */
+@keyframes page-menu-seq-ring-a {
+    0% {
+        transform: scale(1);
+        opacity: 0.28;
+    }
+    3.39% {
+        transform: scale(1.1);
+        opacity: 0.24;
+    }
+    7.46% {
+        transform: scale(1.38);
+        opacity: 0.17;
+    }
+    11.53% {
+        transform: scale(1.78);
+        opacity: 0.07;
+    }
+    13.559% {
+        transform: scale(2.05);
+        opacity: 0;
+    }
+    13.56%,
+    100% {
+        transform: scale(1);
+        opacity: 0;
+    }
+}
+
+@keyframes page-menu-seq-ring-b {
+    0%,
+    33.333% {
+        transform: scale(1);
+        opacity: 0;
+    }
+    33.334% {
+        transform: scale(1);
+        opacity: 0.28;
+    }
+    36.724% {
+        transform: scale(1.1);
+        opacity: 0.24;
+    }
+    40.793% {
+        transform: scale(1.38);
+        opacity: 0.17;
+    }
+    44.863% {
+        transform: scale(1.78);
+        opacity: 0.07;
+    }
+    46.892% {
+        transform: scale(2.05);
+        opacity: 0;
+    }
+    46.893%,
+    100% {
+        transform: scale(1);
+        opacity: 0;
+    }
+}
+
+@keyframes page-menu-seq-ring-c {
+    0%,
+    66.666% {
+        transform: scale(1);
+        opacity: 0;
+    }
+    66.667% {
+        transform: scale(1);
+        opacity: 0.28;
+    }
+    70.057% {
+        transform: scale(1.1);
+        opacity: 0.24;
+    }
+    74.126% {
+        transform: scale(1.38);
+        opacity: 0.17;
+    }
+    78.196% {
+        transform: scale(1.78);
+        opacity: 0.07;
+    }
+    80.225% {
+        transform: scale(2.05);
+        opacity: 0;
+    }
+    80.226%,
+    100% {
+        transform: scale(1);
+        opacity: 0;
+    }
+}
+
 body.site-menu-open {
     overflow: hidden;
 }
@@ -578,6 +676,52 @@ body.site-menu-open {
     .page-menu-btn img {
         width: 20px;
         max-height: 20px;
+    }
+
+    /*
+     * Кольца по очереди; вспышка 1.2s (многоступенчато) + пауза 1.75s на слой.
+     * Цикл: calc((1.2s + 1.75s) * 3).
+     */
+    .page-menu-btn::before {
+        animation: page-menu-seq-ring-a calc((1.2s + 1.75s) * 3) linear infinite;
+    }
+
+    .page-menu-btn::after {
+        animation: page-menu-seq-ring-b calc((1.2s + 1.75s) * 3) linear infinite;
+    }
+
+    .page-menu-btn__ripple {
+        animation: page-menu-seq-ring-c calc((1.2s + 1.75s) * 3) linear infinite;
+    }
+
+    .page-menu-btn:hover::before,
+    .page-menu-btn:focus-visible::before {
+        animation: page-menu-seq-ring-a calc((1.2s + 1.75s) * 3) linear infinite;
+    }
+
+    .page-menu-btn:hover::after,
+    .page-menu-btn:focus-visible::after {
+        animation: page-menu-seq-ring-b calc((1.2s + 1.75s) * 3) linear infinite;
+    }
+
+    .page-menu-btn:hover .page-menu-btn__ripple,
+    .page-menu-btn:focus-visible .page-menu-btn__ripple {
+        animation: page-menu-seq-ring-c calc((1.2s + 1.75s) * 3) linear infinite;
+    }
+
+    body.site-menu-open .page-menu-btn::before,
+    body.site-menu-open .page-menu-btn::after,
+    body.site-menu-open .page-menu-btn__ripple {
+        animation: none;
+        opacity: 0;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .page-menu-btn::before,
+        .page-menu-btn::after,
+        .page-menu-btn__ripple {
+            animation: none;
+        }
     }
 
     .site-menu__shell {
@@ -1271,6 +1415,14 @@ body.site-menu-open {
     filter: blur(0);
 }
 
+/* Карточки промо: без появления по скроллу (reveal-text внутри .promo-item) */
+.promo-item .reveal-text {
+    opacity: 1;
+    filter: none;
+    transition: none;
+    transition-delay: 0ms;
+}
+
 /* Special handling for radio title with decorative letter */
 .radio-title-o.reveal-text {
     transform: rotate(180deg) scaleY(-1);
@@ -1945,17 +2097,23 @@ body.site-menu-open {
     display: contents;
 }
 
-/* Promo Header — translateY задаётся скриптом (фаза «текст к центру») */
+/* Promo Header: после липкого фикса — следующий скролл даёт margin-top transition (script.js) */
 .promo-header {
     position: relative;
     width: 100%;
     max-width: 1920px;
-    margin: 0 auto;
+    margin-top: 0;
+    margin-right: auto;
+    margin-bottom: 0;
+    margin-left: auto;
     padding: 100px 60px 80px;
     text-align: center;
     z-index: 2;
-    will-change: transform;
-    transform: translateY(0);
+    transition: margin-top 0.78s cubic-bezier(0.22, 1, 0.32, 1);
+}
+
+.promo-header.promo-header--nudge-center {
+    margin-top: var(--promo-header-shift, 0px);
 }
 
 .promo-author {
@@ -2034,7 +2192,7 @@ body.site-menu-open {
 }
 
 
-/* Promo Content — изначально глубоко под экраном; подъём задаётся скриптом */
+/* Promo Content — изначально глубоко под экраном; подъём и --promo-item-rise из script.js */
 .promo-content {
     position: absolute;
     top: 0;
@@ -6229,10 +6387,10 @@ left: 0;
 
     .hero-oscar-img {
         left: 50%;
-        width: min(330px, 90.2vw);
+        width: 437px;
         height: auto;
         aspect-ratio: 680 / 1100;
-        margin-left: calc(min(330px, 90.2vw) * -0.5);
+        margin-left: -212px;
         top: auto;
         bottom: 0;
         object-position: center bottom;
@@ -7184,7 +7342,10 @@ left: 0;
         padding: 0;
         padding-top: 78px;
         width: 95%;
-        margin: auto;
+        margin-top: 0;
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: 0;
         text-align: center;
     }
 
@@ -8741,10 +8902,10 @@ left: 0;
 
     .hero-oscar-img {
         left: 50%;
-        width: min(330px, 90.2vw);
+        width: 437px;
         height: auto;
         aspect-ratio: 680 / 1100;
-        margin-left: calc(min(330px, 90.2vw) * -0.5);
+        margin-left: -212px;
         top: auto;
         bottom: 0;
         object-position: center bottom;
@@ -9238,7 +9399,10 @@ left: 0;
         padding: 0;
         padding-top: 78px;
         width: 95%;
-        margin: auto;
+        margin-top: 0;
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: 0;
         text-align: center;
     }
 
@@ -9256,7 +9420,8 @@ left: 0;
     }
 
     .promo-item {
-        width: 100%;
+        border: 1px solid #CBCBCB;
+        width: 81%;
         max-width: 375px;
         margin-left: auto;
         margin-right: auto;
@@ -9328,7 +9493,7 @@ left: 0;
         position: absolute;
         left: 16px;
         right: 16px;
-        top: 60px;
+        top: 20px;
         margin: 0;
         text-align: center;
     }
@@ -12780,11 +12945,42 @@ body.modal-open {
     }
 }
 
-/* Мобилка: высота от ~792px (включая выше 900px) — крупнее центральное фото Оскара */
+/* Мобилка: высота от ~792px — крупнее центральное фото Оскара (только по высоте, без vw) */
 @media (max-width: 1200px) and (min-height: 792px) {
     .hero-oscar-img {
-        width: min(374px, 99vw);
-        margin-left: calc(min(374px, 99vw) * -0.5);
+        width: 495px;
+        margin-left: -248px;
+    }
+}
+
+/* Высота ≤923px: не крупный вариант — базовый размер (перекрывает правило выше в диапазоне 792–923) */
+@media (max-width: 1200px) and (min-height: 792px) and (max-height: 923px) {
+    .hero-oscar-img {
+        width: 437px;
+        margin-left: -212px;
+    }
+}
+
+/* Высота <823px — дополнительно уменьшить центральный Оскар */
+@media (max-width: 1200px) and (max-height: 822px) {
+    .hero-oscar-img {
+        width: 410px;
+        margin-left: -205px;
+    }
+}
+
+/* Высота ≤788px — ещё меньше (перекрывает правило 822px) */
+@media (max-width: 1200px) and (max-height: 788px) {
+    .hero-oscar-img {
+        width: 373px;
+        margin-left: -187px;
+    }
+}
+
+@media (max-width: 1200px) and (max-height: 740px) {
+    .hero-oscar-img {
+        width: 323px;
+        margin-left: -157px;
     }
 }
 
@@ -12805,11 +13001,6 @@ body.modal-open {
         max-width: 264px;
         max-height: 57svh;
     }
-
-    .hero-oscar-img {
-        width: min(310px, 87vw);
-        margin-left: calc(min(310px, 87vw) * -0.5);
-    }
 }
 
 /* Мобилка: низкая высота экрана (<700px) — ещё компактнее */
@@ -12829,15 +13020,32 @@ body.modal-open {
     }
 
     .hero-oscar-img {
-        width: min(282px, 81vw);
-        margin-left: calc(min(282px, 81vw) * -0.5);
+        width: 293px;
+        margin-left: -140px;
     }
 }
 
 @media (max-width: 1200px) and (max-height: 620px) {
     .hero-oscar-img {
-        width: min(242px, 68vw);
-        margin-left: calc(min(242px, 68vw) * -0.5);
-    }
+        width: 270px;
+        margin-left: -130px;
+   }
 }
 
+@media (max-width: 1200px) and (max-height: 600px) {
+    .hero-oscar-img {
+        width: 250px;
+        margin-left: -125px;
+   }
+}
+
+@media (max-width: 375px) {
+    .gradient-text {
+        letter-spacing: -12%;
+        font-size: 40px;
+    }
+    .hero .title-top {
+        letter-spacing: -10%;
+        font-size: 50px;
+    }
+}
