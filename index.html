@@ -48,11 +48,8 @@
               </button>
             </div>
             <div class="site-menu__panel">
+              
               <div class="site-menu__content">
-                <button class="site-menu__mobile-close-btn" aria-label="Закрыть меню" data-site-menu-close>
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                </button>
-
                 <div class="site-menu__logo">
                  
                 </div>
@@ -134,6 +131,13 @@
                   <a href="#">Политика конфиденциальности</a>
                   <a href="#">Отказ от ответственности</a>
                 </div>
+
+                
+              </div>
+              <div class="for-background">
+                <button class="site-menu__mobile-close-btn" type="button" aria-label="Закрыть меню" data-site-menu-close>
+                  <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
               </div>
             </div>
           </div>
@@ -341,6 +345,7 @@
 
         <section class="screen screen-promo" id="promoScreen" aria-labelledby="promoTitle">
             <div class="promo-pin">
+            <div class="promo-inner">
             <header class="promo-header">
             <p class="promo-author reveal-text">Анна Маркина</p>
             <p class="promo-role reveal-text">Руководитель премии «Рекорды Рынка Недвижимости»</p>
@@ -399,6 +404,7 @@
                 
             </article>
 
+            </div>
             </div>
             </div>
         </section>
@@ -482,64 +488,14 @@
             </div>
         </section>
 
-        <section class="screen screen-sales" id="salesScreen" aria-labelledby="salesMainTitle">
-            
-            <div class="sales-top-layout">
-            
-            <div class="sales-col-left">
-                
-                <header class="sales-header">
-                <h2 id="salesMainTitle" class="sales-title reveal-text">
-                    <span class="sales-title-part sales-title-part-left">пр</span><span class="sales-title-o">o</span><span class="sales-title-part sales-title-part-right">дажи</span>
-                </h2>
-
-                <img class="sales-line" src="./assets/97b69a48afbab8785dbcf31f6cd23ebe2b5b79fe.svg" alt="" aria-hidden="true" loading="lazy" />
-
-                <p class="sales-copy reveal-text">
-                    16 лет оргкомитет проводит масштабную рекламную и PR-кампанию Премии (наружная и радио реклама, реклама на такси) с целью увеличения посещаемости сайта recordi.ru.
-                    <br /><br />
-                    Следовательно, повышает узнаваемость ваших объектов и продажи
-                </p>
-                </header>
-
-                <div class="sales-bottom">
-                    <a class="sales-conditions reveal-text" href="#heroScreen">Подробные условия</a>
-
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <div class="sales-slider-controls">
-                <div class="sales-meta reveal-text" aria-live="polite">01 <span>/ 06</span></div>
-                </div>
-                
-                <div class="sales-nav-buttons">
-                    <button class="sales-nav sales-nav-prev" type="button" aria-label="Предыдущий слайд">
-                    <img class="sales-nav-ring" src="./assets/4febf0c3e3c37be3e5c904c66b5a026ba72cc5ae.svg" alt="" aria-hidden="true" loading="lazy" />
-                    <img class="sales-nav-arrow sales-nav-arrow-prev" src="./assets/17830c88a928c3e47f6f6900ace88431311bda0c.svg" alt="" aria-hidden="true" loading="lazy" />
-                    </button>
-                    
-                    <button class="sales-nav sales-nav-next" type="button" aria-label="Следующий слайд">
-                    <img class="sales-nav-ring" src="./assets/64ea3491d70e751b0b4d9e607d15505bb3c1b766.svg" alt="" aria-hidden="true" loading="lazy" />
-                    <img class="sales-nav-arrow sales-nav-arrow-next" src="./assets/a0e06579757b5f495cfec4ac59b801a9e6411816.svg" alt="" aria-hidden="true" loading="lazy" />
-                    </button>
-                </div>
-                    </div>
-                </div>
-
-            </div>
-
-            <div class="sales-col-right">
-                <div class="sales-gallery sales-gallery-main swiper">
-                <div class="swiper-wrapper"></div>
-                </div>
-                
-                
-            </div>
-
-            </div>
-
+        <section class="screen screen-sales" id="salesScreen">
 
             <aside class="sales-nominee-cta">
             <div class="sales-nominee-sides" aria-hidden="true">
-                <img class="sales-nominee-side sales-nominee-side-frame" src="./assets/dea8be4fb65cbf114960204ec83267b751563bbf.svg" alt="" loading="lazy" width="" />
+                <picture>
+                    <source media="(max-width: 1200px)" srcset="./assets/mob-border.svg" />
+                    <img class="sales-nominee-side sales-nominee-side-frame" src="./assets/dea8be4fb65cbf114960204ec83267b751563bbf.svg" alt="" loading="lazy" />
+                </picture>
             </div>
 
             <h2 class="sales-nominee-title reveal-text">
@@ -666,6 +622,84 @@
         </div>
         </section>
 
+        <div class="sales-top-layout-wrapp" role="region" aria-labelledby="salesMainTitle">
+            <div class="sales-top-layout">
+
+            <div class="sales-col-left">
+
+                <header class="sales-header">
+                <h2 id="salesMainTitle" class="sales-title reveal-text">
+                    <span class="sales-title-part sales-title-part-left">пр</span><span class="sales-title-o">o</span><span class="sales-title-part sales-title-part-right">дажи</span>
+                </h2>
+
+                <img class="sales-line" src="./assets/97b69a48afbab8785dbcf31f6cd23ebe2b5b79fe.svg" alt="" aria-hidden="true" loading="lazy" />
+
+                <p class="sales-copy reveal-text">
+                    16 лет оргкомитет проводит масштабную рекламную и PR-кампанию Премии (наружная и радио реклама, реклама на такси) с целью увеличения посещаемости сайта recordi.ru.
+                    <br /><br />
+                    Следовательно, повышает узнаваемость ваших объектов и продажи
+                </p>
+                </header>
+
+                <div class="sales-bottom">
+                    <a class="sales-conditions reveal-text" href="#heroScreen">Подробные условия</a>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div class="sales-slider-controls">
+                <div class="sales-meta reveal-text" aria-live="polite">01 <span>/ 04</span></div>
+                </div>
+
+                <div class="sales-nav-buttons">
+                    <button class="sales-nav sales-nav-prev" type="button" aria-label="Предыдущий слайд">
+                    <img class="sales-nav-arrow sales-nav-arrow-prev" src="./assets/a0e06579757b5f495cfec4ac59b801a9e6411816.svg" alt="" aria-hidden="true" loading="lazy" />
+                    </button>
+
+                    <button class="sales-nav sales-nav-next" type="button" aria-label="Следующий слайд">
+                    <img class="sales-nav-arrow" src="./assets/a0e06579757b5f495cfec4ac59b801a9e6411816.svg" alt="" aria-hidden="true" loading="lazy" />
+                    </button>
+                </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="sales-col-right">
+                <div class="sales-gallery sales-gallery-main swiper">
+                <div class="swiper-wrapper"></div>
+                </div>
+
+
+            </div>
+
+            </div>
+        </div>
+
+        <div class="headliners-wrapp">
+            <section class="headliners" aria-labelledby="headlinersTitle">
+                <div class="headliners__top">
+                    <h2 id="headlinersTitle" class="headliners__title sales-title reveal-text">ХЭДЛАЙНЕРЫ</h2>
+                    <p class="headliners__copy sales-copy reveal-text">
+                        Группы «Корни» и «Динамит» — сразу два live-концерта в рамках одной церемонии.
+                    </p>
+                </div>
+                <div class="headliners__cards">
+                    <article class="headliners__card">
+                        <div class="headliners__card-media" aria-hidden="true"></div>
+                        <div class="headliners__card-label">
+                            <span>Группа «Корни»</span>
+                            <span class="headliners__card-label-arrow" aria-hidden="true">→</span>
+                        </div>
+                    </article>
+                    <article class="headliners__card">
+                        <div class="headliners__card-media" aria-hidden="true"></div>
+                        <div class="headliners__card-label">
+                            <span>Группа «Динамит»</span>
+                            <span class="headliners__card-label-arrow" aria-hidden="true">→</span>
+                        </div>
+                    </article>
+                </div>
+            </section>
+        </div>
 
         <section class="screen screen-partners" id="partnersScreen" aria-labelledby="partnersTitle">
                 
@@ -1909,51 +1943,50 @@
 
           <div class="videoteka-list">
             <article class="videoteka-item">
-              <div class="videoteka-item-media yt-player" data-yt-id="w7jUufquOFc">
-                <img class="videoteka-item-image yt-thumb" src="./assets/video-non-active.jpg" alt="Начало премии с Ксенией Собчак" loading="lazy" />
+              <div class="videoteka-item-media yt-player" data-rutube-id="b6efa6973ab945e856b26ff55536e389">
+                <img class="videoteka-item-image yt-thumb" src="./assets/zastavka.jpg" alt="Рекорды шагают по стране. Путешествие в недвижимость мечты!" loading="lazy" />
                 <button class="videoteka-item-play yt-play-btn" aria-label="Воспроизвести видео"></button>
               </div>
               <div class="videoteka-item-copy">
-                <h3>НАЧАЛО ПРЕМИИ С КСЕНИЕЙ СОБЧАК</h3>
-                <p>Заместитель Председателя Правительства Московской области - министр строительного комплекса Московской области</p>
+                <h3>«Рекорды шагают по стране. Путешествие в недвижимость мечты!»</h3>
+                <p>Московский Бизнес Клуб представляет проект о недвижимости в формате мини-сериала: ведущая Анна Маркина вместе с семьёй и экспертом рынка путешествует по Южному берегу Крыма, показывая лучшие локации, стиль жизни и тёплые семейные моменты. Это не просто обзор, а история о поиске дома мечты.</p>
               </div>
-              <a class="videoteka-item-link" href="https://youtu.be/w7jUufquOFc" target="_blank" aria-label="Открыть видео 1"><img src="./assets/videoteka_link_arrow.svg" alt="" aria-hidden="true"/></a>
+              <a class="videoteka-item-link" href="https://rutube.ru/video/b6efa6973ab945e856b26ff55536e389/" target="_blank" aria-label="Открыть видео 1"><img src="./assets/videoteka_link_arrow.svg" alt="" aria-hidden="true"/></a>
             </article>
 
             <article class="videoteka-item">
-              <div class="videoteka-item-media yt-player" data-yt-id="w7jUufquOFc">
-                <img class="videoteka-item-image yt-thumb" src="./assets/video-non-active.jpg" alt="Начало премии с Ксенией Собчак" loading="lazy" />
+              <div class="videoteka-item-media yt-player" data-rutube-id="cabb0faea08bcc580b4d8f726aec6ed2">
+                <img class="videoteka-item-image yt-thumb" src="https://mosbizclub13.wfolio.pro/disk/share/qoll2Osy3b6GO" alt="Рекорды Рынка Недвижимости 2023 | LISCHANNEL" loading="lazy" />
                 <button class="videoteka-item-play yt-play-btn" aria-label="Воспроизвести видео"></button>
               </div>
               <div class="videoteka-item-copy">
-                <h3>НАЧАЛО ПРЕМИИ С КСЕНИЕЙ СОБЧАК</h3>
-                <p>Заместитель Председателя Правительства Московской области - министр строительного комплекса Московской области</p>
+                <h3>«Рекорды рынка недвижимости 2023» | Lischannel</h3>
               </div>
-              <a class="videoteka-item-link" href="https://youtu.be/w7jUufquOFc" target="_blank" aria-label="Открыть видео 2"><img src="./assets/videoteka_link_arrow.svg" alt="" aria-hidden="true"/></a>
+              <a class="videoteka-item-link" href="https://rutube.ru/video/cabb0faea08bcc580b4d8f726aec6ed2/" target="_blank" aria-label="Открыть видео 2"><img src="./assets/videoteka_link_arrow.svg" alt="" aria-hidden="true"/></a>
             </article>
 
             <article class="videoteka-item">
-              <div class="videoteka-item-media yt-player" data-yt-id="w7jUufquOFc">
-                <img class="videoteka-item-image yt-thumb" src="./assets/video-non-active.jpg" alt="Начало премии с Ксенией Собчак" loading="lazy" />
+              <div class="videoteka-item-media yt-player" data-rutube-id="b6ad31c9225223c08c7710d496c8c9c1">
+                <img class="videoteka-item-image yt-thumb" src="https://mosbizclub13.wfolio.pro/disk/materialy-dlya-sayta-premii-m69mt8" alt="Премия «Рекорды Рынка Недвижимости 2024» назвала лучшие проекты и компании, получившие статус №1" loading="lazy" />
                 <button class="videoteka-item-play yt-play-btn" aria-label="Воспроизвести видео"></button>
               </div>
               <div class="videoteka-item-copy">
-                <h3>НАЧАЛО ПРЕМИИ С КСЕНИЕЙ СОБЧАК</h3>
-                <p>Заместитель Председателя Правительства Московской области - министр строительного комплекса Московской области</p>
+                <h3>Премия «Рекорды рынка недвижимости 2024» назвала лучшие проекты и компании, получившие статус «№1».</h3>
+                <p>31 мая прошла 16-я ежегодная международная премия «Рекорды Рынка Недвижимости» определив лучшие объекты и компании, заслуженно получившие заветный Оскар и статус «№1 на рынке недвижимости».</p>
               </div>
-              <a class="videoteka-item-link" href="https://youtu.be/w7jUufquOFc" target="_blank" aria-label="Открыть видео 3"><img src="./assets/videoteka_link_arrow.svg" alt="" aria-hidden="true"/></a>
+              <a class="videoteka-item-link" href="https://rutube.ru/video/b6ad31c9225223c08c7710d496c8c9c1/" target="_blank" aria-label="Открыть видео 3"><img src="./assets/videoteka_link_arrow.svg" alt="" aria-hidden="true"/></a>
             </article>
 
             <article class="videoteka-item">
-              <div class="videoteka-item-media yt-player" data-yt-id="w7jUufquOFc">
-                <img class="videoteka-item-image yt-thumb" src="./assets/video-non-active.jpg" alt="Начало премии с Ксенией Собчак" loading="lazy" />
+              <div class="videoteka-item-media yt-player" data-rutube-id="46d36972a5b8de64259fb3104d65c36d">
+                <img class="videoteka-item-image yt-thumb" src="https://mosbizclub13.wfolio.pro/disk/share/DMoo0JfpAm0eP" alt="Премия «Рекорды Рынка Недвижимости» назвала лучшие проекты и компании, получившие статус №1" loading="lazy" />
                 <button class="videoteka-item-play yt-play-btn" aria-label="Воспроизвести видео"></button>
               </div>
               <div class="videoteka-item-copy">
-                <h3>НАЧАЛО ПРЕМИИ С КСЕНИЕЙ СОБЧАК</h3>
-                <p>Заместитель Председателя Правительства Московской области - министр строительного комплекса Московской области</p>
+                <h3>Премия «Рекорды рынка недвижимости» назвала лучшие проекты и компании, получившие статус «№1».</h3>
+                <p>Состоялся Оскар рынка недвижимости 2025! 30 мая ежегодная международная премия «Рекорды Рынка Недвижимости 2025» определила лучшие объекты и компании, получившие заветный Оскар и статус «№1 на рынке недвижимости».</p>
               </div>
-              <a class="videoteka-item-link" href="https://youtu.be/w7jUufquOFc" target="_blank" aria-label="Открыть видео 4"><img src="./assets/videoteka_link_arrow.svg" alt="" aria-hidden="true"/></a>
+              <a class="videoteka-item-link" href="https://rutube.ru/video/46d36972a5b8de64259fb3104d65c36d/" target="_blank" aria-label="Открыть видео 4"><img src="./assets/videoteka_link_arrow.svg" alt="" aria-hidden="true"/></a>
             </article>
           </div>
         </section>
@@ -1978,49 +2011,77 @@
                 id="tab-all"
               >
                 <span>Все</span>
-                <img src="./assets/videoteka_tab_arrow.svg" alt="" aria-hidden="true" />
+                <span class="news-tab-arrows" aria-hidden="true">
+                  <img class="news-tab-arrow news-tab-arrow--idle" src="./assets/news_tab_arrow_brown.svg" alt="" />
+                  <img class="news-tab-arrow news-tab-arrow--hover" src="./assets/videoteka_tab_arrow.svg" alt="" />
+                </span>
+                <img class="news-tab-trigger-doun" src="./assets/doun.svg" alt="" aria-hidden="true" />
               </button>
 
               <div class="news-tabs-dropdown" id="newsTabsDropdown">
                 <div class="news-tabs-dropdown-list">
                 <button class="news-tab news-tab-option-all" type="button" role="tab" aria-selected="true" aria-controls="newsTrack">
                   <span>Все</span>
-                  <img src="./assets/news_tab_arrow_brown.svg" alt="" aria-hidden="true" />
+                  <span class="news-tab-arrows" aria-hidden="true">
+                    <img class="news-tab-arrow news-tab-arrow--idle" src="./assets/news_tab_arrow_brown.svg" alt="" />
+                    <img class="news-tab-arrow news-tab-arrow--hover" src="./assets/videoteka_tab_arrow.svg" alt="" />
+                  </span>
                 </button>
 
                 <button class="news-tab" type="button" role="tab" aria-selected="false" aria-controls="newsTrack">
                   <span>Новости</span>
-                  <img src="./assets/news_tab_arrow_brown.svg" alt="" aria-hidden="true" />
+                  <span class="news-tab-arrows" aria-hidden="true">
+                    <img class="news-tab-arrow news-tab-arrow--idle" src="./assets/news_tab_arrow_brown.svg" alt="" />
+                    <img class="news-tab-arrow news-tab-arrow--hover" src="./assets/videoteka_tab_arrow.svg" alt="" />
+                  </span>
                 </button>
 
                 <button class="news-tab" type="button" role="tab" aria-selected="false" aria-controls="newsTrack">
                   <span>Полезное</span>
-                  <img src="./assets/news_tab_arrow_brown.svg" alt="" aria-hidden="true" />
+                  <span class="news-tab-arrows" aria-hidden="true">
+                    <img class="news-tab-arrow news-tab-arrow--idle" src="./assets/news_tab_arrow_brown.svg" alt="" />
+                    <img class="news-tab-arrow news-tab-arrow--hover" src="./assets/videoteka_tab_arrow.svg" alt="" />
+                  </span>
                 </button>
 
                 <button class="news-tab" type="button" role="tab" aria-selected="false" aria-controls="newsTrack">
                   <span>Премьеры</span>
-                  <img src="./assets/news_tab_arrow_brown.svg" alt="" aria-hidden="true" />
+                  <span class="news-tab-arrows" aria-hidden="true">
+                    <img class="news-tab-arrow news-tab-arrow--idle" src="./assets/news_tab_arrow_brown.svg" alt="" />
+                    <img class="news-tab-arrow news-tab-arrow--hover" src="./assets/videoteka_tab_arrow.svg" alt="" />
+                  </span>
                 </button>
 
                 <button class="news-tab" type="button" role="tab" aria-selected="false" aria-controls="newsTrack">
                   <span>Экспертная колонка</span>
-                  <img src="./assets/news_tab_arrow_brown.svg" alt="" aria-hidden="true" />
+                  <span class="news-tab-arrows" aria-hidden="true">
+                    <img class="news-tab-arrow news-tab-arrow--idle" src="./assets/news_tab_arrow_brown.svg" alt="" />
+                    <img class="news-tab-arrow news-tab-arrow--hover" src="./assets/videoteka_tab_arrow.svg" alt="" />
+                  </span>
                 </button>
 
                 <button class="news-tab" type="button" role="tab" aria-selected="false" aria-controls="newsTrack">
                   <span>Новости номинантов</span>
-                  <img src="./assets/news_tab_arrow_brown.svg" alt="" aria-hidden="true" />
+                  <span class="news-tab-arrows" aria-hidden="true">
+                    <img class="news-tab-arrow news-tab-arrow--idle" src="./assets/news_tab_arrow_brown.svg" alt="" />
+                    <img class="news-tab-arrow news-tab-arrow--hover" src="./assets/videoteka_tab_arrow.svg" alt="" />
+                  </span>
                 </button>
 
                 <button class="news-tab" type="button" role="tab" aria-selected="false" aria-controls="newsTrack">
                   <span>Аналитика</span>
-                  <img src="./assets/news_tab_arrow_brown.svg" alt="" aria-hidden="true" />
+                  <span class="news-tab-arrows" aria-hidden="true">
+                    <img class="news-tab-arrow news-tab-arrow--idle" src="./assets/news_tab_arrow_brown.svg" alt="" />
+                    <img class="news-tab-arrow news-tab-arrow--hover" src="./assets/videoteka_tab_arrow.svg" alt="" />
+                  </span>
                 </button>
 
                 <button class="news-tab" type="button" role="tab" aria-selected="false" aria-controls="newsTrack">
                   <span>Обзоры</span>
-                  <img src="./assets/news_tab_arrow_brown.svg" alt="" aria-hidden="true" />
+                  <span class="news-tab-arrows" aria-hidden="true">
+                    <img class="news-tab-arrow news-tab-arrow--idle" src="./assets/news_tab_arrow_brown.svg" alt="" />
+                    <img class="news-tab-arrow news-tab-arrow--hover" src="./assets/videoteka_tab_arrow.svg" alt="" />
+                  </span>
                 </button>
                 </div>
               </div>
@@ -2175,6 +2236,15 @@
           </div>
         </section>
         <section class="award-scene" aria-label="Премия 2026">
+          <video
+            class="award-scene-video"
+            src="./assets/Горизонт.mp4"
+            autoplay
+            muted
+            loop
+            playsinline
+            aria-hidden="true"
+          ></video>
           <img
             class="award-scene-bg award-scene-bg-base"
             src="./assets/images/award/award_scene_mobile_bg_1.webp"
@@ -2187,7 +2257,6 @@
             alt=""
             aria-hidden="true"
           />
-          <div class="award-scene-shade" aria-hidden="true"></div>
           <img
             class="award-scene-logo"
             src="./assets/images/award/award_scene_mobile_logo_2026.webp"
@@ -2225,22 +2294,20 @@
                   href="tel:+74956322266"
                   aria-label="Позвонить Анне Маркиной"
                 >
-                  <img
-                    src="./assets/contact_phone_icon.svg"
-                    alt=""
-                    aria-hidden="true"
-                  />
+                  <span class="contacts-card-action-icons" aria-hidden="true">
+                    <img class="contacts-card-action-img contacts-card-action-img--default" src="./assets/contact_phone_icon.svg" alt="" />
+                    <img class="contacts-card-action-img contacts-card-action-img--hover" src="./assets/Vector.svg" alt="" />
+                  </span>
                 </a>
                 <a
                   class="contacts-card-action"
                   href="https://t.me/"
                   aria-label="Написать Анне Маркиной в Telegram"
                 >
-                  <img
-                    src="./assets/contact_telegram_icon.svg"
-                    alt=""
-                    aria-hidden="true"
-                  />
+                  <span class="contacts-card-action-icons" aria-hidden="true">
+                    <img class="contacts-card-action-img contacts-card-action-img--default" src="./assets/contact_telegram_icon.svg" alt="" />
+                    <img class="contacts-card-action-img contacts-card-action-img--hover" src="./assets/file-icons_telegram.svg" alt="" />
+                  </span>
                 </a>
               </div>
             </div>
@@ -2273,22 +2340,20 @@
                   href="tel:+79255074660"
                   aria-label="Позвонить Валентине Егарминой"
                 >
-                  <img
-                    src="./assets/contact_phone_icon.svg"
-                    alt=""
-                    aria-hidden="true"
-                  />
+                  <span class="contacts-card-action-icons" aria-hidden="true">
+                    <img class="contacts-card-action-img contacts-card-action-img--default" src="./assets/contact_phone_icon.svg" alt="" />
+                    <img class="contacts-card-action-img contacts-card-action-img--hover" src="./assets/Vector.svg" alt="" />
+                  </span>
                 </a>
                 <a
                   class="contacts-card-action"
                   href="https://t.me/"
                   aria-label="Написать Валентине Егарминой в Telegram"
                 >
-                  <img
-                    src="./assets/contact_telegram_icon.svg"
-                    alt=""
-                    aria-hidden="true"
-                  />
+                  <span class="contacts-card-action-icons" aria-hidden="true">
+                    <img class="contacts-card-action-img contacts-card-action-img--default" src="./assets/contact_telegram_icon.svg" alt="" />
+                    <img class="contacts-card-action-img contacts-card-action-img--hover" src="./assets/file-icons_telegram.svg" alt="" />
+                  </span>
                 </a>
               </div>
             </div>
@@ -2323,22 +2388,20 @@
                   href="tel:+79653709999"
                   aria-label="Позвонить Анне Ратниковой"
                 >
-                  <img
-                    src="./assets/contact_phone_icon.svg"
-                    alt=""
-                    aria-hidden="true"
-                  />
+                  <span class="contacts-card-action-icons" aria-hidden="true">
+                    <img class="contacts-card-action-img contacts-card-action-img--default" src="./assets/contact_phone_icon.svg" alt="" />
+                    <img class="contacts-card-action-img contacts-card-action-img--hover" src="./assets/Vector.svg" alt="" />
+                  </span>
                 </a>
                 <a
                   class="contacts-card-action"
                   href="https://t.me/"
                   aria-label="Написать Анне Ратниковой в Telegram"
                 >
-                  <img
-                    src="./assets/contact_telegram_icon.svg"
-                    alt=""
-                    aria-hidden="true"
-                  />
+                  <span class="contacts-card-action-icons" aria-hidden="true">
+                    <img class="contacts-card-action-img contacts-card-action-img--default" src="./assets/contact_telegram_icon.svg" alt="" />
+                    <img class="contacts-card-action-img contacts-card-action-img--hover" src="./assets/file-icons_telegram.svg" alt="" />
+                  </span>
                 </a>
               </div>
             </div>
@@ -2371,22 +2434,20 @@
                   href="tel:+79637529582"
                   aria-label="Позвонить Павлу Багатько"
                 >
-                  <img
-                    src="./assets/contact_phone_icon.svg"
-                    alt=""
-                    aria-hidden="true"
-                  />
+                  <span class="contacts-card-action-icons" aria-hidden="true">
+                    <img class="contacts-card-action-img contacts-card-action-img--default" src="./assets/contact_phone_icon.svg" alt="" />
+                    <img class="contacts-card-action-img contacts-card-action-img--hover" src="./assets/Vector.svg" alt="" />
+                  </span>
                 </a>
                 <a
                   class="contacts-card-action"
                   href="https://t.me/"
                   aria-label="Написать Павлу Багатько в Telegram"
                 >
-                  <img
-                    src="./assets/contact_telegram_icon.svg"
-                    alt=""
-                    aria-hidden="true"
-                  />
+                  <span class="contacts-card-action-icons" aria-hidden="true">
+                    <img class="contacts-card-action-img contacts-card-action-img--default" src="./assets/contact_telegram_icon.svg" alt="" />
+                    <img class="contacts-card-action-img contacts-card-action-img--hover" src="./assets/file-icons_telegram.svg" alt="" />
+                  </span>
                 </a>
               </div>
             </div>
@@ -2548,6 +2609,50 @@
 
           <p class="footer-copyright">© 2020 РЕКОРДЫ РЫНКА НЕДВИЖИМОСТИ</p>
         </section>
+      <div class="sales-popup" id="salesPopup" aria-hidden="true">
+        <div class="sales-popup-backdrop"></div>
+        <button class="sales-popup-close" id="salesPopupClose" type="button" aria-label="Закрыть окно">
+          <img src="./assets/0d772051306beea1adbca36d6958a7e0b52b72c8.svg" alt="" />
+        </button>
+        <div class="sales-popup-shell" role="dialog" aria-modal="true" aria-labelledby="salesPopupTitle">
+          <img class="sales-popup-corner sales-popup-corner-tl" src="./assets/006e765f438bc72bd458197b9aa87b99ac8e9bf8.svg" alt="" />
+          <img class="sales-popup-corner sales-popup-corner-bl" src="./assets/006e765f438bc72bd458197b9aa87b99ac8e9bf8.svg" alt="" />
+          <img class="sales-popup-corner sales-popup-corner-tr" src="./assets/8d04344be97c08fe49e526a620b2fce6d64a03cc.svg" alt="" />
+          <img class="sales-popup-corner sales-popup-corner-br" src="./assets/8d04344be97c08fe49e526a620b2fce6d64a03cc.svg" alt="" />
+          <div class="sales-popup-panel">
+            <h2 class="sales-popup-title" id="salesPopupTitle">
+              Заполните предварительную заявку,<br />мы перезвоним вам в течение часа.
+            </h2>
+            <form class="sales-popup-form" action="#" method="dialog">
+              <label class="sales-popup-field sales-popup-field-name">
+                <input class="sales-popup-input" type="text" placeholder="ФИО" />
+              </label>
+              <label class="sales-popup-field sales-popup-field-company">
+                <input class="sales-popup-input" type="text" placeholder="Компания" />
+              </label>
+              <label class="sales-popup-field sales-popup-field-role">
+                <input class="sales-popup-input" type="text" placeholder="Должность" />
+              </label>
+              <label class="sales-popup-field sales-popup-field-email">
+                <input class="sales-popup-input" type="email" placeholder="Ваш email" />
+              </label>
+              <label class="sales-popup-field sales-popup-field-phone">
+                <input class="sales-popup-input" type="tel" placeholder="+7 (999) 999 99 99" />
+              </label>
+              <button class="sales-popup-submit" type="submit">ОТПРАВИТЬ ЗАЯВКУ</button>
+            </form>
+            <div class="sales-popup-consent">
+              <button class="sales-popup-check is-checked" id="salesPopupCheck" type="button" aria-pressed="true" aria-label="Согласие на обработку данных">
+                <img class="sales-popup-check-icon" src="./assets/ccb5c64de7f69c65b94b33145c2dcd50f58b6aaf.svg" alt="" />
+              </button>
+              <p class="sales-popup-consent-text">
+                Нажимая на кнопку «Оставить заявку», вы подтверждаете
+                <span>свое согласие на обработку персональных данных и получение сообщений информационного характера.</span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
     </main>
     
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>

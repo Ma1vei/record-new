@@ -30,6 +30,9 @@ async function initHero3D() {
   });
   const isMobileHero = window.matchMedia('(max-width: 1200px)').matches;
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isMobileHero ? 1.0 : 1.25));
+  if (isMobileHero) {
+    container.style.pointerEvents = 'none';
+  }
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.LinearToneMapping;
   renderer.toneMappingExposure = 1.8;
@@ -69,7 +72,7 @@ async function initHero3D() {
   const HALF_W = HALF_H * (1920 / 1080);
   const PX = HALF_H / 540;
   const isNarrowMobile = window.innerWidth < 400;
-  const backgroundModelScale = isMobileHero ? 0.36 : 1;
+  const backgroundModelScale = isMobileHero ? 0.79 : 1;
   const mobileXOffset = isNarrowMobile ? -12 * PX : 0;
 
   function cssToWorld(l, t, w, h) {
@@ -80,11 +83,10 @@ async function initHero3D() {
   const mainRect = { l: 657, t: 88, w: 605, h: 1016 };
   const mainXY = cssToWorld(mainRect.l, mainRect.t, mainRect.w, mainRect.h);
   const mainXY_y = mainXY.y;
-  const mobClusterY = mainXY_y * 0.52;
-  const springHomeXY = isMobileHero
-    ? new THREE.Vector2(0, mobClusterY * 0.94)
-    : new THREE.Vector2(0, mainXY_y * 0.8 + 0.08);
-  const cameraLookY = isMobileHero ? mobClusterY * 0.88 : mainXY_y * 0.8;
+  /* Мобилка: точка взгляда камеры; фон больше не тянется к одной точке — каждый homePos как на десктопе */
+  const mobClusterY = isMobileHero ? mainXY_y * 0.50 : mainXY_y * 0.52;
+  const springHomeXY = new THREE.Vector2(0, mainXY_y * 0.8 + 0.08);
+  const cameraLookY = isMobileHero ? mobClusterY * 0.92 : mainXY_y * 0.8;
 
   const camera = new THREE.PerspectiveCamera(CAM_FOV, 1920 / 1080, 0.1, 100);
   const CAM_Y = HALF_H * 1.25;
@@ -163,12 +165,23 @@ async function initHero3D() {
       });
 
       _box.setFromObject(mesh); _box.getSize(_size); _box.getCenter(_center);
-      const scale = (BG_H * PX) / refDim * (0.9 + 0.14 * wz) * backgroundModelScale;
+      let scale = (BG_H * PX) / refDim * (0.9 + 0.14 * wz) * backgroundModelScale;
+      /* Центральная золотая статуэтка (m === 0): чуть крупнее центр на мобилке */
+      if (isMobileHero && m === 0) scale *= 1.05;
+      /* Справа серебро (m=2, wx>0): раньше wz>0 раздувало масштаб — вылет за край; на мобилке уравниваем с левой парой */
+      if (isMobileHero && m === 2 && wx > 0) scale *= 0.88;
 
       mesh.scale.set(scale, scale, scale);
       mesh.rotation.order = 'YXZ';
       mesh.rotation.y = OSCAR_YAW_TO_CAMERA;
-      if (tilt) mesh.rotation.x = (tilt * Math.PI) / 180;
+      if (tilt) {
+        const tiltDeg = isMobileHero ? tilt * 0.14 : tilt;
+        mesh.rotation.x = (tiltDeg * Math.PI) / 180;
+      }
+      if (isMobileHero) {
+        const topAwayDeg = THREE.MathUtils.clamp(wx * -7.2, -15, 15);
+        mesh.rotation.z = (topAwayDeg * Math.PI) / 180;
+      }
       mesh.position.set(-refCenter.x * scale, -refCenter.y * scale, -refCenter.z * scale);
 
       const homePos = new THREE.Vector2(wx, wy);
@@ -182,7 +195,7 @@ async function initHero3D() {
       const rb = world.createRigidBody(
         RAPIER.RigidBodyDesc.dynamic()
           .setTranslation(wx, wy, 0)
-          .setLinearDamping(4.8)
+          .setLinearDamping(2.2)
           .setAngularDamping(5.2)
           .setCcdEnabled(true)
           .enabledTranslations(true, true, false)
@@ -218,13 +231,21 @@ async function initHero3D() {
       return g;
     }
 
+  /* Мобилка: 4 фоновые статуэтки; разлёт по скроллу — см. mobileScatterDirs (индекс в bodies) */
+  const mobBgLayoutX = 0.49;
+  const mobBgLayoutY = 0.66;
+  const mobBgYRef = mainXY_y * 0.52;
+  const mobBgShiftX = 0;
+  const mobBgWx = (wx) => wx * mobBgLayoutX + mobileXOffset + mobBgShiftX;
+  const mobBgWy = (wy) => mobBgYRef + (wy - mobBgYRef) * mobBgLayoutY;
+  const mobBgRowWorldY = mobClusterY;
+  const mobBgRowZ = -0.56;
   const backgroundSpawnConfig = isMobileHero
       ? [
-          [1, -0.38 + mobileXOffset, mobClusterY - 0.14, 0.10, 15, 1.0, null],
-          [2, -0.10 + mobileXOffset, mobClusterY + 0.06, -0.5, 10, 1.0, null],
-          [0, 0.10 + mobileXOffset, mobClusterY + 0.20, -1.80, -15, 0.7, 0.6],
-          [2, 0.22 + mobileXOffset, mobClusterY - 0.02, 0.10, -15, 1.0, null],
-          [1, 0.40 + mobileXOffset, mobClusterY + 0.12, -0.80, -30, 1.0, null],
+          [1, mobBgWx(-0.82), -1.2, mobBgRowZ,  -100,  1.0, null],
+          [2, mobBgWx(-0.8), -1.1, mobBgRowZ,  100,  1.0, null],
+          [0, mobBgWx(-0.2), -0.3, mobBgRowZ, 100,  0.72, 0.58],
+          [2, mobBgWx(0.8), 0.4, mobBgRowZ, -100,  1.0, null],
         ]
       : [
           [1, -1.90, mainXY_y - 0.4,  0.20,  15,  1.0, null],
@@ -237,19 +258,33 @@ async function initHero3D() {
     backgroundSpawnConfig.forEach((args) => spawn(...args));
 
     // ─── Модели №1 (2 слева, 2 справа) ───────────────────────────────
-    const N1_H = isMobileHero ? 70 : 134;
+    const N1_H = isMobileHero ? 66 : 134;
     function spawnN1(gltfSrc, wx, wy, wz, tiltDeg, op, brighten, color) {
       const mesh = gltfSrc.scene.clone(true);
       prepareModelForViewer(mesh, renderer);
       _box.setFromObject(mesh); _box.getSize(_size); _box.getCenter(_center);
       const natDim = Math.max(_size.x, _size.y, _size.z, 0.001);
-      const sizeMultiplier = 1.5;
+      const sizeMultiplier = isMobileHero ? 1.02 : 1.5;
       const scale = (N1_H * PX) / natDim * sizeMultiplier;
       mesh.scale.set(scale, scale, scale);
       mesh.rotation.order = 'YXZ';
-      mesh.rotation.y = OSCAR_YAW_TO_CAMERA + Math.PI;
-      mesh.rotation.x = Math.PI;
-      if (tiltDeg) mesh.rotation.z = (tiltDeg * Math.PI) / 180;
+      if (isMobileHero) {
+        mesh.rotation.y = OSCAR_YAW_TO_CAMERA + Math.PI;
+        mesh.rotation.x = 0;
+      } else {
+        mesh.rotation.y = OSCAR_YAW_TO_CAMERA + Math.PI;
+        mesh.rotation.x = Math.PI;
+      }
+      let zRad = 0;
+      if (tiltDeg) {
+        const zDeg = isMobileHero ? tiltDeg * 0.055 : tiltDeg;
+        zRad = (zDeg * Math.PI) / 180;
+      }
+      if (isMobileHero) {
+        const topAwayDeg = THREE.MathUtils.clamp(wx * -6.0, -16, 16);
+        zRad += (topAwayDeg * Math.PI) / 180;
+      }
+      mesh.rotation.z = zRad;
       mesh.position.set(-_center.x * scale, -_center.y * scale, -_center.z * scale);
       mesh.traverse(c => {
         if (c.isMesh && c.material) {
@@ -281,7 +316,7 @@ async function initHero3D() {
       const rb = world.createRigidBody(
         RAPIER.RigidBodyDesc.dynamic()
           .setTranslation(wx, wy, 0)
-          .setLinearDamping(4.8)
+          .setLinearDamping(2.2)
           .setAngularDamping(5.2)
           .setCcdEnabled(true)
           .enabledTranslations(true, true, false)
@@ -309,13 +344,17 @@ async function initHero3D() {
       });
     }
 
-    const n1MobY = mainXY_y * 0.50;
+    const n1MobYRef = mainXY_y * 0.50;
+    const n1MobLayoutX = isMobileHero ? 0.42 : 0.46;
+    const n1MobLayoutY = 0.60;
+    const n1MobWx = (wx) => wx * n1MobLayoutX + mobileXOffset + mobBgShiftX;
+    const n1MobWy = (wy) => n1MobYRef + (wy - n1MobYRef) * n1MobLayoutY;
     const n1SpawnConfig = isMobileHero
       ? [
-          [gltfN1b, -0.44 + mobileXOffset, n1MobY + 0.14, -0.3, -165, 0.6, 0.9, '#7c2f25'],
-          [gltfN1s, -0.14 + mobileXOffset, n1MobY - 0.20, -0.5, -194, 0.5, 1, '#e3e3e3'],
-          [gltfN1b, 0.18 + mobileXOffset, n1MobY + 0.16, -0.3, -165, 0.85, 0.9, '#424242'],
-          [gltfN1b, 0.44 + mobileXOffset, n1MobY - 0.20, -0.5, -194, 0.6, 0.9, '#7c2f25'],
+          [gltfN1b, n1MobWx(-1.8), n1MobWy(mainXY.y + 1.3), -0.3, -165, 0.6, 0.9, '#7c2f25'],
+          [gltfN1s, n1MobWx(-2), n1MobWy(mainXY.y - 2.4), -0.5, -144, 0.50, 1, '#e3e3e3'],
+          [gltfN1b, n1MobWx(2), n1MobWy(mainXY.y + 1), -0.3, -165, 0.85, 0.9, '#424242'],
+          [gltfN1b, n1MobWx(1.86), n1MobWy(mainXY.y - 1.7), 0.8, -144, 0.6, 0.9, '#7c2f25'],
         ]
       : [
           [gltfN1b, -3.00, mainXY.y + 0.4, -0.3, -165, 0.6, 0.9, '#7c2f25'],
@@ -325,6 +364,25 @@ async function initHero3D() {
         ];
 
     n1SpawnConfig.forEach((args) => spawnN1(...args));
+
+    /* Мобилка: фиксированные направления по порядку в bodies (4 статуэтки, затем 4 N1): 0→↘, 1→↙, 2→↖, 3→↗ (+Y вверх по миру) */
+    if (isMobileHero) {
+      const mobileScatterDirs = [
+        new THREE.Vector2(1, -1),
+        new THREE.Vector2(-1, -1),
+        new THREE.Vector2(-1, 1),
+        new THREE.Vector2(1, 1),
+      ];
+      bodies.forEach((body, i) => {
+        body.scatterDir.copy(mobileScatterDirs[i % 4]).normalize();
+      });
+    } else {
+      const goldenAngle = Math.PI * (3 - Math.sqrt(5));
+      bodies.forEach((body, i) => {
+        const angle = goldenAngle * (i + 0.37);
+        body.scatterDir.set(Math.cos(angle), Math.sin(angle)).normalize();
+      });
+    }
 
     // ─── Курсор — кинематический шар ───────────────────
     const mouseNDC = new THREE.Vector2(-9999, -9999);
@@ -352,15 +410,15 @@ async function initHero3D() {
     }
 
     // ─── Render loop ──────────────────────────────────────────────────
-    const SPRING_K = 5.0;      
-    const IDLE_SPRING_K = 1.2; 
-    
-    const MAX_SPEED = 1.35;
-    const MAX_FORCE = 22.0;
-    const IDLE_SPEED_FACTOR = 0.12;
-    const IDLE_FORCE_FACTOR = 0.2;
-    const IDLE_VEL_DAMP = 0.84;
-    const IDLE_FREE_DIST = isMobileHero ? 0.42 : 0.68;
+    const SPRING_K = isMobileHero ? 15.0 : 11.5;
+    const IDLE_SPRING_K = isMobileHero ? 11.5 : 8.8;
+
+    const MAX_SPEED = isMobileHero ? 3.1 : 2.95;
+    const MAX_FORCE = isMobileHero ? 82.0 : 70.0;
+    const IDLE_SPEED_FACTOR = 0.55;
+    const IDLE_FORCE_FACTOR = 0.78;
+    const IDLE_VEL_DAMP = isMobileHero ? 0.88 : 0.93;
+    const IDLE_FREE_DIST = isMobileHero ? 0.26 : 0.68;
     const IDLE_MAX_DIST = isMobileHero ? 1.4 : 2.4;
     
     // Настройки отталкивания от курсора
@@ -370,14 +428,13 @@ async function initHero3D() {
     const REPULSION_FORCE_CAP = isMobileHero ? 15.0 : 20.0; 
     
     const ROT_LERP = 0.08;
-    const VISUAL_POS_DAMP = 12;
-    const VISUAL_ROT_DAMP = 14;
-    const N1_REACTION_MUL = 0.22;
+    const VISUAL_POS_DAMP = 38;
+    const VISUAL_ROT_DAMP = 20;
+    const N1_REACTION_MUL = isMobileHero ? 0.55 : 0.55;
     const N1_REPULSION_MUL = 1.0; 
     
-    // Дистанции для разлета по скроллу (можно увеличить, если нужно раскидать их еще дальше)
-    const SCATTER_DISTANCE_X = isMobileHero ? 5.0 : 9.0;
-    const SCATTER_DISTANCE_Y = isMobileHero ? 4.0 : 7.0;
+    // Одна дистанция по X и Y — круговой разлёт, без вытянутого эллипса влево-вправо
+    const SCATTER_DISTANCE = isMobileHero ? 6.1 : 11.2;
     
     const _force = new THREE.Vector3();
     const _curQ = new THREE.Quaternion();
@@ -397,6 +454,7 @@ async function initHero3D() {
     let pointerStartX = 0;
     let pointerStartY = 0;
     let scatterProgress = 0;
+    let mobileFloatTime = 0;
 
     const oscarImg = document.getElementById('heroOscarImg');
     let oscarParallaxX = 0, oscarParallaxY = 0;
@@ -409,8 +467,8 @@ async function initHero3D() {
     let lastFrameTime = 0;
     let physicsAccumulator = 0;
     const FIXED_STEP_ACTIVE = 1 / 90;
-    const FIXED_STEP_IDLE = 1 / 60;
-    const MAX_STEPS_PER_FRAME = 3;
+    const FIXED_STEP_IDLE = 1 / 90;
+    const MAX_STEPS_PER_FRAME = 6;
 
     function tick(now) {
       animId = requestAnimationFrame(tick);
@@ -427,11 +485,15 @@ async function initHero3D() {
       // Вычисляем, насколько глубоко мы проскроллили. 
       // 0 = мы на самом верху. 1 = контейнер ушел вверх на высоту экрана.
       let scrollRaw = -rect.top / windowHeight; 
-      // Коэффициент 1.5 означает, что полный разлет случится быстрее (до того, как секция полностью исчезнет)
-      let targetScatter = Math.max(0, Math.min(1, scrollRaw * 1.5));
+      const scatterScrollMul = isMobileHero ? 1.55 : 2.45;
+      let targetScatter = Math.max(0, Math.min(1, scrollRaw * scatterScrollMul));
       
-      const scatterLerp = 1 - Math.exp(-12 * dt);
+      const scatterLerp = 1 - Math.exp(-72 * dt);
       scatterProgress += (targetScatter - scatterProgress) * scatterLerp;
+
+      if (isMobileHero) {
+        mobileFloatTime += dt;
+      }
 
       const fixedStep = livePointer ? FIXED_STEP_ACTIVE : FIXED_STEP_IDLE;
       physicsAccumulator = Math.min(physicsAccumulator + dt, fixedStep * MAX_STEPS_PER_FRAME);
@@ -469,6 +531,11 @@ async function initHero3D() {
       }
 
       if (oscarImg) {
+        if (isMobileHero) {
+          const tf = mobileFloatTime;
+          oscarTargetX = Math.sin(tf * 0.38) * 2.2 + Math.sin(tf * 0.15) * 0.9;
+          oscarTargetY = Math.cos(tf * 0.34) * 1.8 + Math.cos(tf * 0.17) * 0.7;
+        }
         const oscarDelta = Math.abs(oscarParallaxX - oscarTargetX) + Math.abs(oscarParallaxY - oscarTargetY);
         if (oscarDelta > 0.1) {
           const oscarLerp = 1 - Math.exp(-7 * dt);
@@ -494,27 +561,62 @@ async function initHero3D() {
       mainSwingX *= 0.9;
       mainSwingY *= 0.9;
 
-      for (const body of bodies) {
+      for (let bi = 0; bi < bodies.length; bi++) {
+        const body = bodies[bi];
         const { group, rb, homePos, spawnAnchor, homeQuat, homeZ, isBackground, visPos, visQuat, scatterDir } = body;
         const t = rb.translation();
-        const q = rb.rotation();
 
         // ─── ПРИМЕНЕНИЕ РАЗЛЕТА И ПРУЖИН ─────────────────────────
-        // Фон стягивается в центр, единицы — на свои места (homePos).
-        const baseTargetPos = isBackground ? springHomeXY : homePos; 
-        
-        // Чем больше скролл (scatterProgress), тем дальше они улетают по своим круговым векторам
-        const scatterX = scatterDir.x * SCATTER_DISTANCE_X * scatterProgress;
-        const scatterY = scatterDir.y * SCATTER_DISTANCE_Y * scatterProgress;
+        const baseTargetPos =
+          isBackground && !isMobileHero ? springHomeXY : homePos;
+
+        const scatterX = scatterDir.x * SCATTER_DISTANCE * scatterProgress;
+        const scatterY = scatterDir.y * SCATTER_DISTANCE * scatterProgress;
+
+        /* Мобилка без курсора: позиция строго на луче home→разлёт от scatterProgress — при скролле вверх
+           тот же путь в обратную сторону, без пружин и перескоков */
+        if (isMobileHero && !livePointer) {
+          let mx = homePos.x + scatterX;
+          let my = homePos.y + scatterY;
+          if (scatterProgress < 0.005) {
+            const swayK = Math.min(1, (0.005 - scatterProgress) / 0.005);
+            const tf = mobileFloatTime;
+            const ph = bi * 1.21;
+            const ax = isBackground ? 0.0062 : 0.0045;
+            const ay = isBackground ? 0.0052 : 0.0038;
+            mx +=
+              (Math.sin(tf * 0.32 + ph) * ax +
+                Math.sin(tf * 0.11 + ph * 2.0) * (ax * 0.32)) *
+              swayK;
+            my +=
+              (Math.cos(tf * 0.29 + ph * 1.03) * ay +
+                Math.cos(tf * 0.10 + ph * 0.88) * (ay * 0.3)) *
+              swayK;
+          }
+          rb.setTranslation({ x: mx, y: my, z: 0 }, true);
+          rb.setLinvel({ x: 0, y: 0, z: 0 }, true);
+          rb.resetForces(true);
+          rb.setAngvel({ x: 0, y: 0, z: 0 }, true);
+          rb.setRotation({ w: 1, x: 0, y: 0, z: 0 }, true);
+          visPos.set(mx, my, homeZ);
+          group.position.copy(visPos);
+          const qF = rb.rotation();
+          _targetQ.set(qF.x, qF.y, qF.z, qF.w);
+          _curQ.copy(_targetQ).slerp(homeQuat, ROT_LERP);
+          const rotLerpF = 1 - Math.exp(-VISUAL_ROT_DAMP * dt);
+          visQuat.slerp(_curQ, rotLerpF);
+          group.quaternion.copy(visQuat);
+          continue;
+        }
+
         const targetPos = new THREE.Vector2(
           baseTargetPos.x + scatterX,
           baseTargetPos.y + scatterY
         );
-        
+
         const reactionMul = isBackground ? 1 : N1_REACTION_MUL;
         const springK = (livePointer ? SPRING_K : IDLE_SPRING_K) * reactionMul;
         
-        // Вектор силы тянет объект к вычисленному targetPos
         _force.set(targetPos.x - t.x, targetPos.y - t.y, 0);
         const d = _force.length();
         const idleFarT = Math.max(
@@ -568,6 +670,12 @@ async function initHero3D() {
           }
         }
 
+        if (isMobileHero) {
+          rb.setAngvel({ x: 0, y: 0, z: 0 }, true);
+          rb.setRotation({ w: 1, x: 0, y: 0, z: 0 }, true);
+        }
+
+        const q = rb.rotation();
         const posLerp = 1 - Math.exp(-VISUAL_POS_DAMP * dt);
         visPos.x += (t.x - visPos.x) * posLerp;
         visPos.y += (t.y - visPos.y) * posLerp;
@@ -620,61 +728,63 @@ async function initHero3D() {
       requestAnimationFrame(warmupTick);
     }).catch(err => console.warn('[hero3d] HDRI failed:', err));
 
-    heroEl.addEventListener('pointerdown', e => {
-      pointerDown = true;
-      pointerStartX = e.clientX;
-      pointerStartY = e.clientY;
-    }, { passive: true });
+    if (!isMobileHero) {
+      heroEl.addEventListener('pointerdown', e => {
+        pointerDown = true;
+        pointerStartX = e.clientX;
+        pointerStartY = e.clientY;
+      }, { passive: true });
 
-    heroEl.addEventListener('pointermove', e => {
-      const isTouchLike = e.pointerType === 'touch' || e.pointerType === 'pen';
-      if (isTouchLike && pointerDown) {
-        const dx = e.clientX - pointerStartX;
-        const dy = e.clientY - pointerStartY;
-        if ((dx * dx + dy * dy) < 144) return;
-      }
+      heroEl.addEventListener('pointermove', e => {
+        const isTouchLike = e.pointerType === 'touch' || e.pointerType === 'pen';
+        if (isTouchLike && pointerDown) {
+          const dx = e.clientX - pointerStartX;
+          const dy = e.clientY - pointerStartY;
+          if ((dx * dx + dy * dy) < 144) return;
+        }
 
-      pointerActive = true;
-      lastPointerMoveTime = performance.now();
-      centerPullArmed = true;
-      const r = heroEl.getBoundingClientRect();
-      const px = (e.clientX - r.left) / r.width - 0.5;
-      const py = (e.clientY - r.top) / r.height - 0.5;
-      targetParallaxX = px * 0.1;
-      targetParallaxY = py * 0.07;
-      oscarTargetX = px * 20;
-      oscarTargetY = py * 14;
-      if (hasPointerSample) {
-        const pointerDeltaX = px - lastPointerPx;
-        const pointerDeltaY = py - lastPointerPy;
-        mainSwingX += pointerDeltaX * 0.55;
-        mainSwingY += pointerDeltaY * 0.4;
-      }
-      lastPointerPx = px;
-      lastPointerPy = py;
-      hasPointerSample = true;
-      mouseNDC.set(px * 2, -(py * 2));
-    }, { passive: true });
+        pointerActive = true;
+        lastPointerMoveTime = performance.now();
+        centerPullArmed = true;
+        const r = heroEl.getBoundingClientRect();
+        const px = (e.clientX - r.left) / r.width - 0.5;
+        const py = (e.clientY - r.top) / r.height - 0.5;
+        targetParallaxX = px * 0.1;
+        targetParallaxY = py * 0.07;
+        oscarTargetX = px * 20;
+        oscarTargetY = py * 14;
+        if (hasPointerSample) {
+          const pointerDeltaX = px - lastPointerPx;
+          const pointerDeltaY = py - lastPointerPy;
+          mainSwingX += pointerDeltaX * 0.55;
+          mainSwingY += pointerDeltaY * 0.4;
+        }
+        lastPointerPx = px;
+        lastPointerPy = py;
+        hasPointerSample = true;
+        mouseNDC.set(px * 2, -(py * 2));
+      }, { passive: true });
 
-    const resetPointerInteraction = () => {
-      pointerDown = false;
-      pointerActive = false;
-      hasPointerSample = false;
-      targetParallaxX = 0;
-      targetParallaxY = 0;
-      oscarTargetX = 0;
-      oscarTargetY = 0;
-      repulsionCenter.set(-9999, -9999);
-      mouseNDC.set(-9999, -9999);
-    };
+      const resetPointerInteraction = () => {
+        pointerDown = false;
+        pointerActive = false;
+        hasPointerSample = false;
+        targetParallaxX = 0;
+        targetParallaxY = 0;
+        oscarTargetX = 0;
+        oscarTargetY = 0;
+        repulsionCenter.set(-9999, -9999);
+        mouseNDC.set(-9999, -9999);
+      };
 
-    const resetPointerDown = () => {
-      pointerDown = false;
-    };
+      const resetPointerDown = () => {
+        pointerDown = false;
+      };
 
-    heroEl.addEventListener('pointerup', resetPointerDown, { passive: true });
-    heroEl.addEventListener('pointercancel', resetPointerDown, { passive: true });
-    heroEl.addEventListener('pointerleave', resetPointerInteraction, { passive: true });
+      heroEl.addEventListener('pointerup', resetPointerDown, { passive: true });
+      heroEl.addEventListener('pointercancel', resetPointerDown, { passive: true });
+      heroEl.addEventListener('pointerleave', resetPointerInteraction, { passive: true });
+    }
 
   } catch (err) {
     console.error('[hero3d] load failed:', err);

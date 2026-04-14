@@ -1,20 +1,81 @@
+function escapeHtml(text) {
+  return String(text)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+/** Одно слово: буква в .sales-title-o по центру слова (кроме «продажи» — отдельный макет). */
+function buildSingleWordSalesTitleRow(word) {
+  const raw = String(word || "").trim();
+  if (!raw) {
+    return "";
+  }
+  if (raw.toLowerCase() === "продажи") {
+    return '<span class="sales-title-part sales-title-part-left">пр</span><span class="sales-title-o">o</span><span class="sales-title-part sales-title-part-right">дажи</span>';
+  }
+  const chars = [...raw];
+  if (chars.length === 1) {
+    return `<span class="sales-title-part sales-title-part-left">${escapeHtml(chars[0])}</span>`;
+  }
+  let i = Math.floor(chars.length / 2);
+  const isSpace = (idx) => /\s/.test(chars[idx]);
+  if (isSpace(i)) {
+    let step = 1;
+    while (step < chars.length) {
+      if (i + step < chars.length && !isSpace(i + step)) {
+        i = i + step;
+        break;
+      }
+      if (i - step >= 0 && !isSpace(i - step)) {
+        i = i - step;
+        break;
+      }
+      step += 1;
+    }
+  }
+  const left = chars.slice(0, i).join("");
+  const mid = chars[i];
+  const right = chars.slice(i + 1).join("");
+  return `<span class="sales-title-part sales-title-part-left">${escapeHtml(left)}</span><span class="sales-title-o">${escapeHtml(mid)}</span><span class="sales-title-part sales-title-part-right">${escapeHtml(right)}</span>`;
+}
+
+/**
+ * Заголовок слайда: строка (одно слово) или массив из 1–2 односложных строк (например СТАТУС + ИНФОПОВОД).
+ */
+function buildSalesTitleMarkup(title) {
+  if (Array.isArray(title)) {
+    const rows = title.map((w) => buildSingleWordSalesTitleRow(w)).filter(Boolean);
+    if (!rows.length) {
+      return "";
+    }
+    return `<span class="sales-title-stack">${rows.map((r) => `<span class="sales-title-line">${r}</span>`).join("")}</span>`;
+  }
+  return buildSingleWordSalesTitleRow(title);
+}
+
 // Sales Slider Configuration
 const SALES_SLIDES = [
-  { 
-    main: "./assets/images/promo/promo_rect73.webp", 
-    copy: "16 лет оргкомитет проводит мегасштабную рекламную и PR-кампанию Премии (наружная и радио реклама, реклама на такси) с целью увеличения посещаемости сайта recordi.ru.<br><br>Следовательно, повышает узнаваемость ваших объектов и продажи" 
+  {
+    title: "продажи",
+    main: "./assets/images/promo/promo_rect73.webp",
+    copy: "16 лет оргкомитет проводит мегасштабную рекламную и PR-кампанию Премии (наружная и радио реклама, реклама на такси) с целью увеличения посещаемости сайта recordi.ru.<br><br>Следовательно, повышает узнаваемость ваших объектов и продажи",
   },
-  { 
-    main: "./assets/images/promo/promo_rect72.webp", 
-    copy: "Участие в премии открывает доступ к широкой аудитории покупателей и инвесторов, формируя устойчивый интерес к вашим проектам на рынке недвижимости." 
+  {
+    title: "АУДИТОРИЯ",
+    main: "./assets/images/promo/promo_rect72.webp",
+    copy: "Участие в премии открывает доступ к широкой аудитории покупателей и инвесторов, формируя устойчивый интерес к вашим проектам на рынке недвижимости.",
   },
-  { 
-    main: "./assets/images/promo/promo_rect71.webp", 
-    copy: "Федеральные СМИ, новостные ленты крупнейших информагентств и социальные сети — ваш проект получает максимальный медийный охват по всей стране." 
+  {
+    title: ["СТАТУС", "ИНФОПОВОД"],
+    main: "./assets/images/promo/promo_rect71.webp",
+    copy: "Федеральные СМИ, новостные ленты крупнейших информагентств и социальные сети — ваш проект получает максимальный медийный охват по всей стране.",
   },
-  { 
-    main: "./assets/images/promo/promo_rect70.webp", 
-    copy: "Победа в премии становится знаком качества, который усиливает доверие клиентов и выделяет ваш бренд среди конкурентов на протяжении всего года." 
+  {
+    title: "КАЧЕСТВО",
+    main: "./assets/images/promo/promo_rect70.webp",
+    copy: "Победа в премии становится знаком качества, который усиливает доверие клиентов и выделяет ваш бренд среди конкурентов на протяжении всего года.",
   },
 ];
 
@@ -23,6 +84,7 @@ function initSalesSlider() {
   const salesGalleryMain = document.querySelector(".sales-gallery-main");
   const salesMeta = document.querySelector(".sales-meta");
   const salesCopy = document.querySelector(".sales-copy");
+  const salesMainTitle = document.getElementById("salesMainTitle");
   const salesNavPrev = document.querySelector(".sales-nav-prev");
   const salesNavNext = document.querySelector(".sales-nav-next");
 
@@ -54,23 +116,60 @@ function initSalesSlider() {
 
   let salesSlideIndex = 0;
 
-  // Update meta information and copy text
-  const updateMeta = (index) => {
+  // Update meta information, title, and copy text
+  const updateMeta = (index, options = {}) => {
+    const animate = options.animate !== false;
     salesSlideIndex = index;
     const current = String(index + 1).padStart(2, "0");
     const total = String(slides.length).padStart(2, "0");
     salesMeta.innerHTML = `${current} <span>/ ${total}</span>`;
-    
+
     salesNavPrev.disabled = index <= 0;
     salesNavNext.disabled = index >= slides.length - 1;
 
-    if (salesCopy && slides[index].copy) {
-      salesCopy.classList.add("is-fading");
-      setTimeout(() => {
-        salesCopy.innerHTML = slides[index].copy;
+    const slide = slides[index];
+    const titleMarkup = slide.title ? buildSalesTitleMarkup(slide.title) : "";
+
+    const applyContent = () => {
+      if (salesCopy && slide.copy) {
+        salesCopy.innerHTML = slide.copy;
+      }
+      if (salesMainTitle && titleMarkup) {
+        salesMainTitle.innerHTML = titleMarkup;
+      }
+    };
+
+    if (!animate) {
+      applyContent();
+      if (salesCopy) {
         salesCopy.classList.remove("is-fading");
-      }, 250);
+      }
+      if (salesMainTitle) {
+        salesMainTitle.classList.remove("is-fading");
+      }
+      return;
     }
+
+    const needsFade = (salesCopy && slide.copy) || (salesMainTitle && titleMarkup);
+    if (!needsFade) {
+      return;
+    }
+
+    if (salesCopy && slide.copy) {
+      salesCopy.classList.add("is-fading");
+    }
+    if (salesMainTitle && titleMarkup) {
+      salesMainTitle.classList.add("is-fading");
+    }
+    window.setTimeout(() => {
+      applyContent();
+      if (salesCopy) {
+        salesCopy.classList.remove("is-fading");
+      }
+      if (salesMainTitle) {
+        salesMainTitle.classList.remove("is-fading");
+      }
+    }, 250);
   };
 
   // Initialize Swiper
@@ -99,7 +198,7 @@ function initSalesSlider() {
     },
     on: {
       init(instance) {
-        updateMeta(instance.activeIndex);
+        updateMeta(instance.activeIndex, { animate: false });
       },
       slideChange(instance) {
         updateMeta(instance.activeIndex);
@@ -122,8 +221,6 @@ function initSalesSlider() {
   salesGalleryMain.tabIndex = 0;
   salesGalleryMain.setAttribute("role", "group");
   salesGalleryMain.setAttribute("aria-label", "Слайдер продаж");
-
-  updateMeta(0);
 }
 
 // Initialize when DOM is ready
@@ -206,21 +303,30 @@ if (document.readyState === "loading") {
 // ==========================================
 // ИНИЦИАЛИЗАЦИЯ ПЛАВНОГО СКРОЛЛА (LENIS)
 // ==========================================
-const lenis = new Lenis({
-  duration: 5.2, // Длительность скролла (чем больше, тем плавнее и медленнее)
-  easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Кривая замедления
-  direction: 'vertical', 
-  gestureDirection: 'vertical',
-  smooth: true,
-  mouseMultiplier: 1,
-  smoothTouch: false, // На мобильных устройствах лучше оставлять нативный скролл для удобства
-  touchMultiplier: 2,
-  infinite: false,
-});
+const shouldUseLenis = window.innerWidth >= 1200;
+let lenis = null;
+
+if (shouldUseLenis && typeof Lenis === "function") {
+  lenis = new Lenis({
+    /* Только ПК (≥1200): плавнее и «медленнее» по инерции. На мобилке Lenis не создаётся — нативный скролл. */
+    duration: 8.8,
+    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    direction: "vertical",
+    gestureDirection: "vertical",
+    smooth: true,
+    mouseMultiplier: 0.72,
+    wheelMultiplier: 0.62,
+    smoothTouch: false,
+    touchMultiplier: 2,
+    infinite: false,
+  });
+}
 
 // Функция для синхронизации скролла с частотой обновления экрана
 function raf(time) {
-  lenis.raf(time);
+  if (lenis) {
+    lenis.raf(time);
+  }
   if (typeof window._updateOrbitPhase === "function") {
     window._updateOrbitPhase();
   }
@@ -241,6 +347,7 @@ requestAnimationFrame(raf);
   if (!promoContent) return;
 
   const vh = () => window.innerHeight;
+  const isPromoNarrow = () => window.innerWidth <= 1200;
   /** Стартовый сдвиг карточек вниз: целый экран + доля vh (чтобы точно не было видно). */
   const PROMO_HIDE_BELOW_VH = 0.82;
   const startY = () => vh() * (1 + PROMO_HIDE_BELOW_VH);
@@ -253,7 +360,8 @@ requestAnimationFrame(raf);
     if (!promoHeader) return 0;
     promoHeader.style.transform = 'translateY(0)';
     const h = promoHeader.getBoundingClientRect();
-    return vh() / 2 - (h.top + h.height / 2);
+    const mid = vh() / 2;
+    return mid - (h.top + h.height / 2);
   }
 
   function resetItemRise() {
@@ -275,33 +383,53 @@ requestAnimationFrame(raf);
       const scrolled = -rect.top;
       const progress = Math.max(0, Math.min(1, scrolled / overlapZone));
 
+      const narrow = isPromoNarrow();
+      /* На мобилке нет фазы «только заголовок» — весь скролл по дорожке идёт в анимацию карточек */
+      const textPhase = narrow ? 0 : TEXT_PHASE;
       if (shiftMaxCache === null && rect.top <= 1 && scrolled >= 0) {
-        shiftMaxCache = measureHeaderShiftToCenter();
+        shiftMaxCache = narrow ? 0 : measureHeaderShiftToCenter();
       }
       const shiftMax = shiftMaxCache ?? 0;
 
-      if (progress < TEXT_PHASE) {
-        const pText = progress / TEXT_PHASE;
+      if (progress < textPhase) {
+        const pText = textPhase > 0 ? progress / textPhase : 0;
         if (promoHeader) {
-          promoHeader.style.transform = `translateY(${pText * shiftMax}px)`;
+          if (narrow) {
+            promoHeader.style.transform = '';
+          } else {
+            promoHeader.style.transform = `translateY(${pText * shiftMax}px)`;
+          }
         }
         promoContent.style.transform = `translate(-50%, ${startY()}px)`;
         resetItemRise();
       } else {
-        const t = Math.max(0, Math.min(1, (progress - TEXT_PHASE) / (1 - TEXT_PHASE)));
-        /* ease-out: мягкий разгон и спокойное замедление к финалу, без рывка по скроллу */
-        const pCards = 1 - Math.pow(1 - t, 2.35);
+        const denom = 1 - textPhase;
+        const t =
+          denom <= 0
+            ? 1
+            : Math.max(0, Math.min(1, (progress - textPhase) / denom));
+        /* Десктоп: ease-out. Мобилка: линейно — иначе хвост анимации «съедается» дорожкой и последняя карточка не успевает */
+        const pCards = narrow ? t : 1 - Math.pow(1 - t, 2.35);
         if (promoHeader) {
-          promoHeader.style.transform = `translateY(${shiftMax}px)`;
+          if (narrow) {
+            promoHeader.style.transform = '';
+          } else {
+            promoHeader.style.transform = `translateY(${shiftMax}px)`;
+          }
         }
         const y0 = startY();
         const p = pCards;
-        const overshoot = vh() * (0.09 * p + 0.14 * p * p);
+        const overshoot = isPromoNarrow()
+          ? vh() * (0.12 * p + 0.16 * p * p)
+          : vh() * (0.09 * p + 0.14 * p * p);
         const offset = y0 * (1 - pCards) - overshoot;
         promoContent.style.transform = `translate(-50%, ${offset}px)`;
-        const riseBase = pCards * Math.min(vh() * 0.55, 480);
+        const riseCap = narrow ? Math.min(vh() * 1.28, 1100) : Math.min(vh() * 0.55, 480);
+        const riseBase = pCards * riseCap;
         promoItems.forEach((el, i) => {
-          el.style.setProperty('--promo-item-rise', `${riseBase * (1 + i * 0.52)}px`);
+          /* На мобилке колонка: одинаковый подъём, иначе нижние карточки наезжают на верхние */
+          const rise = narrow ? riseBase : riseBase * (1 + i * 0.52);
+          el.style.setProperty('--promo-item-rise', `${rise}px`);
         });
       }
 
@@ -328,40 +456,28 @@ requestAnimationFrame(raf);
 })();
 
 // ==========================================
-// STATUS SECTION SCROLL-PINNED ANIMATION
+// STATUS SECTION: липкий блок + шаги по реальному скроллу
+// Вниз: Статус → Масштаб → Достижения. Вверх — обратный порядок (тот же progress).
 // ==========================================
 (function initStatusScrollAnimation() {
-  const statusSection = document.getElementById('statusScreen');
+  const statusSection = document.getElementById("statusScreen");
   if (!statusSection) return;
 
-  const pinSpacer = statusSection.closest('.status-pin-spacer');
-  const statusMainTrigger = document.querySelector('.status-title-main');
-  const statusScaleTrigger = document.querySelector('.status-title-sub-1');
-  const statusAchievementsTrigger = document.querySelector('.status-title-sub-2');
-  const statusQuoteGold = document.querySelector('.status-quote-gold');
-  const statusQuoteBlack = document.querySelector('.status-quote-black');
-  const statusQuoteRuby = document.querySelector('.status-quote-ruby');
+  const pinSpacer = statusSection.closest(".status-pin-spacer");
+  const statusMainTrigger = document.querySelector(".status-title-main");
+  const statusScaleTrigger = document.querySelector(".status-title-sub-1");
+  const statusAchievementsTrigger = document.querySelector(".status-title-sub-2");
+  const statusQuoteGold = document.querySelector(".status-quote-gold");
+  const statusQuoteBlack = document.querySelector(".status-quote-black");
+  const statusQuoteRuby = document.querySelector(".status-quote-ruby");
 
   if (!statusMainTrigger || !statusScaleTrigger || !statusAchievementsTrigger) return;
 
-  const VARIANTS = ['gold', 'black', 'ruby'];
+  const VARIANTS = ["gold", "black", "ruby"];
   const triggers = [statusMainTrigger, statusScaleTrigger, statusAchievementsTrigger];
   const quotes = [statusQuoteGold, statusQuoteBlack, statusQuoteRuby];
 
-  let activeVariant = 'gold';
-  let statusVirtualScroll = 0;
-  const STATUS_VIRTUAL_MAX = window.innerHeight * 2.5;
-  const STATUS_HOLD_TICKS = 4;
-  let statusHoldTicks = 0;
-  let lastScrollDirection = 1;
-  let isStatusPinned = false;
-  let statusCompleted = false;
-
-  if (pinSpacer) {
-    const statusH = statusSection.offsetHeight;
-    const extraScroll = window.innerHeight * 0.5;
-    pinSpacer.style.height = (statusH + extraScroll) + 'px';
-  }
+  let activeVariant = "gold";
 
   function setActiveStatusVariant(variant) {
     if (variant === activeVariant) return;
@@ -370,235 +486,104 @@ requestAnimationFrame(raf);
     const newIdx = VARIANTS.indexOf(variant);
 
     if (oldIdx >= 0) {
-      triggers[oldIdx].classList.remove('is-active');
+      triggers[oldIdx].classList.remove("is-active");
       if (quotes[oldIdx]) {
-        quotes[oldIdx].classList.remove('is-active');
-        quotes[oldIdx].classList.add('is-leaving');
-        setTimeout(() => quotes[oldIdx].classList.remove('is-leaving'), 400);
+        quotes[oldIdx].classList.remove("is-active");
+        quotes[oldIdx].classList.add("is-leaving");
+        window.setTimeout(() => quotes[oldIdx].classList.remove("is-leaving"), 400);
       }
     }
 
     if (newIdx >= 0) {
-      triggers[newIdx].classList.add('is-active');
+      triggers[newIdx].classList.add("is-active");
       if (quotes[newIdx]) {
-        setTimeout(() => quotes[newIdx].classList.add('is-active'), oldIdx >= 0 ? 150 : 0);
+        window.setTimeout(
+          () => quotes[newIdx].classList.add("is-active"),
+          oldIdx >= 0 ? 150 : 0
+        );
       }
     }
 
     activeVariant = variant;
   }
 
-  function isStatusPinnedAtTop() {
-    if (!statusSection) return false;
-    const rect = statusSection.getBoundingClientRect();
-    return Math.abs(rect.top) <= 3;
+  function updatePinSpacerHeight() {
+    if (!pinSpacer) return;
+    const statusH = statusSection.offsetHeight;
+    const vh = window.innerHeight || 1;
+    /* Запас по вертикали: пока блок sticky, progress 0→1 делит дорожку на 3 равных фазы */
+    const extraScroll = vh * 1.65;
+    pinSpacer.style.height = `${statusH + extraScroll}px`;
   }
 
-  function getVariantFromProgress(progress, direction) {
-    if (direction > 0) {
-      return progress < 0.33 ? 'gold' : progress < 0.66 ? 'black' : 'ruby';
-    }
-    return progress > 0.66 ? 'ruby' : progress > 0.33 ? 'black' : 'gold';
-  }
+  updatePinSpacerHeight();
 
-  function clamp(v, min, max) {
-    return Math.max(min, Math.min(max, v));
-  }
-
-  triggers[0].classList.add('is-active');
-
-  const statusOscarImg = document.getElementById('statusOscarImg');
+  const statusOscarImg = document.getElementById("statusOscarImg");
   if (statusOscarImg) {
-    statusOscarImg.style.removeProperty('transform');
-    statusOscarImg.style.removeProperty('transition');
+    statusOscarImg.style.removeProperty("transform");
+    statusOscarImg.style.removeProperty("transition");
   }
 
-  const isMobile = () => window.innerWidth <= 768;
+  triggers[0].classList.add("is-active");
+  triggers[1].classList.remove("is-active");
+  triggers[2].classList.remove("is-active");
+  if (quotes[0]) quotes[0].classList.add("is-active");
+  if (quotes[1]) {
+    quotes[1].classList.remove("is-active");
+    quotes[1].classList.remove("is-leaving");
+  }
+  if (quotes[2]) {
+    quotes[2].classList.remove("is-active");
+    quotes[2].classList.remove("is-leaving");
+  }
 
-  window.addEventListener('wheel', (e) => {
-    if (isMobile()) return;
+  let ticking = false;
 
-    const inView = isStatusPinnedAtTop();
+  function stepFromProgress(p) {
+    const t = Math.max(0, Math.min(1, p));
+    if (t < 1 / 3) return 0;
+    if (t < 2 / 3) return 1;
+    return 2;
+  }
 
-    if (!inView) {
-      if (isStatusPinned) {
-        isStatusPinned = false;
-        if (lenis.isStopped) lenis.start();
+  function onScrollStatus() {
+    if (ticking) return;
+    ticking = true;
+    window.requestAnimationFrame(() => {
+      ticking = false;
+      if (!pinSpacer) return;
+
+      const sr = pinSpacer.getBoundingClientRect();
+      const vh = window.innerHeight || 1;
+      const maxScroll = Math.max(1, pinSpacer.offsetHeight - vh);
+
+      /* До блока — первый шаг; полностью прошли вниз — последний шаг */
+      if (sr.top >= vh) {
+        setActiveStatusVariant("gold");
+        return;
       }
-      if (statusCompleted) {
-        statusCompleted = false;
-        statusVirtualScroll = 0;
-        statusHoldTicks = 0;
-      }
-      return;
-    }
-
-    if (statusCompleted) return;
-
-    if (!isStatusPinned) {
-      isStatusPinned = true;
-      if (e.deltaY > 0) {
-        statusVirtualScroll = 0;
-        statusHoldTicks = 0;
-        setActiveStatusVariant('gold');
-      } else {
-        statusVirtualScroll = STATUS_VIRTUAL_MAX;
-        statusHoldTicks = 0;
-      }
-    }
-
-    if (statusVirtualScroll < STATUS_VIRTUAL_MAX) {
-      e.preventDefault();
-      if (!lenis.isStopped) lenis.stop();
-
-      const prevScroll = statusVirtualScroll;
-      if (e.deltaY !== 0) lastScrollDirection = e.deltaY > 0 ? 1 : -1;
-
-      statusVirtualScroll = clamp(statusVirtualScroll + e.deltaY * 0.7, 0, STATUS_VIRTUAL_MAX);
-
-      if (statusVirtualScroll <= 0 && lastScrollDirection < 0) {
-        statusCompleted = true;
-        isStatusPinned = false;
-        statusVirtualScroll = 0;
-        statusHoldTicks = 0;
-        if (lenis.isStopped) lenis.start();
+      if (sr.bottom <= 0) {
+        setActiveStatusVariant("ruby");
         return;
       }
 
-      if (prevScroll === 0 && statusVirtualScroll > 0 && lastScrollDirection > 0) {
-        setActiveStatusVariant('gold');
-      } else {
-        const progress = statusVirtualScroll / STATUS_VIRTUAL_MAX;
-        const newVariant = getVariantFromProgress(progress, lastScrollDirection);
-        if (newVariant !== activeVariant) setActiveStatusVariant(newVariant);
-      }
-      return;
-    }
+      const scrolled = Math.max(0, Math.min(maxScroll, -sr.top));
+      const progress = scrolled / maxScroll;
+      const step = stepFromProgress(progress);
+      setActiveStatusVariant(VARIANTS[step]);
+    });
+  }
 
-    if (statusHoldTicks < STATUS_HOLD_TICKS) {
-      e.preventDefault();
-      if (!lenis.isStopped) lenis.stop();
-
-      if (e.deltaY < 0) {
-        lastScrollDirection = -1;
-        statusVirtualScroll = clamp(statusVirtualScroll + e.deltaY * 0.7, 0, STATUS_VIRTUAL_MAX);
-        statusHoldTicks = 0;
-        const progress = statusVirtualScroll / STATUS_VIRTUAL_MAX;
-        const newVariant = getVariantFromProgress(progress, -1);
-        if (newVariant !== activeVariant) setActiveStatusVariant(newVariant);
-        return;
-      }
-
-      lastScrollDirection = 1;
-      statusHoldTicks++;
-      if (statusHoldTicks >= STATUS_HOLD_TICKS) {
-        statusCompleted = true;
-        isStatusPinned = false;
-        if (lenis.isStopped) lenis.start();
-      }
-      return;
-    }
-
-    if (lenis.isStopped) lenis.start();
-    statusCompleted = true;
-    isStatusPinned = false;
-  }, { passive: false, capture: true });
-
-  let touchStartY = 0;
-  let touchActive = false;
-
-  window.addEventListener('touchstart', (e) => {
-    if (isMobile()) return;
-    if (!isStatusPinnedAtTop()) return;
-    touchStartY = e.touches[0].clientY;
-    touchActive = true;
-  }, { passive: true });
-
-  window.addEventListener('touchmove', (e) => {
-    if (isMobile()) return;
-    if (!touchActive) return;
-    if (!isStatusPinnedAtTop()) {
-      if (isStatusPinned) {
-        isStatusPinned = false;
-      }
-      if (statusCompleted) {
-        statusCompleted = false;
-        statusVirtualScroll = 0;
-        statusHoldTicks = 0;
-      }
-      touchActive = false;
-      return;
-    }
-
-    if (statusCompleted) return;
-
-    const currentY = e.touches[0].clientY;
-    const deltaY = touchStartY - currentY;
-    touchStartY = currentY;
-
-    if (!isStatusPinned) {
-      isStatusPinned = true;
-      if (deltaY > 0) {
-        statusVirtualScroll = 0;
-        statusHoldTicks = 0;
-        setActiveStatusVariant('gold');
-      } else {
-        statusVirtualScroll = STATUS_VIRTUAL_MAX;
-        statusHoldTicks = 0;
-      }
-    }
-
-    if (statusVirtualScroll < STATUS_VIRTUAL_MAX) {
-      if (deltaY !== 0) lastScrollDirection = deltaY > 0 ? 1 : -1;
-      statusVirtualScroll = clamp(statusVirtualScroll + deltaY * 1.5, 0, STATUS_VIRTUAL_MAX);
-
-      if (statusVirtualScroll <= 0 && lastScrollDirection < 0) {
-        statusCompleted = true;
-        isStatusPinned = false;
-        statusVirtualScroll = 0;
-        statusHoldTicks = 0;
-        touchActive = false;
-        return;
-      }
-
-      const progress = statusVirtualScroll / STATUS_VIRTUAL_MAX;
-      const newVariant = getVariantFromProgress(progress, lastScrollDirection);
-      if (newVariant !== activeVariant) setActiveStatusVariant(newVariant);
-      return;
-    }
-
-    if (statusHoldTicks < STATUS_HOLD_TICKS) {
-      if (deltaY < 0) {
-        lastScrollDirection = -1;
-        statusVirtualScroll = clamp(statusVirtualScroll + deltaY * 1.5, 0, STATUS_VIRTUAL_MAX);
-        statusHoldTicks = 0;
-        const progress = statusVirtualScroll / STATUS_VIRTUAL_MAX;
-        const newVariant = getVariantFromProgress(progress, -1);
-        if (newVariant !== activeVariant) setActiveStatusVariant(newVariant);
-        return;
-      }
-
-      lastScrollDirection = 1;
-      statusHoldTicks++;
-      if (statusHoldTicks >= STATUS_HOLD_TICKS) {
-        statusCompleted = true;
-        isStatusPinned = false;
-        touchActive = false;
-      }
-      return;
-    }
-
-    statusCompleted = true;
-    isStatusPinned = false;
-    touchActive = false;
-  }, { passive: true });
-
-  window.addEventListener('touchend', () => { touchActive = false; }, { passive: true });
-
-  triggers.forEach((trigger, i) => {
-    trigger.style.cursor = 'pointer';
-    trigger.addEventListener('click', () => setActiveStatusVariant(VARIANTS[i]));
+  window.addEventListener("scroll", onScrollStatus, { passive: true });
+  window.addEventListener("resize", () => {
+    updatePinSpacerHeight();
+    onScrollStatus();
   });
+  if (typeof lenis !== "undefined" && lenis && typeof lenis.on === "function") {
+    lenis.on("scroll", onScrollStatus);
+  }
+
+  onScrollStatus();
 })();
 
 // ── Спираль-змея вокруг башни (перенос из Record-main) ─────────────
@@ -693,14 +678,23 @@ requestAnimationFrame(raf);
 
   function buildSpiral(turns, steps) {
     const ptsArray = [];
-    const rxTop = isMobileOrbit ? W * 0.42 : W * 0.07;
-    /* Не больше ~0.48W: иначе при cos=1 точка уезжает за правый край canvas */
-    const rxBot = isMobileOrbit ? W * 0.48 : W * 0.18;
+    let rxTop;
+    let rxBot;
+    if (isMobileOrbit) {
+      /* Шире по X, в пределах половины ширины холста (cx = 0.5W), чтобы не обрезать обводку */
+      rxTop = W * 0.31;
+      rxBot = W * 0.485;
+    } else {
+      rxTop = W * 0.07;
+      rxBot = W * 0.18;
+    }
 
     for (let i = 0; i <= steps; i++) {
       const t = i / steps;
       const angle = t * turns * Math.PI * 2 - Math.PI / 2;
-      const rxT = rxTop + (rxBot - rxTop) * t;
+      /* Мобилка: ширина растёт по пути сильнее во второй половине (квадратичный прогресс) */
+      const radialT = isMobileOrbit ? t * t : t;
+      const rxT = rxTop + (rxBot - rxTop) * radialT;
       ptsArray.push([cx + Math.cos(angle) * rxT, cy - ry + t * ry * 2]);
     }
     return ptsArray;
@@ -817,7 +811,7 @@ requestAnimationFrame(raf);
         ctx.strokeStyle = isMobileOrbit
           ? "rgba(255, 220, 180, 0.75)"
           : "rgba(255, 220, 180, 0.6)";
-        ctx.lineWidth = isMobileOrbit ? 4.5 : 3;
+        ctx.lineWidth = isMobileOrbit ? 2.4 : 3;
         ctx.shadowBlur = 0;
         ctx.stroke();
       }
@@ -838,7 +832,7 @@ requestAnimationFrame(raf);
             );
           }
           ctx.strokeStyle = "rgba(255, 230, 200, 0.95)";
-          ctx.lineWidth = 6;
+          ctx.lineWidth = 3;
           ctx.stroke();
         } else {
           for (let i = baseEnd; i <= headIdx; i++) {
@@ -916,10 +910,14 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     
     if (targetElement) {
       e.preventDefault();
-      lenis.scrollTo(targetElement, {
-        offset: 0, // Можно задать отступ сверху, если есть фиксированная шапка
-        duration: 1.5 // Время полета до блока
-      });
+      if (lenis && typeof lenis.scrollTo === "function") {
+        lenis.scrollTo(targetElement, {
+          offset: 0, // Можно задать отступ сверху, если есть фиксированная шапка
+          duration: 1.5 // Время полета до блока
+        });
+      } else {
+        targetElement.scrollIntoView({ behavior: "auto", block: "start" });
+      }
     }
   });
 });
@@ -1103,9 +1101,70 @@ function initRevealText() {
     targets.forEach((el) => io.observe(el));
 }
 
+/** Мобилка (≤1200px): один блок преимуществ визуально как при :hover — по скроллу. */
+function initBenefitItemsScrollActive() {
+  const BP = 1200;
+  const items = [...document.querySelectorAll(".screen-benefits .benefit-item")];
+  if (!items.length) return;
+
+  let rafId = 0;
+
+  const tick = () => {
+    if (window.innerWidth > BP) {
+      items.forEach((el) => el.classList.remove("is-scroll-active"));
+      return;
+    }
+    const vh = window.innerHeight;
+    const focalY = vh * 0.42;
+    let best = null;
+    let bestDist = Infinity;
+    for (const el of items) {
+      if (!el.classList.contains("in-view")) continue;
+      const r = el.getBoundingClientRect();
+      if (r.bottom < 56 || r.top > vh - 56) continue;
+      const cy = (r.top + r.bottom) / 2;
+      const dist = Math.abs(cy - focalY);
+      if (dist < bestDist) {
+        bestDist = dist;
+        best = el;
+      }
+    }
+    const prev = items.find((el) => el.classList.contains("is-scroll-active"));
+    const HY = 80;
+    if (prev && best && prev !== best) {
+      const pr = prev.getBoundingClientRect();
+      if (pr.bottom > 48 && pr.top < vh - 48) {
+        const dPrev = Math.abs((pr.top + pr.bottom) / 2 - focalY);
+        if (dPrev < bestDist + HY) {
+          best = prev;
+        }
+      }
+    }
+    for (const el of items) {
+      el.classList.toggle("is-scroll-active", el === best && best !== null);
+    }
+  };
+
+  const schedule = () => {
+    if (rafId) return;
+    rafId = requestAnimationFrame(() => {
+      rafId = 0;
+      tick();
+    });
+  };
+
+  window.addEventListener("scroll", schedule, { passive: true });
+  window.addEventListener("resize", schedule);
+  schedule();
+  requestAnimationFrame(() => {
+    requestAnimationFrame(schedule);
+  });
+}
+
 // Initialize on page load
-document.addEventListener('DOMContentLoaded', () => {
-    initRevealText();
+document.addEventListener("DOMContentLoaded", () => {
+  initRevealText();
+  initBenefitItemsScrollActive();
 });
 
 
@@ -1775,13 +1834,32 @@ function initReviewsOfficialScrollEffect() {
     window.matchMedia("(max-width: 1200px)").matches;
 
   function initMobileStackState() {
+    slides.forEach((s, i) => s.classList.toggle("active", i === 0));
     currentSlide = 0;
-    slides.forEach((slide) => {
-      slide.classList.remove("active");
-      slide.style.opacity = "";
-      slide.style.filter = "";
-      slide.style.transform = "";
-      slide.style.pointerEvents = "";
+    slides.forEach((slide, index) => {
+      const portrait = slide.querySelector(".reviews-portrait-img");
+      const letter = slide.querySelector(".reviews-letter-img");
+      const person = slide.querySelector(".reviews-person-info");
+      const frame = slide.querySelector(".reviews-letter-frame");
+      if (frame) {
+        frame.style.transformOrigin = "";
+        frame.style.transform = "";
+      }
+      if (index === 0) {
+        if (portrait) portrait.style.transform = "translateY(0)";
+        if (letter) letter.style.transform = "scale(1)";
+        if (person) {
+          person.style.transform = "translateY(0)";
+          person.style.opacity = "1";
+        }
+      } else {
+        if (portrait) portrait.style.transform = "translateY(100%)";
+        if (letter) letter.style.transform = "scale(0)";
+        if (person) {
+          person.style.transform = "translateY(0)";
+          person.style.opacity = "1";
+        }
+      }
     });
   }
 
@@ -1820,16 +1898,6 @@ function initReviewsOfficialScrollEffect() {
 
   function handleScroll() {
     if (reviewsScreen.dataset.reviewsTab !== "official") return;
-
-    if (isReviewsMobileStack()) {
-      slides.forEach((slide) => {
-        slide.style.opacity = "";
-        slide.style.filter = "";
-        slide.style.transform = "";
-        slide.style.pointerEvents = "";
-      });
-      return;
-    }
 
     const rect = reviewsScreen.getBoundingClientRect();
     const windowHeight = window.innerHeight;
@@ -1905,29 +1973,52 @@ function initReviewsOfficialScrollEffect() {
       }
     }
 
+    const narrow = isReviewsMobileStack();
+
     slides.forEach((slide, index) => {
       const slidePerson = slide.querySelector(".reviews-person-info");
       if (!slidePerson) return;
 
-      if (index < textSlide) {
-        slidePerson.style.transform = "translateY(-800px)";
-        slidePerson.style.opacity = "0";
-      } else if (index === textSlide) {
-        let personY;
-        let personOpacity;
-        if (textLocalProgress < 0.5) {
-          personY = (1 - textLocalProgress * 2) * 200;
-          personOpacity = 1;
+      if (narrow) {
+        if (index < textSlide) {
+          slidePerson.style.transform = "";
+          slidePerson.style.opacity = "0";
+        } else if (index === textSlide) {
+          let personOpacity;
+          if (textLocalProgress < 0.3) {
+            personOpacity = textLocalProgress / 0.3;
+          } else if (textLocalProgress > 0.7) {
+            personOpacity = Math.max(0, (1 - textLocalProgress) / 0.3);
+          } else {
+            personOpacity = 1;
+          }
+          slidePerson.style.transform = "";
+          slidePerson.style.opacity = String(personOpacity);
         } else {
-          const exitProgress = (textLocalProgress - 0.5) * 2;
-          personY = -exitProgress * 800;
-          personOpacity = Math.max(0, 1 - exitProgress * 1.5);
+          slidePerson.style.transform = "";
+          slidePerson.style.opacity = "0";
         }
-        slidePerson.style.transform = `translateY(${personY}px)`;
-        slidePerson.style.opacity = String(personOpacity);
       } else {
-        slidePerson.style.transform = "translateY(200px)";
-        slidePerson.style.opacity = "0";
+        if (index < textSlide) {
+          slidePerson.style.transform = "translateY(-800px)";
+          slidePerson.style.opacity = "0";
+        } else if (index === textSlide) {
+          let personY;
+          let personOpacity;
+          if (textLocalProgress < 0.5) {
+            personY = (1 - textLocalProgress * 2) * 200;
+            personOpacity = 1;
+          } else {
+            const exitProgress = (textLocalProgress - 0.5) * 2;
+            personY = -exitProgress * 800;
+            personOpacity = Math.max(0, 1 - exitProgress * 1.5);
+          }
+          slidePerson.style.transform = `translateY(${personY}px)`;
+          slidePerson.style.opacity = String(personOpacity);
+        } else {
+          slidePerson.style.transform = "translateY(200px)";
+          slidePerson.style.opacity = "0";
+        }
       }
     });
   }
@@ -2104,29 +2195,120 @@ initMediaLibCarousel();
 // ============================================
 
 function initVideotekaTabs() {
+  const BREAKPOINT = 1200;
   const tabs = document.querySelector('.videoteka-tabs');
   if (!tabs) return;
 
   const title = tabs.querySelector('.videoteka-title-mobile');
   const buttons = Array.from(tabs.querySelectorAll('.videoteka-tab'));
-  
   if (!title || !buttons.length) return;
 
-  // Create wrapper for buttons
+  const firstActive = buttons.find(b => b.classList.contains('is-active')) || buttons[0];
+
+  const trigger = document.createElement('button');
+  trigger.className = 'videoteka-tabs-trigger';
+  trigger.type = 'button';
+  trigger.setAttribute('aria-expanded', 'false');
+  trigger.innerHTML = `<span>${firstActive.querySelector("span").textContent}</span><img src="./assets/doun.svg" alt="" aria-hidden="true" />`;
+
+  const dropdown = document.createElement('div');
+  dropdown.className = 'videoteka-tabs-dropdown';
+
+  const list = document.createElement('div');
+  list.className = 'videoteka-tabs-dropdown-list';
+
+  buttons.forEach(btn => {
+    const clone = btn.cloneNode(true);
+    clone.classList.add('videoteka-tab-dropdown-item');
+    clone.querySelectorAll("img").forEach((img) => img.remove());
+    list.appendChild(clone);
+  });
+  dropdown.appendChild(list);
+
   const wrapper = document.createElement('div');
   wrapper.className = 'videoteka-tabs-wrapper';
-  
-  // Move buttons to wrapper
   buttons.forEach(btn => wrapper.appendChild(btn));
-  
-  // Append wrapper after title
   tabs.appendChild(wrapper);
+
+  tabs.insertBefore(trigger, wrapper);
+  tabs.appendChild(dropdown);
+
+  trigger.addEventListener('click', (e) => {
+    if (window.innerWidth > BREAKPOINT) return;
+    e.preventDefault();
+    const next = !tabs.classList.contains('is-expanded');
+    tabs.classList.toggle('is-expanded', next);
+    trigger.setAttribute('aria-expanded', next ? 'true' : 'false');
+  });
+
+  const allDropdownBtns = Array.from(list.querySelectorAll('.videoteka-tab'));
+  allDropdownBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (window.innerWidth > BREAKPOINT) return;
+      const label = btn.querySelector('span')?.textContent || '';
+      trigger.querySelector('span').textContent = label;
+
+      allDropdownBtns.forEach(b => b.classList.remove('is-active'));
+      btn.classList.add('is-active');
+
+      buttons.forEach(b => b.classList.remove('is-active'));
+      const matchIdx = allDropdownBtns.indexOf(btn);
+      if (buttons[matchIdx]) {
+        buttons[matchIdx].classList.add('is-active');
+        buttons[matchIdx].click();
+      }
+
+      tabs.classList.remove('is-expanded');
+      trigger.setAttribute('aria-expanded', 'false');
+    });
+  });
+
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > BREAKPOINT && tabs.classList.contains('is-expanded')) {
+      tabs.classList.remove('is-expanded');
+      trigger.setAttribute('aria-expanded', 'false');
+    }
+  });
 }
 
-// Initialize videoteka tabs
 if (document.querySelector('.videoteka-tabs')) {
   initVideotekaTabs();
 }
+
+// ============================================
+// YOUTUBE PLAYER
+// ============================================
+
+function closeYtPlayer(player) {
+  player.classList.remove('is-playing');
+  const iframe = player.querySelector('iframe');
+  if (iframe) iframe.remove();
+}
+
+document.querySelectorAll('.yt-player').forEach(player => {
+  player.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (player.classList.contains('is-playing')) return;
+    document.querySelectorAll('.yt-player.is-playing').forEach(closeYtPlayer);
+    const rutubeId = player.dataset.rutubeId;
+    const ytId = player.dataset.ytId;
+    if (!rutubeId && !ytId) return;
+    player.classList.add('is-playing');
+    const iframe = document.createElement('iframe');
+    if (rutubeId) {
+      iframe.src = `https://rutube.ru/play/embed/${rutubeId}?autoplay=1`;
+    } else {
+      iframe.src = `https://www.youtube.com/embed/${ytId}?autoplay=1&rel=0`;
+    }
+    iframe.allow = 'autoplay; encrypted-media';
+    iframe.allowFullscreen = true;
+    player.appendChild(iframe);
+  });
+});
+
+document.addEventListener('click', () => {
+  document.querySelectorAll('.yt-player.is-playing').forEach(closeYtPlayer);
+});
 
 // ============================================
 // FOOTER ACCORDION
@@ -2269,3 +2451,65 @@ if (document.readyState === "loading") {
 } else {
   initMediaBookClickZones();
 }
+
+// ==========================================
+// SALES POPUP
+// ==========================================
+(function initSalesPopup() {
+  const salesPopup = document.getElementById("salesPopup");
+  const salesPopupClose = document.getElementById("salesPopupClose");
+  const salesPopupCheck = document.getElementById("salesPopupCheck");
+  const salesPopupForm = document.querySelector(".sales-popup-form");
+  const salesPopupSubmit = document.querySelector(".sales-popup-submit");
+  const salesPopupBackdrop = document.querySelector(".sales-popup-backdrop");
+  const salesPopupTriggers = [...document.querySelectorAll('a[href="#salesPopup"]')];
+
+  if (!salesPopup || !salesPopupClose || !salesPopupCheck || !salesPopupForm || !salesPopupSubmit) return;
+
+  const setOpen = (isOpen) => {
+    if (isOpen) {
+      salesPopup.classList.remove("is-closing");
+      salesPopup.classList.add("is-open");
+      salesPopup.setAttribute("aria-hidden", "false");
+      document.body.classList.add("modal-open");
+    } else {
+      salesPopup.classList.add("is-closing");
+      setTimeout(() => {
+        salesPopup.classList.remove("is-open", "is-closing");
+        salesPopup.setAttribute("aria-hidden", "true");
+        document.body.classList.remove("modal-open");
+      }, 300);
+    }
+  };
+
+  salesPopupTriggers.forEach((trigger) => {
+    trigger.addEventListener("click", (e) => {
+      e.preventDefault();
+      setOpen(true);
+    });
+  });
+
+  salesPopupClose.addEventListener("click", () => setOpen(false));
+  salesPopupBackdrop?.addEventListener("click", () => setOpen(false));
+
+  salesPopupCheck.addEventListener("click", () => {
+    const nextChecked = !salesPopupCheck.classList.contains("is-checked");
+    salesPopupCheck.classList.toggle("is-checked", nextChecked);
+    salesPopupCheck.setAttribute("aria-pressed", nextChecked ? "true" : "false");
+  });
+
+  salesPopupForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    setOpen(false);
+  });
+
+  salesPopupSubmit.addEventListener("click", () => {
+    setOpen(false);
+  });
+
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && salesPopup.classList.contains("is-open")) {
+      setOpen(false);
+    }
+  });
+})();
