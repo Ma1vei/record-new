@@ -336,9 +336,9 @@ function raf(time) {
 requestAnimationFrame(raf);
 
 // ==========================================
-// PROMO: текст к центру экрана, затем карточки снизу + доп. подъём по колонкам
+// PROMO: липкий блок → ещё ~1 скролл — margin-top + CSS transition к центру → затем карточки.
 // ==========================================
-(function initPromoSlideUp() {
+(function initPromoSection() {
   const promoSection = document.getElementById('promoScreen');
   if (!promoSection) return;
   const promoContent = promoSection.querySelector('.promo-content');
@@ -348,111 +348,171 @@ requestAnimationFrame(raf);
 
   const vh = () => window.innerHeight;
   const isPromoNarrow = () => window.innerWidth <= 1200;
-  /** Стартовый сдвиг карточек вниз: целый экран + доля vh (чтобы точно не было видно). */
   const PROMO_HIDE_BELOW_VH = 0.82;
   const startY = () => vh() * (1 + PROMO_HIDE_BELOW_VH);
-  /** Доля скролла на заголовок; меньше значение — больше пикселей на фазу карточек над текстом (медленнее наезд). */
-  const TEXT_PHASE = 0.36;
-  let ticking = false;
-  let shiftMaxCache = null;
+  /** Скролл по секции после фикса, при котором запускается опускание текста (один «шаг»). */
+  const ONE_SCROLL_COMMIT_PX = 44;
+  const UNDO_COMMIT_SCROLL_PX = 10;
+  /** <1 — финальная позиция чуть выше геом. центра. */
+  const PROMO_HEADER_SHIFT_SCALE = 0.72;
+
+  let textScrollCommitted = false;
+  let textCenterComplete = false;
+  let scrolledAtCardsPhase = 0;
 
   function measureHeaderShiftToCenter() {
     if (!promoHeader) return 0;
-    promoHeader.style.transform = 'translateY(0)';
     const h = promoHeader.getBoundingClientRect();
     const mid = vh() / 2;
     return mid - (h.top + h.height / 2);
   }
 
+  /** @param {{ instant?: boolean }} [opts] */
+  function resetPromoHeaderState(opts = {}) {
+    const instant = opts.instant === true;
+    textScrollCommitted = false;
+    textCenterComplete = false;
+    scrolledAtCardsPhase = 0;
+    if (!promoHeader) return;
+    if (instant) {
+      promoHeader.style.setProperty('transition', 'none');
+    }
+    promoHeader.classList.remove('promo-header--nudge-center');
+    promoHeader.style.removeProperty('--promo-header-shift');
+    if (instant) {
+      requestAnimationFrame(() => {
+        promoHeader.style.removeProperty('transition');
+      });
+    }
+  }
+
+  function onPromoHeaderTransitionEnd(ev) {
+    if (ev.target !== promoHeader || ev.propertyName !== 'margin-top') return;
+    if (promoHeader.classList.contains('promo-header--nudge-center')) {
+      textCenterComplete = true;
+      const r = promoSection.getBoundingClientRect();
+      scrolledAtCardsPhase = Math.max(0, -r.top);
+      requestPromoTick();
+      return;
+    }
+    if (textCenterComplete) {
+      textCenterComplete = false;
+      textScrollCommitted = false;
+      scrolledAtCardsPhase = 0;
+      promoHeader.style.removeProperty('--promo-header-shift');
+      requestPromoTick();
+    }
+  }
+
+  if (promoHeader) {
+    promoHeader.addEventListener('transitionend', onPromoHeaderTransitionEnd);
+  }
+
+  let promoRaf = 0;
+
   function resetItemRise() {
     promoItems.forEach((el) => el.style.removeProperty('--promo-item-rise'));
   }
 
-  function onScroll() {
-    if (ticking) return;
-    ticking = true;
-    requestAnimationFrame(() => {
-      const rect = promoSection.getBoundingClientRect();
-      const sectionH = promoSection.offsetHeight;
-      const overlapZone = sectionH - vh();
-      if (overlapZone <= 0) {
-        ticking = false;
-        return;
-      }
+  function applyPromoScroll() {
+    const rect = promoSection.getBoundingClientRect();
+    const sectionH = promoSection.offsetHeight;
+    const overlapZone = sectionH - vh();
+    if (overlapZone <= 0) {
+      return;
+    }
 
-      const scrolled = -rect.top;
-      const progress = Math.max(0, Math.min(1, scrolled / overlapZone));
+    const scrolled = -rect.top;
+    const narrow = isPromoNarrow();
 
-      const narrow = isPromoNarrow();
-      /* На мобилке нет фазы «только заголовок» — весь скролл по дорожке идёт в анимацию карточек */
-      const textPhase = narrow ? 0 : TEXT_PHASE;
-      if (shiftMaxCache === null && rect.top <= 1 && scrolled >= 0) {
-        shiftMaxCache = narrow ? 0 : measureHeaderShiftToCenter();
-      }
-      const shiftMax = shiftMaxCache ?? 0;
+    if (scrolled < -2 || rect.top > vh() + 4) {
+      resetPromoHeaderState({});
+      resetItemRise();
+      promoContent.style.transform = `translate(-50%, ${startY()}px)`;
+      return;
+    }
 
-      if (progress < textPhase) {
-        const pText = textPhase > 0 ? progress / textPhase : 0;
-        if (promoHeader) {
-          if (narrow) {
-            promoHeader.style.transform = '';
-          } else {
-            promoHeader.style.transform = `translateY(${pText * shiftMax}px)`;
-          }
-        }
-        promoContent.style.transform = `translate(-50%, ${startY()}px)`;
-        resetItemRise();
+    const headerUnpinThreshold = Math.min(
+      ONE_SCROLL_COMMIT_PX,
+      Math.max(0, scrolledAtCardsPhase - 1)
+    );
+    if (
+      textCenterComplete &&
+      promoHeader &&
+      promoHeader.classList.contains('promo-header--nudge-center') &&
+      scrolled < headerUnpinThreshold
+    ) {
+      promoHeader.classList.remove('promo-header--nudge-center');
+    } else if (
+      scrolled < UNDO_COMMIT_SCROLL_PX &&
+      textScrollCommitted &&
+      !textCenterComplete &&
+      promoHeader
+    ) {
+      textScrollCommitted = false;
+      promoHeader.classList.remove('promo-header--nudge-center');
+      promoHeader.style.removeProperty('--promo-header-shift');
+    } else if (
+      scrolled >= ONE_SCROLL_COMMIT_PX &&
+      promoHeader &&
+      !textScrollCommitted &&
+      !textCenterComplete
+    ) {
+      textScrollCommitted = true;
+      const shift = Math.max(0, measureHeaderShiftToCenter() * PROMO_HEADER_SHIFT_SCALE);
+      promoHeader.style.setProperty('--promo-header-shift', `${shift}px`);
+      if (shift < 0.5) {
+        textCenterComplete = true;
+        scrolledAtCardsPhase = scrolled;
       } else {
-        const denom = 1 - textPhase;
-        const t =
-          denom <= 0
-            ? 1
-            : Math.max(0, Math.min(1, (progress - textPhase) / denom));
-        /* Десктоп: ease-out. Мобилка: линейно — иначе хвост анимации «съедается» дорожкой и последняя карточка не успевает */
-        const pCards = narrow ? t : 1 - Math.pow(1 - t, 2.35);
-        if (promoHeader) {
-          if (narrow) {
-            promoHeader.style.transform = '';
-          } else {
-            promoHeader.style.transform = `translateY(${shiftMax}px)`;
-          }
-        }
-        const y0 = startY();
-        const p = pCards;
-        const overshoot = isPromoNarrow()
-          ? vh() * (0.12 * p + 0.16 * p * p)
-          : vh() * (0.09 * p + 0.14 * p * p);
-        const offset = y0 * (1 - pCards) - overshoot;
-        promoContent.style.transform = `translate(-50%, ${offset}px)`;
-        const riseCap = narrow ? Math.min(vh() * 1.28, 1100) : Math.min(vh() * 0.55, 480);
-        const riseBase = pCards * riseCap;
-        promoItems.forEach((el, i) => {
-          /* На мобилке колонка: одинаковый подъём, иначе нижние карточки наезжают на верхние */
-          const rise = narrow ? riseBase : riseBase * (1 + i * 0.52);
-          el.style.setProperty('--promo-item-rise', `${rise}px`);
+        requestAnimationFrame(() => {
+          if (!textScrollCommitted || textCenterComplete) return;
+          promoHeader.classList.add('promo-header--nudge-center');
         });
       }
+    }
 
-      if (scrolled < -2 || rect.top > vh() + 4) {
-        shiftMaxCache = null;
-        if (promoHeader) promoHeader.style.transform = '';
-        resetItemRise();
-        promoContent.style.transform = `translate(-50%, ${startY()}px)`;
-      }
+    if (!textCenterComplete) {
+      promoContent.style.transform = `translate(-50%, ${startY()}px)`;
+      resetItemRise();
+    } else {
+      const span = Math.max(1, overlapZone - scrolledAtCardsPhase);
+      const t = Math.max(0, Math.min(1, (scrolled - scrolledAtCardsPhase) / span));
+      const pCards = 1 - Math.pow(1 - t, 2.35);
+      const y0 = startY();
+      const p = pCards;
+      const overshoot = isPromoNarrow()
+        ? vh() * (0.12 * p + 0.16 * p * p)
+        : vh() * (0.09 * p + 0.14 * p * p);
+      const offset = y0 * (1 - pCards) - overshoot;
+      promoContent.style.transform = `translate(-50%, ${offset}px)`;
+      const riseCap = narrow ? Math.min(vh() * 1.28, 1100) : Math.min(vh() * 0.55, 480);
+      const riseBase = pCards * riseCap;
+      promoItems.forEach((el, i) => {
+        const rise = narrow ? riseBase : riseBase * (1 + i * 0.52);
+        el.style.setProperty('--promo-item-rise', `${rise}px`);
+      });
+    }
+  }
 
-      ticking = false;
+  function requestPromoTick() {
+    if (promoRaf) return;
+    promoRaf = requestAnimationFrame(() => {
+      promoRaf = 0;
+      applyPromoScroll();
     });
   }
 
-  window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', () => {
-    shiftMaxCache = null;
-    onScroll();
+    resetPromoHeaderState({ instant: true });
+    requestPromoTick();
   });
   if (typeof lenis !== 'undefined' && lenis && typeof lenis.on === 'function') {
-    lenis.on('scroll', onScroll);
+    lenis.on('scroll', requestPromoTick);
+  } else {
+    window.addEventListener('scroll', requestPromoTick, { passive: true });
   }
-  onScroll();
+  requestPromoTick();
 })();
 
 // ==========================================
@@ -1072,8 +1132,10 @@ if (document.readyState === "loading") {
 
 // Reveal text animation on scroll
 function initRevealText() {
-    const targets = [...document.querySelectorAll(".reveal-text")];
-    
+    const targets = [...document.querySelectorAll(".reveal-text")].filter(
+        (el) => !el.closest(".promo-item")
+    );
+
     // Set reveal delays
     targets.forEach((el, i) => {
         el.style.setProperty("--reveal-delay", `${(i % 8) * 55}ms`);
