@@ -12,19 +12,19 @@
   --bg-color: #0a0a0a;
   --text-white: #ffffff;
   /* Дистанция скролла, пока промо «прилипло», и наезд следующей секции поверх */
-  --promo-overlap-scroll: min(122vh, 1520px);
+  --promo-overlap-scroll: min(220vh, 3200px);
 }
 
 /* Мобилка: длиннее «дорожка» скролла пока промо sticky — жест сначала проигрывает карточки, потом уезжает страница */
 @media (max-width: 1200px) {
     :root {
-        --promo-overlap-scroll: min(220vh, 2200px);
+        --promo-overlap-scroll: min(280vh, 3200px);
     }
 }
 
 @media (max-width: 768px) {
     :root {
-        --promo-overlap-scroll: min(220vh, 2050px);
+        --promo-overlap-scroll: min(280vh, 3000px);
     }
 }
 
@@ -1423,6 +1423,14 @@ body.site-menu-open {
     transition-delay: 0ms;
 }
 
+/* Шапка промо: сразу видима — иначе на первом заходе reveal + скрипт центрирования дают рывок и ложный shift < 0.5 */
+#promoScreen .promo-header .reveal-text {
+    opacity: 1;
+    filter: none;
+    transition: none;
+    transition-delay: 0ms;
+}
+
 /* Special handling for radio title with decorative letter */
 .radio-title-o.reveal-text {
     transform: rotate(180deg) scaleY(-1);
@@ -2057,14 +2065,17 @@ body.site-menu-open {
     background-clip: text;
 }
 
-/* Дорожка скролла: #promoStage; .screen-promo липнет, .promo-content после секции — слой поверх */
+/* Дорожка скролла: #promoStage; .screen-promo sticky; .promo-content-shell в потоке сразу после — наезжает поверх */
+/* z-index выше .screen-benefits (5), иначе нижняя часть карточек визуально «срезается» фоном следующей секции */
 .promo-stage {
     position: relative;
-    z-index: 4;
+    z-index: 6;
     max-width: 1920px;
     width: 100%;
     margin: 0 auto;
     min-height: calc(100vh + var(--promo-overlap-scroll));
+    overflow: visible;
+    isolation: isolate;
 }
 
 .screen-promo {
@@ -2099,16 +2110,18 @@ body.site-menu-open {
     transform: translateX(-50%);
 }
 
-/* Сосед секции; inset на всю высоту #promoStage — карточки наезжают на липкий .screen-promo */
+/* В потоке сразу после .screen-promo: подтягиваем на высоту липкого кадра и даём дорожку скролла = --promo-overlap-scroll */
 .promo-content-shell {
-    position: absolute;
-    inset: 0;
+    position: relative;
+    z-index: 2;
     width: 100%;
     max-width: 1920px;
-    margin: 0 auto;
-    z-index: 2;
+    margin: -100vh auto 0;
+    min-height: var(--promo-overlap-scroll);
     overflow: visible;
     pointer-events: none;
+    /* запас по высоте под разлёт карточек (transform), чтобы не упираться в overflow родителя */
+    padding-bottom: min(28vh, 360px);
 }
 
 .promo-content-shell .promo-content {
@@ -2230,6 +2243,7 @@ body.site-menu-open {
     margin: 0 auto;
     padding: 80px clamp(48px, 5vw, 100px) 120px;
     z-index: 1;
+    overflow: visible;
 }
 
 .promo-item {

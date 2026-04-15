@@ -301,25 +301,47 @@ if (document.readyState === "loading") {
 
 // LENIS
 // ==========================================
-// ИНИЦИАЛИЗАЦИЯ ПЛАВНОГО СКРОЛЛА (LENIS)
+// ИНИЦИАЛИЗАЦИЯ ПЛАВНОГО СКРОЛЛА (LENIS 1.1.x)
+// ПК: колесо с длинной инерцией. <1200: syncTouch — плавный тач на iOS/Android (без старого smoothTouch).
 // ==========================================
-const shouldUseLenis = window.innerWidth >= 1200;
-let lenis = null;
+const LENIS_LAYOUT_BREAKPOINT = 1200;
 
-if (shouldUseLenis && typeof Lenis === "function") {
-  lenis = new Lenis({
-    /* Только ПК (≥1200): плавнее и «медленнее» по инерции. На мобилке Lenis не создаётся — нативный скролл. */
-    duration: 8.8,
-    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-    direction: "vertical",
-    gestureDirection: "vertical",
-    smooth: true,
-    mouseMultiplier: 0.72,
-    wheelMultiplier: 0.62,
-    smoothTouch: false,
-    touchMultiplier: 2,
+function createLenisOptions() {
+  const wide = window.innerWidth >= LENIS_LAYOUT_BREAKPOINT;
+  const easing = (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t));
+  const base = {
+    wrapper: window,
+    content: document.documentElement,
+    orientation: "vertical",
+    gestureOrientation: "vertical",
     infinite: false,
-  });
+    easing,
+  };
+  if (wide) {
+    return {
+      ...base,
+      smoothWheel: true,
+      syncTouch: false,
+      wheelMultiplier: 0.62,
+      touchMultiplier: 1,
+      duration: 8.8,
+    };
+  }
+  return {
+    ...base,
+    smoothWheel: true,
+    syncTouch: true,
+    syncTouchLerp: 0.042,
+    touchInertiaMultiplier: 18,
+    touchMultiplier: 0.62,
+    wheelMultiplier: 0.48,
+    duration: 2.85,
+  };
+}
+
+let lenis = null;
+if (typeof Lenis === "function") {
+  lenis = new Lenis(createLenisOptions());
 }
 
 // Функция для синхронизации скролла с частотой обновления экрана
@@ -360,6 +382,15 @@ requestAnimationFrame(raf);
   let textScrollCommitted = false;
   let textCenterComplete = false;
   let scrolledAtCardsPhase = 0;
+  /** Первый кадр после load: шрифты/высота #promoStage ещё «плывут» — не коммитим центрирование, иначе рывок и мгновенный переход к карточкам. */
+  let promoMetricsReady = false;
+
+  /** Базовая позиция скролла для фазы карточек: всегда ≤ текущего скролла, иначе при скролле вниз t > 0 с первого кадра — визуальный скачок снизу вверх. */
+  function promoCardsPhaseBaseline(scrollY, overlapZone) {
+    const y = Math.max(0, scrollY);
+    const cap = Math.max(0, overlapZone - 1);
+    return Math.min(y, cap);
+  }
 
   function measureHeaderShiftToCenter() {
     if (!promoHeader) return 0;
@@ -392,7 +423,8 @@ requestAnimationFrame(raf);
     if (promoHeader.classList.contains('promo-header--nudge-center')) {
       textCenterComplete = true;
       const r = promoStage.getBoundingClientRect();
-      scrolledAtCardsPhase = Math.max(0, -r.top);
+      const overlapZone = Math.max(1, promoStage.offsetHeight - vh());
+      scrolledAtCardsPhase = promoCardsPhaseBaseline(-r.top, overlapZone);
       requestPromoTick();
       return;
     }
@@ -454,6 +486,7 @@ requestAnimationFrame(raf);
       promoHeader.classList.remove('promo-header--nudge-center');
       promoHeader.style.removeProperty('--promo-header-shift');
     } else if (
+      promoMetricsReady &&
       scrolled >= ONE_SCROLL_COMMIT_PX &&
       promoHeader &&
       !textScrollCommitted &&
@@ -464,7 +497,7 @@ requestAnimationFrame(raf);
       promoHeader.style.setProperty('--promo-header-shift', `${shift}px`);
       if (shift < 0.5) {
         textCenterComplete = true;
-        scrolledAtCardsPhase = scrolled;
+        scrolledAtCardsPhase = promoCardsPhaseBaseline(scrolled, overlapZone);
       } else {
         requestAnimationFrame(() => {
           if (!textScrollCommitted || textCenterComplete) return;
@@ -479,7 +512,8 @@ requestAnimationFrame(raf);
     } else {
       const span = Math.max(1, overlapZone - scrolledAtCardsPhase);
       const t = Math.max(0, Math.min(1, (scrolled - scrolledAtCardsPhase) / span));
-      const pCards = 1 - Math.pow(1 - t, 2.35);
+      /* Ниже степень — движение ближе к скроллу, плавнее без «рваного» конца */
+      const pCards = 1 - Math.pow(1 - t, 1.45);
       const y0 = startY();
       const p = pCards;
       const overshoot = isPromoNarrow()
@@ -513,6 +547,20 @@ requestAnimationFrame(raf);
   } else {
     window.addEventListener('scroll', requestPromoTick, { passive: true });
   }
+
+  const fontsGate =
+    document.fonts && typeof document.fonts.ready !== 'undefined'
+      ? document.fonts.ready.catch(() => {})
+      : Promise.resolve();
+  fontsGate.then(() => {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        promoMetricsReady = true;
+        requestPromoTick();
+      });
+    });
+  });
+
   requestPromoTick();
 })();
 
@@ -1134,7 +1182,7 @@ if (document.readyState === "loading") {
 // Reveal text animation on scroll
 function initRevealText() {
     const targets = [...document.querySelectorAll(".reveal-text")].filter(
-        (el) => !el.closest(".promo-item")
+        (el) => !el.closest(".promo-item") && !el.closest(".promo-header")
     );
 
     // Set reveal delays
