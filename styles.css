@@ -6503,15 +6503,14 @@ left: 0;
         max-width: 380px;
         margin: auto;
         position: sticky;
-        /* Отрицательный top: при липком скролле «срезаем» верх (заголовок/табы),
-           чтобы в кадре оставалась зона article с письмом и грамотой */
-        top: clamp(-220px, -14dvh, -72px);
-        height: 1020px;
+        /* top задаётся из JS: верх .reviews-slide совпадает с верхом вьюпорта в момент липкости */
+        top: var(--reviews-sticky-slide-offset, 0px);
+        height: clamp(1020px, calc(100dvh + 180px), 1240px);
         overflow: hidden;
     }
     .reviews-media {
-        height: 1020px;
-        transform: translateY(clamp(-100px, calc(22dvh - 280px), -40px)) scale(var(--scale-reviews, 1));
+        height: clamp(1020px, calc(100dvh + 180px), 1240px);
+        transform: scale(var(--scale-reviews, 1));
         transform-origin: top center;
     }
     .reviews-media-title-top {

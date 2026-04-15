@@ -1989,6 +1989,62 @@ function initReviewsTabs() {
   setTab(reviewsScreen.dataset.reviewsTab || "official");
 }
 
+/**
+ * Доп. сдвиг вверх (px) после выравнивания по стейджу — дожать табы за край вьюпорта.
+ */
+const REVIEWS_STICKY_HIDE_TABS_EXTRA_PX = 150;
+
+/** Мобилка: sticky-top по верху #reviewsOfficialStage относительно обёртки − extra (табы не в кадре) */
+function updateReviewsStickySlideOffset() {
+  const reviewsScreen = document.getElementById("reviewsScreen");
+  if (!reviewsScreen) return;
+  const wrap = reviewsScreen.querySelector(".reviews-sticky-wrapper");
+  if (!wrap) return;
+
+  const narrow =
+    window.innerWidth <= 1200 ||
+    document.documentElement.clientWidth <= 1200 ||
+    window.matchMedia("(max-width: 1200px)").matches;
+
+  if (!narrow || reviewsScreen.dataset.reviewsTab !== "official") {
+    wrap.style.removeProperty("--reviews-sticky-slide-offset");
+    return;
+  }
+
+  const stage = document.getElementById("reviewsOfficialStage");
+  if (!stage || stage.getAttribute("aria-hidden") === "true" || stage.offsetParent === null) {
+    wrap.style.removeProperty("--reviews-sticky-slide-offset");
+    return;
+  }
+
+  const wrapBox = wrap.getBoundingClientRect();
+  const stageBox = stage.getBoundingClientRect();
+  const offsetPx = stageBox.top - wrapBox.top;
+  const topPx = -Math.round(offsetPx) - REVIEWS_STICKY_HIDE_TABS_EXTRA_PX;
+  wrap.style.setProperty("--reviews-sticky-slide-offset", `${topPx}px`);
+}
+
+function initReviewsStickyAlign() {
+  let resizeTimer;
+  const schedule = () => {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(updateReviewsStickySlideOffset);
+    });
+  };
+
+  updateReviewsStickySlideOffset();
+  schedule();
+  window.addEventListener("resize", () => {
+    window.clearTimeout(resizeTimer);
+    resizeTimer = window.setTimeout(schedule, 120);
+  });
+  window.addEventListener("orientationchange", schedule);
+  window.addEventListener("reviews:tabchange", schedule);
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(schedule).catch(() => {});
+  }
+}
+
 function initReviewsOfficialScrollEffect() {
   const reviewsScreen = document.getElementById("reviewsScreen");
   const stage = document.getElementById("reviewsOfficialStage");
@@ -2264,6 +2320,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initReviewsSliders();
   initReviewsTabs();
   initReviewsOfficialScrollEffect();
+  initReviewsStickyAlign();
 });
 
 // ============================================
