@@ -2057,22 +2057,29 @@ body.site-menu-open {
     background-clip: text;
 }
 
-/* Screen Promo — как countdown-section + countdown-pin: дорожка снаружи, 100vh липнет к top */
-.screen-promo {
+/* Дорожка скролла: #promoStage; .screen-promo липнет, .promo-content после секции — слой поверх */
+.promo-stage {
     position: relative;
     z-index: 4;
     max-width: 1920px;
     width: 100%;
     margin: 0 auto;
-    height: calc(100vh + var(--promo-overlap-scroll));
-    overflow: visible;
+    min-height: calc(100vh + var(--promo-overlap-scroll));
 }
 
-.promo-pin {
+.screen-promo {
     position: sticky;
     top: 0;
     z-index: 1;
     height: 100vh;
+    width: 100%;
+    overflow: visible;
+}
+
+.promo-pin {
+    position: relative;
+    height: 100%;
+    min-height: 100vh;
     width: 100%;
     background: #f9f0e8;
     overflow: hidden;
@@ -2090,6 +2097,22 @@ body.site-menu-open {
     z-index: 0;
     background-size: cover;
     transform: translateX(-50%);
+}
+
+/* Сосед секции; inset на всю высоту #promoStage — карточки наезжают на липкий .screen-promo */
+.promo-content-shell {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    max-width: 1920px;
+    margin: 0 auto;
+    z-index: 2;
+    overflow: visible;
+    pointer-events: none;
+}
+
+.promo-content-shell .promo-content {
+    pointer-events: auto;
 }
 
 /* На десктопе обёртка не меняет раскладку; <1200px — контент 375px по центру, фон на .promo-pin */
@@ -2192,7 +2215,7 @@ body.site-menu-open {
 }
 
 
-/* Promo Content — изначально глубоко под экраном; подъём и --promo-item-rise из script.js */
+/* Promo Content: после .screen-promo в DOM; вертикаль translate(-50%, y) из script.js */
 .promo-content {
     position: absolute;
     top: 0;
@@ -2204,10 +2227,9 @@ body.site-menu-open {
     width: 100%;
     max-width: 1920px;
     transform: translate(-50%, calc(100vh + min(78vh, 900px)));
-    will-change: transform;
     margin: 0 auto;
     padding: 80px clamp(48px, 5vw, 100px) 120px;
-    z-index: 3;
+    z-index: 1;
 }
 
 .promo-item {
@@ -9303,7 +9325,7 @@ left: 0;
         width: 100% !important;
         max-width: 100%;
         height: auto;
-    }
+    }пше 
 
     .sales-nominee-sides img {
         width: 100%;

@@ -339,11 +339,12 @@ requestAnimationFrame(raf);
 // PROMO: липкий блок → ещё ~1 скролл — margin-top + CSS transition к центру → затем карточки.
 // ==========================================
 (function initPromoSection() {
+  const promoStage = document.getElementById('promoStage');
   const promoSection = document.getElementById('promoScreen');
-  if (!promoSection) return;
-  const promoContent = promoSection.querySelector('.promo-content');
+  if (!promoStage || !promoSection) return;
+  const promoContent = promoStage.querySelector('.promo-content');
   const promoHeader = promoSection.querySelector('.promo-header');
-  const promoItems = [...promoSection.querySelectorAll('.promo-item')];
+  const promoItems = [...promoStage.querySelectorAll('.promo-item')];
   if (!promoContent) return;
 
   const vh = () => window.innerHeight;
@@ -390,7 +391,7 @@ requestAnimationFrame(raf);
     if (ev.target !== promoHeader || ev.propertyName !== 'margin-top') return;
     if (promoHeader.classList.contains('promo-header--nudge-center')) {
       textCenterComplete = true;
-      const r = promoSection.getBoundingClientRect();
+      const r = promoStage.getBoundingClientRect();
       scrolledAtCardsPhase = Math.max(0, -r.top);
       requestPromoTick();
       return;
@@ -415,8 +416,8 @@ requestAnimationFrame(raf);
   }
 
   function applyPromoScroll() {
-    const rect = promoSection.getBoundingClientRect();
-    const sectionH = promoSection.offsetHeight;
+    const rect = promoStage.getBoundingClientRect();
+    const sectionH = promoStage.offsetHeight;
     const overlapZone = sectionH - vh();
     if (overlapZone <= 0) {
       return;
