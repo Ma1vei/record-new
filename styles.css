@@ -3084,6 +3084,10 @@ body.site-menu-open {
     clip-path: inset(0 -100px 0 0);
 }
 
+.sales-top-layout-wrapp.ceremonia .sales-gallery-main.swiper {
+    clip-path: inset(0 -200px 0 0);
+}
+
 .sales-gallery-main .swiper-wrapper {
     width: 100%;
     height: 100%;
@@ -3153,6 +3157,48 @@ body.site-menu-open {
     object-position: 0% 0% !important;
 }
 
+/* Первый заголовок ceremonia — градиентный (наследует от .sales-title) */
+.sales-top-layout-wrapp.ceremonia .sales-title:first-of-type {
+    margin-bottom: 0;
+    margin-top: 36px;
+}
+
+.sales-top-layout-wrapp.ceremonia .sales-title {
+    font-size: 103px;
+}
+
+.sales-top-layout-wrapp.ceremonia .sales-title-o {
+    font-size: 103px;
+}
+/* Второй заголовок ceremonia — белый включая букву О */
+.sales-top-layout-wrapp.ceremonia .sales-title--white {
+    background-image: none;
+    -webkit-background-clip: unset;
+    background-clip: unset;
+    color: #F1F1F1;
+    -webkit-text-fill-color: #F1F1F1;
+    margin-left: 100px;
+    margin-bottom: 36px;
+}
+
+.sales-top-layout-wrapp.ceremonia .sales-title--white .sales-title-o {
+    background-image: none;
+    -webkit-background-clip: unset;
+    background-clip: unset;
+    color: #F1F1F1;
+    -webkit-text-fill-color: #F1F1F1;
+}
+.sales-top-layout-wrapp.ceremonia .sales-gallery-slide.swiper-slide {
+    overflow: hidden;
+}
+
+.sales-top-layout-wrapp.ceremonia .sales-gallery-main.swiper {
+    clip-path: none;
+    overflow: visible;
+    padding-right: 80px !important;
+    box-sizing: border-box;
+}
+
 .sales-title {
     max-width: 100%;
     display: flex;
@@ -3210,7 +3256,7 @@ body.site-menu-open {
 .sales-line {
     width: 100%;
     height: 1px;
-    margin: 0 0 40px 0;
+    margin: 0 0 10px 0;
     background: rgba(255, 255, 255);
 }
 
@@ -3759,6 +3805,7 @@ left: 0;
     background: #0f0f0f;
     z-index: 6;
     padding-top: 141px;
+    padding-bottom: 100px;
 }
 
 .sales-top-layout-wrapp--before-sales {
@@ -8542,7 +8589,7 @@ left: 0;
 
 @media (max-width: 1700px) {
     .sales-top-layout {
-        gap: 50px;
+        gap: 90px;
         padding-left: 100px;
     }
     .sales-gallery-slide.swiper-slide {
@@ -9384,6 +9431,7 @@ left: 0;
         padding: 0 20px;
         width: 335px;
         height: auto;
+        padding-bottom: 50px;
     }
 
     .sales-conditions {
@@ -9434,7 +9482,7 @@ left: 0;
     }
 
     .sales-line {
-        margin-bottom: 30px;
+        margin-bottom: 10px;
     }
 
     .sales-copy {
@@ -13395,5 +13443,75 @@ body.modal-open {
     .reviews-feedback-nav {
         width: 60px;
         height: 60px;
+    }
+}
+
+/* Слайды ceremonia: overflow hidden чтобы увеличенная картинка не вылезала */
+
+/* Ceremonia hosts */
+.ceremonia-hosts {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-top: 24px;
+}
+
+.ceremonia-host-name {
+    margin: 0 0 80px;
+    color: #F1F1F1;
+    font-family: "Roboto", sans-serif;
+    font-size: 55px;
+    font-weight: 400;
+    line-height: 1.2;
+}
+
+.ceremonia-host-desc {
+    margin: 0;
+    color: rgba(241, 241, 241, 0.7);
+    font-family: "Manrope", sans-serif;
+    font-size: 22px;
+    font-weight: 400;
+    line-height: 1.5;
+}
+
+@media (max-width: 1700px) {
+    .ceremonia-host-name {
+        font-size: 37px;
+        margin-bottom: 73px;
+    }
+    .ceremonia-host-desc {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .sales-top-layout-wrapp.ceremonia .sales-title {
+        font-size: 52px;
+    }
+    .sales-top-layout-wrapp.ceremonia .sales-title-o {
+        font-size: 52px;
+    }
+    .sales-top-layout-wrapp.ceremonia .sales-title--white {
+        margin-left: 40px;
+    }
+    .ceremonia-host-name {
+        font-size: 32px;
+        margin-bottom: 24px;
+    }
+    .ceremonia-host-desc {
+        font-size: 15px;
+    }
+    .sales-top-layout-wrapp.ceremonia .sales-gallery-main.swiper {
+        padding-right: 0 !important;
+    }
+    .sales-top-layout-wrapp.ceremonia .swiper-slide[data-slide-index="0"] .sales-gallery-image {
+        transform: scale(1) translateY(-70px) !important;
+        transform-origin: center center !important;
+        object-position: 50% 100% !important;
+    }
+    .sales-top-layout-wrapp.ceremonia .swiper-slide[data-slide-index="1"] .sales-gallery-image {
+        transform: scale(1) translate(0px, -50px) !important;
+        transform-origin: center left !important;
+        object-position: 0% 80% !important;
     }
 }

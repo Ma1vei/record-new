@@ -72,14 +72,16 @@ const SALES_SLIDES = [
 // Ceremonia Slider Configuration
 const CEREMONIA_SLIDES = [
   {
-    title: "продажи",
+    title: null,
     main: "./assets/ceremonia1.jpg",
-    copy: "16 лет оргкомитет проводит мегасштабную рекламную и PR-кампанию Премии (наружная и радио реклама, реклама на такси) с целью увеличения посещаемости сайта recordi.ru.<br><br>Следовательно, повышает узнаваемость ваших объектов и продажи",
+    hostName: "Ксения Собчак",
+    copy: "Самая медийная личность страны и главный трендсеттер. Её знают все, кто будет в зале, — и нет ведущей, равной ей по масштабу.<br><br>Своё СМИ, репутация одного из лучших интервьюеров поколения, безупречный вкус в моде. Когда Ксения на сцене, вечер автоматически становится событием.",
   },
   {
-    title: "АУДИТОРИЯ",
+    title: null,
     main: "./assets/ceremonia2.jpg",
-    copy: "Участие в премии открывает доступ к широкой аудитории покупателей и инвесторов, формируя устойчивый интерес к вашим проектам на рынке недвижимости.",
+    hostName: "Александр Пряников",
+    copy: "Телеведущий и модератор, который умеет держать внимание зала и превращать церемонию в настоящее шоу.<br><br>За плечами — годы работы лицом, ведение премии «Муз-ТВ» и десятков корпоративных событий. Ироничные и остроумные реплики, безупречный темп, профессиональная подача.",
   },
 ];
 
@@ -99,7 +101,8 @@ function initSalesSlider() {
     const salesGalleryMain = wrapp.querySelector(".sales-gallery-main");
     const salesMeta = wrapp.querySelector(".sales-meta");
     const salesCopy = wrapp.querySelector(".sales-copy");
-    const salesMainTitle = wrapp.querySelector("h2.sales-title");
+    const isCeremoniaBlock = wrapp.classList.contains('ceremonia');
+    const salesMainTitle = isCeremoniaBlock ? null : wrapp.querySelector("h2.sales-title");
     const salesNavPrev = wrapp.querySelector(".sales-nav-prev");
     const salesNavNext = wrapp.querySelector(".sales-nav-next");
 
@@ -108,7 +111,7 @@ function initSalesSlider() {
     }
 
     // Определяем какой массив слайдов использовать
-    const isCeremonia = wrapp.classList.contains('ceremonia');
+    const isCeremonia = isCeremoniaBlock;
     const slides = isCeremonia ? CEREMONIA_SLIDES.slice() : SALES_SLIDES.slice();
     const wrapper = salesGalleryMain.querySelector(".swiper-wrapper");
 
@@ -141,6 +144,7 @@ function initSalesSlider() {
 
       const slide = slides[index];
       const titleMarkup = slide.title ? buildSalesTitleMarkup(slide.title) : "";
+      const hostName = wrapp.querySelector(".ceremonia-host-name");
 
       const applyContent = () => {
         if (salesCopy && slide.copy) {
@@ -148,6 +152,9 @@ function initSalesSlider() {
         }
         if (salesMainTitle && titleMarkup) {
           salesMainTitle.innerHTML = titleMarkup;
+        }
+        if (hostName && slide.hostName) {
+          hostName.textContent = slide.hostName;
         }
       };
 
@@ -186,12 +193,12 @@ function initSalesSlider() {
 
     const isMobile = window.innerWidth <= 1200;
     const swiper = new window.Swiper(salesGalleryMain, {
-      slidesPerView: isMobile ? 1 : 1.1,
-      spaceBetween: isMobile ? 0 : 30,
+      slidesPerView: isMobile ? 1 : (isCeremoniaBlock ? 1 : 1.15),
+      spaceBetween: isMobile ? 0 : (isCeremoniaBlock ? 40 : 20),
       speed: 1100,
       loop: false,
-      centeredSlides: isMobile,
-      slidesOffsetAfter: isMobile ? 0 : 0,
+      centeredSlides: isMobile ? true : false,
+      slidesOffsetAfter: isMobile ? 0 : (isCeremoniaBlock ? 60 : 0),
       allowTouchMove: true,
       grabCursor: true,
       resistance: true,
