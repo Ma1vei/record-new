@@ -5630,7 +5630,7 @@ left: 0;
     inset: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: fill;
     z-index: 0;
     pointer-events: none;
     user-select: none;
@@ -5741,6 +5741,7 @@ left: 0;
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: center;
     gap: 12px;
     z-index: 80;
     margin: 0;
@@ -6496,21 +6497,36 @@ left: 0;
 
     .screen-reviews {
         padding: 0 0 0px;
-        height: 4080px;
+        height: auto;
+        min-height: 100vh;
         overflow: visible;
     }
+    
+    .screen-reviews[data-reviews-tab="official"] {
+        height: 4080px;
+    }
+    
+    .screen-reviews[data-reviews-tab="gratitude"] {
+        height: 880px;
+    }
+    
+    .screen-reviews[data-reviews-tab="feedback"] {
+        height: 840px;
+    }
+    
     .reviews-sticky-wrapper {
         max-width: 380px;
         margin: auto;
         position: sticky;
-        /* top задаётся из JS: верх .reviews-slide совпадает с верхом вьюпорта в момент липкости */
-        top: var(--reviews-sticky-slide-offset, 0px);
-        height: clamp(1020px, calc(100dvh + 180px), 1240px);
+        /* Отрицательный top: при липком скролле «срезаем» верх (заголовок/табы),
+           чтобы в кадре оставалась зона article с письмом и грамотой */
+        top: clamp(-220px, -14dvh, -72px);
+        height: 1060px;
         overflow: hidden;
     }
     .reviews-media {
-        height: clamp(1020px, calc(100dvh + 180px), 1240px);
-        transform: scale(var(--scale-reviews, 1));
+        height: 1060px;
+        transform: translateY(clamp(-100px, calc(22dvh - 280px), -40px)) scale(1);
         transform-origin: top center;
     }
     .reviews-media-title-top {
@@ -6585,7 +6601,13 @@ left: 0;
         top: 270px;
     }
     
-    .screen-reviews .reviews-slide {
+    .reviews-media-stage-gratitude,
+    .reviews-media-stage-feedback {
+        top: 0;
+        position: relative;
+    }
+    
+    .screen-reviews .reviews-media-stage-official .reviews-slide {
         position: absolute;
         display: flex;
         flex-direction: row;
@@ -6600,7 +6622,7 @@ left: 0;
         transition: opacity 0.5s ease-in-out;
     }
     
-    .screen-reviews .reviews-portrait-wrapper {
+    .screen-reviews .reviews-media-stage-official .reviews-portrait-wrapper {
         position: relative !important;
         top: auto !important;
         left: auto !important;
@@ -6609,7 +6631,7 @@ left: 0;
         flex-shrink: 0;
     }
     
-    .screen-reviews .reviews-person-info {
+    .screen-reviews .reviews-media-stage-official .reviews-person-info {
         position: relative !important;
         top: auto !important;
         left: auto !important;
@@ -6620,21 +6642,21 @@ left: 0;
         display: contents;
     }
     
-    .screen-reviews .reviews-person-info h3 {
+    .screen-reviews .reviews-media-stage-official .reviews-person-info h3 {
         margin: 0;
         order: 1;
         flex: 1;
         min-width: 0;
     }
     
-    .screen-reviews .reviews-person-info p {
+    .screen-reviews .reviews-media-stage-official .reviews-person-info p {
         margin: 20px 0 0 0;
         width: 100%;
         order: 3;
         flex-basis: 100%;
     }
     
-    .screen-reviews .reviews-letter-wrapper {
+    .screen-reviews .reviews-media-stage-official .reviews-letter-wrapper {
         position: relative;
         top: auto;
         left: 0;
@@ -6642,9 +6664,9 @@ left: 0;
         margin-left: auto;
         margin-right: auto;
         margin-top: 40px;
-        width: 360px;
+        width: 302px !important;
         max-width: 100%;
-        height: 340px;
+        height: 406px !important;
         order: 4;
         flex-basis: 100%;
     }
@@ -13197,5 +13219,118 @@ body.modal-open {
     
     .promo-header.promo-header--nudge-center {
         transform: translateY(var(--promo-header-shift, 0px)) translateZ(0);
+    }
+}
+
+
+/* Mobile: Reviews Gratitude Gallery */
+@media (max-width: 1200px) {
+    .reviews-media-stage-gratitude {
+        position: relative;
+        height: auto;
+        min-height: 600px;
+        padding: 40px 16px;
+    }
+    
+    .reviews-gratitude-gallery {
+        --rg-gap: 16px;
+        --rg-card-w: 335px;
+        --rg-card-h: 460px;
+        position: relative;
+        width: 100%;
+        height: 500px;
+        padding: 0;
+        overflow: hidden;
+    }
+    
+    .reviews-gratitude-card {
+        width: var(--rg-card-w);
+        height: var(--rg-card-h);
+        top: 50%;
+        transform: translateY(-50%);
+        overflow: hidden;
+    }
+    
+    .reviews-gratitude-card.is-left-edge,
+    .reviews-gratitude-card.is-main-left {
+        left: -100%;
+    }
+    
+    .reviews-gratitude-card.is-main-right {
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 13;
+        overflow: visible;
+    }
+    
+    .reviews-gratitude-card.is-right-edge {
+        left: 200%;
+    }
+    
+    .reviews-gratitude-card-frame {
+        display: block;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 95%;
+        height: 95%;
+        max-width: none;
+        max-height: none;
+        z-index: 0;
+    }
+    
+    .reviews-gratitude-card-image {
+        display: block;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 87%;
+        height: 88%;
+        object-fit: fill;
+        z-index: 1;
+    }
+    
+    .reviews-gratitude-cursor {
+        display: none;
+    }
+}
+
+/* Mobile: Reviews Feedback */
+@media (max-width: 1200px) {
+    .reviews-media-stage-feedback {
+        position: relative;
+        height: auto;
+        min-height: 600px;
+        padding: 0 16px;
+    }
+    
+    .reviews-feedback-list.reviews-feedback-3d {
+        height: 460px;
+        min-height: 400px;
+        margin-top: 20px;
+    }
+    
+    .reviews-feedback-list.reviews-feedback-3d .reviews-feedback-card {
+        width: 340px !important;
+        height: 348px !important;
+        max-height: 348px;
+        object-fit: cover;
+        top: 170px !important;
+    }
+    
+    .reviews-feedback-controls {
+        position: absolute;
+        top: 400px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 200px;
+        z-index: 10;
+    }
+    
+    .reviews-feedback-nav {
+        width: 60px;
+        height: 60px;
     }
 }

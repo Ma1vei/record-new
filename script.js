@@ -1673,7 +1673,8 @@ function initReviewsSliders() {
     }
 
     const aspect = 805.19 / 842.64;
-    const centerW = Math.min(842.64, w * 0.46);
+    const isMobile = window.innerWidth <= 1200;
+    const centerW = isMobile ? Math.min(340, w * 0.9) : Math.min(842.64, w * 0.46);
     const centerH = centerW * aspect;
     const maxR = Math.min(3, Math.floor(total / 2));
 
@@ -1711,7 +1712,8 @@ function initReviewsSliders() {
 
       const scale = Math.max(0.34, Math.pow(0.82, ad));
       const tz = -ad * 108;
-      const gap0 = w * 0.19;
+      // For mobile, adjust gap so side cards peek by 8px
+      const gap0 = isMobile ? (w - centerW) / 2 - 8 : w * 0.19;
       let txAbs = 0;
       for (let k = 1; k <= ad; k += 1) {
         txAbs += gap0 * Math.pow(0.87, k - 1);
