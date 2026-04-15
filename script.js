@@ -325,6 +325,8 @@ function createDesktopLenisOptions() {
 
 function createMobileLenisOptions() {
   const easing = (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t));
+  /** Потолок скорости/дистанции ×1.5 относительно предыдущего мобильного пресета */
+  const v = 1.5;
   return {
     wrapper: window,
     content: document.documentElement,
@@ -334,12 +336,12 @@ function createMobileLenisOptions() {
     easing,
     smoothWheel: true,
     syncTouch: true,
-    syncTouchLerp: 0.12,
-    touchInertiaMultiplier: 22,
-    touchMultiplier: 1.02,
-    wheelMultiplier: 0.64,
-    lerp: 0.14,
-    duration: 1.35,
+    syncTouchLerp: 0.12 * v,
+    touchInertiaMultiplier: Math.round(22 * v),
+    touchMultiplier: 1.02 * v,
+    wheelMultiplier: 0.64 * v,
+    lerp: 0.14 * v,
+    duration: 1.35 / v,
   };
 }
 
