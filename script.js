@@ -2367,6 +2367,8 @@ document.querySelectorAll('.yt-player').forEach(player => {
     const rutubeId = player.dataset.rutubeId;
     const ytId = player.dataset.ytId;
     if (!rutubeId && !ytId) return;
+
+    // Try embed first, fallback to direct link if blocked
     player.classList.add('is-playing');
     const iframe = document.createElement('iframe');
     if (rutubeId) {
@@ -2377,6 +2379,16 @@ document.querySelectorAll('.yt-player').forEach(player => {
     iframe.allow = 'autoplay; encrypted-media';
     iframe.allowFullscreen = true;
     player.appendChild(iframe);
+
+    // If iframe fails to load (blocked by adblock), open in new tab
+    iframe.addEventListener('error', () => {
+      iframe.remove();
+      player.classList.remove('is-playing');
+      const url = rutubeId
+        ? `https://rutube.ru/video/${rutubeId}/`
+        : `https://www.youtube.com/watch?v=${ytId}`;
+      window.open(url, '_blank');
+    });
   });
 });
 

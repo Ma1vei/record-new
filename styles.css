@@ -10787,12 +10787,6 @@ left: 0;
     background: rgba(255, 189, 138, 1);
 }
 
-@media (max-width: 400px) {
-    .yt-thumb {
-        width: 94% !important;
-    }
-}
-
 @media (max-width: 480px) {
     .yt-thumb {
         image-rendering: -webkit-optimize-contrast;
@@ -10957,6 +10951,7 @@ left: 0;
         max-width: 335px;
         margin: 0 auto;
         padding-top: 40px;
+        padding-right: 0;
     }
 
     .videoteka-list::before {
