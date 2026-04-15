@@ -388,6 +388,9 @@ requestAnimationFrame(raf);
   let scrolledAtCardsPhase = 0;
   /** Первый кадр после load: шрифты/высота #promoStage ещё «плывут» — не коммитим центрирование, иначе рывок и мгновенный переход к карточкам. */
   let promoMetricsReady = false;
+  /** После выхода из фазы карточек скроллом вверх — не коммитить заголовок в том же жесте, пока не пойдём заметно вниз */
+  let promoPostCardsUpExit = false;
+  let lastPromoScrolled = Number.NaN;
 
   /** Базовая позиция скролла для фазы карточек: всегда ≤ текущего скролла, иначе при скролле вниз t > 0 с первого кадра — визуальный скачок снизу вверх. */
   function promoCardsPhaseBaseline(scrollY, overlapZone) {
@@ -409,6 +412,8 @@ requestAnimationFrame(raf);
     textScrollCommitted = false;
     textCenterComplete = false;
     scrolledAtCardsPhase = 0;
+    promoPostCardsUpExit = false;
+    lastPromoScrolled = Number.NaN;
     if (!promoHeader) return;
     if (instant) {
       promoHeader.style.setProperty('transition', 'none');
@@ -462,12 +467,36 @@ requestAnimationFrame(raf);
 
     const scrolled = -rect.top;
     const narrow = isPromoNarrow();
+    const scrollDelta =
+      Number.isFinite(lastPromoScrolled) ? scrolled - lastPromoScrolled : 0;
+    lastPromoScrolled = scrolled;
 
     if (scrolled < -2 || rect.top > vh() + 4) {
       resetPromoHeaderState({});
       resetItemRise();
       promoContent.style.transform = `translate3d(-50%, ${startY()}px, 0)`;
       return;
+    }
+
+    /* Скролл вверх раньше точки старта таймлайна карточек: без transitionend состояние «залипало», текст перекрывался / прыгал */
+    if (textCenterComplete && scrolled < scrolledAtCardsPhase) {
+      textCenterComplete = false;
+      scrolledAtCardsPhase = 0;
+      textScrollCommitted = false;
+      promoPostCardsUpExit = true;
+      resetItemRise();
+      if (promoHeader) {
+        promoHeader.classList.remove('promo-header--nudge-center');
+        promoHeader.style.removeProperty('--promo-header-shift');
+        promoHeader.style.setProperty('transition', 'none');
+        requestAnimationFrame(() => {
+          promoHeader.style.removeProperty('transition');
+        });
+      }
+    }
+
+    if (promoPostCardsUpExit && scrollDelta > 2) {
+      promoPostCardsUpExit = false;
     }
 
     const headerUnpinThreshold = Math.min(
@@ -488,6 +517,7 @@ requestAnimationFrame(raf);
       promoHeader
     ) {
       textScrollCommitted = false;
+      promoPostCardsUpExit = false;
       promoHeader.classList.remove('promo-header--nudge-center');
       promoHeader.style.removeProperty('--promo-header-shift');
     } else if (
@@ -495,7 +525,8 @@ requestAnimationFrame(raf);
       scrolled >= ONE_SCROLL_COMMIT_PX &&
       promoHeader &&
       !textScrollCommitted &&
-      !textCenterComplete
+      !textCenterComplete &&
+      !promoPostCardsUpExit
     ) {
       textScrollCommitted = true;
       const shift = Math.max(0, measureHeaderShiftToCenter() * PROMO_HEADER_SHIFT_SCALE);
