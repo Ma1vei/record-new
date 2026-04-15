@@ -3809,11 +3809,10 @@ left: 0;
 }
 
 .sales-top-layout-wrapp--before-sales {
-    max-height: min(920px, 92vh);
     display: flex;
     align-items: center;
     justify-content: center;
-    padding-top: 56px;
+    padding-top: 200px;
     padding-bottom: 56px;
     box-sizing: border-box;
     overflow: hidden;
@@ -8345,6 +8344,11 @@ left: 0;
         background-color 180ms ease,
         transform 180ms ease,
         box-shadow 180ms ease;
+}
+
+a.interview-node {
+    text-decoration: none;
+    box-sizing: border-box;
 }
 
 .interview-reveal {
