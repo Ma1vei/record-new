@@ -1121,7 +1121,7 @@ body.site-menu-open {
 .radio-pulse-wrapp {
     position: absolute;
     left: 50%;
-    top: 50%;
+    top: 50.55%;
 }
 
 .radio-title-left {
@@ -1663,6 +1663,30 @@ body.site-menu-open {
     object-fit: contain;
     pointer-events: none;
     z-index: 2;
+}
+
+.count-clock-video {
+    position: absolute;
+    left: 50%;
+    bottom: 10px;
+    height: 100%;
+    width: auto;
+    transform: translateX(-50%);
+    object-fit: cover;
+    object-position: center 20%;
+    pointer-events: none;
+    z-index: 3;
+    clip-path: circle(8% at 52.1% 73.5%);
+}
+
+@media (max-width: 1200px) {
+    .count-clock-video {
+        clip-path: circle(7% at 52.1% 74.9%);
+    }
+
+    .count-clock-video {
+        bottom: -15px;
+    }
 }
 
 .countdown-container {
