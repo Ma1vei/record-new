@@ -79,30 +79,39 @@ const SALES_SLIDES = [
   },
 ];
 
-// Initialize Sales Slider
+// Initialize Sales Slider (each `.sales-top-layout-wrapp` gets its own Swiper)
 function initSalesSlider() {
-  const salesGalleryMain = document.querySelector(".sales-gallery-main");
-  const salesMeta = document.querySelector(".sales-meta");
-  const salesCopy = document.querySelector(".sales-copy");
-  const salesMainTitle = document.getElementById("salesMainTitle");
-  const salesNavPrev = document.querySelector(".sales-nav-prev");
-  const salesNavNext = document.querySelector(".sales-nav-next");
-
-  if (!salesGalleryMain || !salesMeta || !salesNavPrev || !salesNavNext || typeof window.Swiper !== "function") {
-    console.warn("Sales slider: missing elements or Swiper library");
+  if (typeof window.Swiper !== "function") {
+    console.warn("Sales slider: Swiper library not found");
     return;
   }
 
-  const slides = SALES_SLIDES.slice();
-  const wrapper = salesGalleryMain.querySelector(".swiper-wrapper");
-  
-  if (!wrapper) {
-    console.warn("Sales slider: swiper-wrapper not found");
+  const wrappers = document.querySelectorAll(".sales-top-layout-wrapp");
+  if (!wrappers.length) {
     return;
   }
 
-  // Generate slides HTML
-  wrapper.innerHTML = slides.map((slide, index) => `
+  wrappers.forEach((wrapp) => {
+    const salesGalleryMain = wrapp.querySelector(".sales-gallery-main");
+    const salesMeta = wrapp.querySelector(".sales-meta");
+    const salesCopy = wrapp.querySelector(".sales-copy");
+    const salesMainTitle = wrapp.querySelector("h2.sales-title");
+    const salesNavPrev = wrapp.querySelector(".sales-nav-prev");
+    const salesNavNext = wrapp.querySelector(".sales-nav-next");
+
+    if (!salesGalleryMain || !salesMeta || !salesNavPrev || !salesNavNext) {
+      return;
+    }
+
+    const slides = SALES_SLIDES.slice();
+    const wrapper = salesGalleryMain.querySelector(".swiper-wrapper");
+
+    if (!wrapper) {
+      console.warn("Sales slider: swiper-wrapper not found");
+      return;
+    }
+
+    wrapper.innerHTML = slides.map((slide, index) => `
     <div class="swiper-slide sales-gallery-slide" data-slide-index="${index}">
       <img
         class="sales-gallery-image"
@@ -114,113 +123,107 @@ function initSalesSlider() {
     </div>
   `).join("");
 
-  let salesSlideIndex = 0;
+    const updateMeta = (index, options = {}) => {
+      const animate = options.animate !== false;
+      const current = String(index + 1).padStart(2, "0");
+      const total = String(slides.length).padStart(2, "0");
+      salesMeta.innerHTML = `${current} <span>/ ${total}</span>`;
 
-  // Update meta information, title, and copy text
-  const updateMeta = (index, options = {}) => {
-    const animate = options.animate !== false;
-    salesSlideIndex = index;
-    const current = String(index + 1).padStart(2, "0");
-    const total = String(slides.length).padStart(2, "0");
-    salesMeta.innerHTML = `${current} <span>/ ${total}</span>`;
+      salesNavPrev.disabled = index <= 0;
+      salesNavNext.disabled = index >= slides.length - 1;
 
-    salesNavPrev.disabled = index <= 0;
-    salesNavNext.disabled = index >= slides.length - 1;
+      const slide = slides[index];
+      const titleMarkup = slide.title ? buildSalesTitleMarkup(slide.title) : "";
 
-    const slide = slides[index];
-    const titleMarkup = slide.title ? buildSalesTitleMarkup(slide.title) : "";
+      const applyContent = () => {
+        if (salesCopy && slide.copy) {
+          salesCopy.innerHTML = slide.copy;
+        }
+        if (salesMainTitle && titleMarkup) {
+          salesMainTitle.innerHTML = titleMarkup;
+        }
+      };
 
-    const applyContent = () => {
+      if (!animate) {
+        applyContent();
+        if (salesCopy) {
+          salesCopy.classList.remove("is-fading");
+        }
+        if (salesMainTitle) {
+          salesMainTitle.classList.remove("is-fading");
+        }
+        return;
+      }
+
+      const needsFade = (salesCopy && slide.copy) || (salesMainTitle && titleMarkup);
+      if (!needsFade) {
+        return;
+      }
+
       if (salesCopy && slide.copy) {
-        salesCopy.innerHTML = slide.copy;
+        salesCopy.classList.add("is-fading");
       }
       if (salesMainTitle && titleMarkup) {
-        salesMainTitle.innerHTML = titleMarkup;
+        salesMainTitle.classList.add("is-fading");
       }
+      window.setTimeout(() => {
+        applyContent();
+        if (salesCopy) {
+          salesCopy.classList.remove("is-fading");
+        }
+        if (salesMainTitle) {
+          salesMainTitle.classList.remove("is-fading");
+        }
+      }, 250);
     };
 
-    if (!animate) {
-      applyContent();
-      if (salesCopy) {
-        salesCopy.classList.remove("is-fading");
-      }
-      if (salesMainTitle) {
-        salesMainTitle.classList.remove("is-fading");
-      }
-      return;
-    }
-
-    const needsFade = (salesCopy && slide.copy) || (salesMainTitle && titleMarkup);
-    if (!needsFade) {
-      return;
-    }
-
-    if (salesCopy && slide.copy) {
-      salesCopy.classList.add("is-fading");
-    }
-    if (salesMainTitle && titleMarkup) {
-      salesMainTitle.classList.add("is-fading");
-    }
-    window.setTimeout(() => {
-      applyContent();
-      if (salesCopy) {
-        salesCopy.classList.remove("is-fading");
-      }
-      if (salesMainTitle) {
-        salesMainTitle.classList.remove("is-fading");
-      }
-    }, 250);
-  };
-
-  // Initialize Swiper
-  const isMobile = window.innerWidth <= 1200;
-  const swiper = new window.Swiper(salesGalleryMain, {
-    slidesPerView: isMobile ? 1 : "auto",
-    spaceBetween: isMobile ? 0 : 30,
-    speed: 1100,
-    loop: false,
-    centeredSlides: isMobile,
-    slidesOffsetAfter: isMobile ? 0 : 100,
-    allowTouchMove: true,
-    grabCursor: true,
-    resistance: true,
-    resistanceRatio: 0.72,
-    threshold: 8,
-    longSwipesRatio: 0.18,
-    longSwipesMs: 220,
-    shortSwipes: true,
-    watchOverflow: true,
-    effect: "slide",
-    followFinger: true,
-    navigation: {
-      prevEl: salesNavPrev,
-      nextEl: salesNavNext,
-    },
-    on: {
-      init(instance) {
-        updateMeta(instance.activeIndex, { animate: false });
+    const isMobile = window.innerWidth <= 1200;
+    const swiper = new window.Swiper(salesGalleryMain, {
+      slidesPerView: isMobile ? 1 : "auto",
+      spaceBetween: isMobile ? 0 : 30,
+      speed: 1100,
+      loop: false,
+      centeredSlides: isMobile,
+      slidesOffsetAfter: isMobile ? 0 : 100,
+      allowTouchMove: true,
+      grabCursor: true,
+      resistance: true,
+      resistanceRatio: 0.72,
+      threshold: 8,
+      longSwipesRatio: 0.18,
+      longSwipesMs: 220,
+      shortSwipes: true,
+      watchOverflow: true,
+      effect: "slide",
+      followFinger: true,
+      navigation: {
+        prevEl: salesNavPrev,
+        nextEl: salesNavNext,
       },
-      slideChange(instance) {
-        updateMeta(instance.activeIndex);
+      on: {
+        init(instance) {
+          updateMeta(instance.activeIndex, { animate: false });
+        },
+        slideChange(instance) {
+          updateMeta(instance.activeIndex);
+        },
       },
-    },
-  });
+    });
 
-  // Keyboard navigation
-  salesGalleryMain.addEventListener("keydown", (event) => {
-    if (event.key === "ArrowLeft") {
-      event.preventDefault();
-      swiper.slidePrev();
-    } else if (event.key === "ArrowRight") {
-      event.preventDefault();
-      swiper.slideNext();
-    }
-  });
+    salesGalleryMain.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        swiper.slidePrev();
+      } else if (event.key === "ArrowRight") {
+        event.preventDefault();
+        swiper.slideNext();
+      }
+    });
 
-  // Accessibility
-  salesGalleryMain.tabIndex = 0;
-  salesGalleryMain.setAttribute("role", "group");
-  salesGalleryMain.setAttribute("aria-label", "Слайдер продаж");
+    salesGalleryMain.tabIndex = 0;
+    salesGalleryMain.setAttribute("role", "group");
+    salesGalleryMain.setAttribute("aria-label", "Слайдер продаж");
+  });
 }
 
 // Initialize when DOM is ready

@@ -3043,7 +3043,7 @@ body.site-menu-open {
     background: #0f0f0f;
     overflow: hidden;
     z-index: 6;
-    padding: 200px 0 150px;
+    padding: 100px 0 150px;
 }
 
 .sales {
@@ -3724,6 +3724,39 @@ left: 0;
     padding-top: 141px;
 }
 
+.sales-top-layout-wrapp--before-sales {
+    max-height: min(920px, 92vh);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 56px;
+    padding-bottom: 56px;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.sales-top-layout-wrapp--before-sales .sales-top-layout {
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    max-width: 1920px;
+    align-items: center;
+}
+
+@media (max-width: 1200px) {
+    .sales-top-layout-wrapp--before-sales {
+        max-height: none;
+        display: block;
+        overflow: visible;
+        padding-top: 60px;
+        padding-bottom: 40px;
+    }
+
+    .sales-top-layout-wrapp--before-sales .sales-top-layout {
+        align-items: stretch;
+    }
+}
+
 .headliners-wrapp {
     position: relative;
     width: 100%;
@@ -4299,7 +4332,7 @@ left: 0;
 }
 
 .partners-row-light .partners-row-track {
-    animation: partnersLightMarquee 25s linear infinite;
+    animation: partnersLightMarquee 8s linear infinite;
 }
 
 .partners-row-dark-first,
@@ -8593,7 +8626,7 @@ left: 0;
     }
 
     .sales-nominee-cta {
-        margin-top: 200px;
+        margin-top: 50px;
         margin-bottom: 144px;
     }
 
