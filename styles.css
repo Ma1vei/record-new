@@ -2145,7 +2145,7 @@ body.site-menu-open {
     padding: 100px 60px 80px;
     text-align: center;
     z-index: 2;
-    transition: margin-top 0.78s cubic-bezier(0.22, 1, 0.32, 1);
+    transition: margin-top 2.5s cubic-bezier(0.16, 0.84, 0.44, 1);
 }
 
 .promo-header.promo-header--nudge-center {
