@@ -301,8 +301,8 @@ if (document.readyState === "loading") {
 
 // LENIS
 // ==========================================
-// ПК: длинная инерция колеса. <1200: syncTouch, инерция умеренно ограничена (не «рваный» натив).
-// Оверлеи с data-lenis-prevent — нативный скролл внутри (меню, попапы).
+// Только ПК (≥1200): плавный скролл колесом. На мобилке Lenis выключен — нативный скролл +
+// отдельный потолок шага (см. initMobileDocumentScrollCap), без «липкой» интерполяции.
 // ==========================================
 const LENIS_LAYOUT_BREAKPOINT = 1200;
 
@@ -323,36 +323,113 @@ function createDesktopLenisOptions() {
   };
 }
 
-function createMobileLenisOptions() {
-  const easing = (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t));
-  /** Потолок скорости/дистанции ×1.5 относительно предыдущего мобильного пресета */
-  const v = 1.5;
-  return {
-    wrapper: window,
-    content: document.documentElement,
-    orientation: "vertical",
-    gestureOrientation: "vertical",
-    infinite: false,
-    easing,
-    smoothWheel: true,
-    syncTouch: true,
-    syncTouchLerp: 0.12 * v,
-    touchInertiaMultiplier: Math.round(22 * v),
-    touchMultiplier: 1.02 * v,
-    wheelMultiplier: 0.64 * v,
-    lerp: 0.14 * v,
-    duration: 1.35 / v,
-  };
+let lenis = null;
+if (typeof Lenis === "function" && window.innerWidth >= LENIS_LAYOUT_BREAKPOINT) {
+  lenis = new Lenis(createDesktopLenisOptions());
 }
 
-let lenis = null;
-if (typeof Lenis === "function") {
-  lenis = new Lenis(
-    window.innerWidth >= LENIS_LAYOUT_BREAKPOINT
-      ? createDesktopLenisOptions()
-      : createMobileLenisOptions()
-  );
-}
+// ==========================================
+// Мобилка: без Lenis — ограничение «рывка» за один touchmove / wheel (не улететь за кадр).
+// ==========================================
+(function initMobileDocumentScrollCap() {
+  const BP = LENIS_LAYOUT_BREAKPOINT;
+  const mq = window.matchMedia(`(max-width: ${BP - 1}px)`);
+  /** px за одно touchmove; больше = быстрее верхняя скорость свайпа */
+  const MAX_TOUCH_STEP = 92;
+  /** px за одно wheel (планшет/мышь) */
+  const MAX_WHEEL_STEP = 140;
+
+  let attached = false;
+  let prevTouchY = null;
+  let prevTouchX = null;
+
+  function scrollCapExcluded(el) {
+    if (!(el instanceof Element)) return true;
+    if (el.closest("[data-lenis-prevent]")) return true;
+    const tag = el.tagName;
+    if (tag === "TEXTAREA" || tag === "SELECT") return true;
+    if (tag === "INPUT") {
+      const type = (el.getAttribute("type") || "text").toLowerCase();
+      if (!["checkbox", "radio", "button", "submit", "file", "hidden"].includes(type)) return true;
+    }
+    return false;
+  }
+
+  function onTouchStart(e) {
+    if (e.touches.length !== 1) return;
+    prevTouchY = e.touches[0].clientY;
+    prevTouchX = e.touches[0].clientX;
+  }
+
+  function onTouchMove(e) {
+    if (e.touches.length !== 1) return;
+    const target = e.target;
+    if (!(target instanceof Element) || scrollCapExcluded(target)) return;
+    if (prevTouchY === null) return;
+
+    const touch = e.touches[0];
+    const y = touch.clientY;
+    const x = touch.clientX;
+    const dy = prevTouchY - y;
+    const ady = Math.abs(dy);
+    const adx = Math.abs(x - (prevTouchX ?? x));
+    if (adx > ady * 1.2) {
+      prevTouchX = x;
+      prevTouchY = y;
+      return;
+    }
+    if (ady <= MAX_TOUCH_STEP) {
+      prevTouchX = x;
+      prevTouchY = y;
+      return;
+    }
+    e.preventDefault();
+    window.scrollBy(0, Math.sign(dy) * MAX_TOUCH_STEP);
+    prevTouchX = x;
+    prevTouchY = y;
+  }
+
+  function onTouchEnd() {
+    prevTouchY = null;
+    prevTouchX = null;
+  }
+
+  function onWheel(e) {
+    const target = e.target;
+    if (!(target instanceof Element) || scrollCapExcluded(target)) return;
+    const ay = Math.abs(e.deltaY);
+    const ax = Math.abs(e.deltaX);
+    if (ax > ay) return;
+    if (ay <= MAX_WHEEL_STEP) return;
+    e.preventDefault();
+    window.scrollBy(0, Math.sign(e.deltaY) * MAX_WHEEL_STEP);
+  }
+
+  function sync() {
+    const want = mq.matches;
+    if (want === attached) return;
+    if (want) {
+      window.addEventListener("touchstart", onTouchStart, { passive: true });
+      window.addEventListener("touchmove", onTouchMove, { passive: false });
+      window.addEventListener("touchend", onTouchEnd, { passive: true });
+      window.addEventListener("touchcancel", onTouchEnd, { passive: true });
+      window.addEventListener("wheel", onWheel, { passive: false });
+      attached = true;
+    } else {
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchmove", onTouchMove);
+      window.removeEventListener("touchend", onTouchEnd);
+      window.removeEventListener("touchcancel", onTouchEnd);
+      window.removeEventListener("wheel", onWheel);
+      attached = false;
+      prevTouchY = null;
+      prevTouchX = null;
+    }
+  }
+
+  mq.addEventListener("change", sync);
+  sync();
+})();
 
 // Функция для синхронизации скролла с частотой обновления экрана
 function raf(time) {
