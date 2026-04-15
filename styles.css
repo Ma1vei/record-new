@@ -2062,6 +2062,62 @@ body.site-menu-open {
     }
 }
 
+/* ПК, низкое окно: при «масштаб» сильнее опустить оверлеи к футеру «28 МАЯ 2026» */
+@media (min-width: 1200px) and (max-height: 962px) {
+    .status:has(.status-title-sub-1.is-active) {
+        --status-foot-cluster-lower: clamp(
+            62px,
+            calc(var(--status-view-lift) * 0.36 + 54px),
+            310px
+        );
+    }
+
+    /* Правый оверлей (дата) — на 20px выше левого при низком окне */
+    .status:has(.status-title-sub-1.is-active) .status-statue-overlay--date {
+        transform: translateY(calc(-1 * var(--status-view-lift) + var(--status-foot-cluster-lower) - 20px));
+    }
+}
+
+/* ПК, очень низкое окно (≈835px): оба оверлея ещё на 20px выше */
+@media (min-width: 1200px) and (max-height: 835px) {
+    .status:has(.status-title-sub-1.is-active) .status-statue-overlay--award {
+        transform: translateY(calc(-1 * var(--status-view-lift) + var(--status-foot-cluster-lower) - 20px));
+    }
+
+    .status:has(.status-title-sub-1.is-active) .status-statue-overlay--date {
+        transform: translateY(calc(-1 * var(--status-view-lift) + var(--status-foot-cluster-lower) - 40px));
+    }
+}
+
+/* ПК, высота ≤780px: компактная типографика */
+@media (min-width: 1200px) and (max-height: 780px) {
+    .status-footer {
+        font-size: 160px;
+    }
+
+    .status-title-main,
+    .status-title-sub {
+        font-size: 53px;
+        line-height: 53px;
+    }
+
+    .status-award-main {
+        font-size: 27px;
+    }
+
+    .status-award-sub {
+        font-size: 17px;
+    }
+
+    .status-date-main {
+        font-size: 32px;
+    }
+
+    .status-date-sub {
+        font-size: 19px;
+    }
+}
+
 @media (max-width: 1199px) {
     .status:has(.status-title-sub-1.is-active) {
         --status-view-lift: clamp(40px, 12vw, 100px);
