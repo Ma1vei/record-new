@@ -6,7 +6,7 @@ function escapeHtml(text) {
     .replace(/"/g, "&quot;");
 }
 
-/** Одно слово: буква в .sales-title-o по центру слова (кроме «продажи» — отдельный макет). */
+/** Одно слово: буква О в .sales-title-o (только если есть буква О в слове). */
 function buildSingleWordSalesTitleRow(word) {
   const raw = String(word || "").trim();
   if (!raw) {
@@ -19,25 +19,15 @@ function buildSingleWordSalesTitleRow(word) {
   if (chars.length === 1) {
     return `<span class="sales-title-part sales-title-part-left">${escapeHtml(chars[0])}</span>`;
   }
-  let i = Math.floor(chars.length / 2);
-  const isSpace = (idx) => /\s/.test(chars[idx]);
-  if (isSpace(i)) {
-    let step = 1;
-    while (step < chars.length) {
-      if (i + step < chars.length && !isSpace(i + step)) {
-        i = i + step;
-        break;
-      }
-      if (i - step >= 0 && !isSpace(i - step)) {
-        i = i - step;
-        break;
-      }
-      step += 1;
-    }
+  // Ищем букву О/о/o в слове
+  const oIndex = chars.findIndex(c => c === 'О' || c === 'о' || c === 'o' || c === 'O');
+  if (oIndex === -1) {
+    // Нет буквы О — выводим без искажений
+    return `<span class="sales-title-part sales-title-part-left">${escapeHtml(raw)}</span>`;
   }
-  const left = chars.slice(0, i).join("");
-  const mid = chars[i];
-  const right = chars.slice(i + 1).join("");
+  const left = chars.slice(0, oIndex).join("");
+  const mid = chars[oIndex];
+  const right = chars.slice(oIndex + 1).join("");
   return `<span class="sales-title-part sales-title-part-left">${escapeHtml(left)}</span><span class="sales-title-o">${escapeHtml(mid)}</span><span class="sales-title-part sales-title-part-right">${escapeHtml(right)}</span>`;
 }
 
@@ -79,6 +69,20 @@ const SALES_SLIDES = [
   },
 ];
 
+// Ceremonia Slider Configuration
+const CEREMONIA_SLIDES = [
+  {
+    title: "продажи",
+    main: "./assets/ceremonia1.jpg",
+    copy: "16 лет оргкомитет проводит мегасштабную рекламную и PR-кампанию Премии (наружная и радио реклама, реклама на такси) с целью увеличения посещаемости сайта recordi.ru.<br><br>Следовательно, повышает узнаваемость ваших объектов и продажи",
+  },
+  {
+    title: "АУДИТОРИЯ",
+    main: "./assets/ceremonia2.jpg",
+    copy: "Участие в премии открывает доступ к широкой аудитории покупателей и инвесторов, формируя устойчивый интерес к вашим проектам на рынке недвижимости.",
+  },
+];
+
 // Initialize Sales Slider (each `.sales-top-layout-wrapp` gets its own Swiper)
 function initSalesSlider() {
   if (typeof window.Swiper !== "function") {
@@ -103,7 +107,9 @@ function initSalesSlider() {
       return;
     }
 
-    const slides = SALES_SLIDES.slice();
+    // Определяем какой массив слайдов использовать
+    const isCeremonia = wrapp.classList.contains('ceremonia');
+    const slides = isCeremonia ? CEREMONIA_SLIDES.slice() : SALES_SLIDES.slice();
     const wrapper = salesGalleryMain.querySelector(".swiper-wrapper");
 
     if (!wrapper) {
@@ -119,6 +125,7 @@ function initSalesSlider() {
         alt="Слайд ${index + 1}"
         loading="${index === 0 ? "eager" : "lazy"}"
         decoding="async"
+        style="${isCeremonia ? (index === 0 ? 'transform: scale(1.5); transform-origin: top center; object-position: 50% 35%;' : index === 1 ? 'transform: scale(2); transform-origin: top left; object-position: 0% 0%;' : '') : ''}"
       />
     </div>
   `).join("");
@@ -179,12 +186,12 @@ function initSalesSlider() {
 
     const isMobile = window.innerWidth <= 1200;
     const swiper = new window.Swiper(salesGalleryMain, {
-      slidesPerView: isMobile ? 1 : "auto",
+      slidesPerView: isMobile ? 1 : 1.1,
       spaceBetween: isMobile ? 0 : 30,
       speed: 1100,
       loop: false,
       centeredSlides: isMobile,
-      slidesOffsetAfter: isMobile ? 0 : 100,
+      slidesOffsetAfter: isMobile ? 0 : 0,
       allowTouchMove: true,
       grabCursor: true,
       resistance: true,

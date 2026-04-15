@@ -3070,15 +3070,18 @@ body.site-menu-open {
 
 .sales-gallery {
     width: 100%;
-    max-width: 960px;
+    max-width: none;
     height: 824px;
     border-radius: 10px;
-    overflow: hidden;
+    overflow: visible;
 }
 
 .sales-gallery-main.swiper {
     touch-action: pan-y;
     overflow: hidden;
+    width: 100%;
+    height: 824px;
+    clip-path: inset(0 -100px 0 0);
 }
 
 .sales-gallery-main .swiper-wrapper {
@@ -3092,6 +3095,34 @@ body.site-menu-open {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    align-items: flex-start;
+    flex: 0 0 auto;
+    width: 45%;
+    max-width: 640px;
+    min-width: 380px;
+}
+
+.sales-bottom {
+    width: 100%;
+    align-self: stretch;
+}
+
+.sales-col-right {
+    display: flex;
+    flex-direction: column;
+    align-self: stretch;
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: 850px;
+    overflow: hidden;
+}
+
+.sales-col-right .sales-gallery,
+.sales-col-right .sales-gallery-main.swiper,
+.sales-col-right .swiper-wrapper,
+.sales-col-right .sales-gallery-slide.swiper-slide {
+    height: 824px !important;
+    overflow: visible;
 }
 
 .sales-header h2  {
@@ -3100,8 +3131,8 @@ body.site-menu-open {
 
 .sales-gallery-slide.swiper-slide {
     position: relative;
-    width: 860px;
-    height: 100%;
+    width: 100%;
+    height: 824px;
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
     border-radius: 10px;
@@ -3115,15 +3146,21 @@ body.site-menu-open {
     border-radius: 10px;
 }
 
-.sales-title {
+/* Второй слайд ceremonia: увеличить и показать левую верхнюю четверть */
+.sales-top-layout-wrapp.ceremonia .swiper-slide[data-slide-index="1"] .sales-gallery-image {
+    transform: scale(2) !important;
+    transform-origin: top left !important;
+    object-position: 0% 0% !important;
+}
 
-    max-width: 1200px;
+.sales-title {
+    max-width: 100%;
     display: flex;
     align-items: baseline;
     gap: 10px;
     color: transparent;
     font-family: "Roboto", sans-serif;
-    font-size: 134px;
+    font-size: clamp(80px, 9vw, 134px);
     font-weight: 300;
     line-height: 1.08;
     letter-spacing: -8.07px;
@@ -3132,6 +3169,7 @@ body.site-menu-open {
     -webkit-background-clip: text;
     background-clip: text;
     transition: opacity 0.25s ease;
+    overflow: visible;
 }
 
 .sales-title.is-fading {
@@ -3171,14 +3209,13 @@ body.site-menu-open {
 
 .sales-line {
     width: 100%;
-    max-width: 704px;
     height: 1px;
     margin: 0 0 40px 0;
     background: rgba(255, 255, 255);
 }
 
 .sales-copy {
-    max-width: 734px;
+    max-width: none;
     margin: 0 0 60px 0;
     color: #fff;
     font-family: "Manrope", sans-serif;
@@ -3738,6 +3775,7 @@ left: 0;
 .sales-top-layout-wrapp--before-sales .sales-top-layout {
     margin-left: auto;
     margin-right: auto;
+    gap: 80px;
     width: 100%;
     max-width: 1920px;
     align-items: center;
@@ -3753,7 +3791,8 @@ left: 0;
     }
 
     .sales-top-layout-wrapp--before-sales .sales-top-layout {
-        align-items: stretch;
+        align-items:  center;
+        gap: 30px;
     }
 }
 
@@ -3838,7 +3877,8 @@ left: 0;
 .sales-top-layout {
     display: flex;
     justify-content: space-between;
-    align-items: top;
+    align-items: stretch;
+    gap: 30px;
 }
 
 .sales-top-layout {
@@ -5858,7 +5898,7 @@ left: 0;
         gap: 50px;
     }
     .sales-gallery-slide.swiper-slide {
-        width: 654px;
+        width: 100%;
     }
     .title-top, .title-bottom {
         font-size: 100px;
@@ -6067,9 +6107,6 @@ left: 0;
     .sales-gallery-slide.swiper-slide {
         height: 83%;
     }
-    .sales-gallery-slide.swiper-slide {
-        width: 550px;
-    }
     .sales-col-left {
         height: 690px;
         width: 50%;
@@ -6081,13 +6118,20 @@ left: 0;
     }
 
     .sales-col-right {
-        max-width: 45%;
+        max-width: 850px;
+        flex: 1 1 auto;
+    }
+    .sales-col-right .sales-gallery,
+    .sales-col-right .sales-gallery-main.swiper,
+    .sales-col-right .swiper-wrapper,
+    .sales-col-right .sales-gallery-slide.swiper-slide {
+        height: 690px !important;
     }
     .sales-title {
-        font-size: 100px;
+        font-size: 80px;
     }
     .sales-title-o {
-        font-size: 100px;
+        font-size: 80px;
     }
     .sales-copy {
         font-size: 18px;
@@ -7249,8 +7293,8 @@ left: 0;
         flex-direction: column-reverse;
         width: 100%;
         max-width: none;
-        margin-left: 0;
-        margin-right: 0;
+        margin-left: auto;
+        margin-right: auto;
         padding: 0;
         position: relative;
         align-items: center;
@@ -8502,7 +8546,15 @@ left: 0;
         padding-left: 100px;
     }
     .sales-gallery-slide.swiper-slide {
-        width: 654px;
+        width: 100%;
+        min-height: unset;
+    }
+    .sales-gallery {
+        min-height: unset;
+        height: auto;
+    }
+    .sales-gallery-main.swiper {
+        min-height: unset;
     }
     .title-top, .title-bottom {
         font-size: 100px;
@@ -8642,12 +8694,9 @@ left: 0;
     .sales-gallery-slide.swiper-slide {
         height: 83%;
     }
-    .sales-gallery-slide.swiper-slide {
-        width: 550px;
-    }
     .sales-col-left {
         height: 690px;
-        width: 50%;
+        width: auto;
     }
 
     .sales-nominee-cta {
@@ -8656,7 +8705,14 @@ left: 0;
     }
 
     .sales-col-right {
-        max-width: 45%;
+        max-width: 850px;
+        flex: 1 1 auto;
+    }
+    .sales-col-right .sales-gallery,
+    .sales-col-right .sales-gallery-main.swiper,
+    .sales-col-right .swiper-wrapper,
+    .sales-col-right .sales-gallery-slide.swiper-slide {
+        height: 690px !important;
     }
     .sales-title {
         font-size: 100px;
@@ -8666,7 +8722,6 @@ left: 0;
     }
     .sales-copy {
         font-size: 18px;
-        max-width: 500px;
         margin-left: 0;
     }
 
@@ -8863,10 +8918,6 @@ left: 0;
 
     .sales-top-layout  {
         padding-left: 60px;
-    }
-
-    .sales-line {
-        max-width: 500px;
     }
 
     .interview {
@@ -9261,10 +9312,16 @@ left: 0;
 
     .sales-top-layout-wrapp,
     .headliners-wrapp {
+        padding: 0 20px;
+        padding-top: 37px;
         width: 375px;
         max-width: min(375px, 100vw);
         margin-left: auto;
         margin-right: auto;
+    }
+
+    .sales-gallery-image {
+        border-radius: 0;
     }
 
     .headliners {
@@ -9305,8 +9362,8 @@ left: 0;
         flex-direction: column-reverse;
         width: 100%;
         max-width: none;
-        margin-left: 0;
-        margin-right: 0;
+        margin-left: auto;
+        margin-right: auto;
         padding: 0;
         position: relative;
         align-items: center;
@@ -9324,6 +9381,7 @@ left: 0;
     }
 
     .sales-col-left {
+        padding: 0 20px;
         width: 335px;
         height: auto;
     }
@@ -9447,7 +9505,7 @@ left: 0;
     }
 
     .sales-nominee-cta {
-        margin-top: 100px;
+        margin-top: 0px;
         padding-top: 84px;
         padding-bottom: 52px;
     }
@@ -9480,6 +9538,7 @@ left: 0;
 
     .sales-gallery-slide.swiper-slide {
         height: 83%;
+        border-radius: 0;
     }
 
     .sales-ceremony {
@@ -9859,7 +9918,7 @@ left: 0;
     }
 
     .status-statue-overlay--award {
-        left: -10px;
+        left: 10px;
         top: 80px;
         width: 135px;
     }
