@@ -546,7 +546,8 @@ requestAnimationFrame(raf);
       promoContent.style.transform = `translate3d(-50%, ${startY()}px, 0)`;
       resetItemRise();
     } else {
-      const span = Math.max(1, overlapZone - scrolledAtCardsPhase);
+      const baseSpan = Math.max(1, overlapZone - scrolledAtCardsPhase);
+      const span = narrow ? baseSpan * 60 : baseSpan;
       const t = Math.max(0, Math.min(1, (scrolled - scrolledAtCardsPhase) / span));
       /* Ниже степень — движение ближе к скроллу, плавнее без «рваного» конца */
       const pCards = 1 - Math.pow(1 - t, 1.45);
@@ -2008,24 +2009,19 @@ function initReviewsOfficialScrollEffect() {
       const letter = slide.querySelector(".reviews-letter-img");
       const person = slide.querySelector(".reviews-person-info");
       const frame = slide.querySelector(".reviews-letter-frame");
+      
+      // Set initial opacity for mobile fade animation
+      slide.style.opacity = index === 0 ? "1" : "0";
+      
       if (frame) {
         frame.style.transformOrigin = "";
         frame.style.transform = "";
       }
-      if (index === 0) {
-        if (portrait) portrait.style.transform = "translateY(0)";
-        if (letter) letter.style.transform = "scale(1)";
-        if (person) {
-          person.style.transform = "translateY(0)";
-          person.style.opacity = "1";
-        }
-      } else {
-        if (portrait) portrait.style.transform = "translateY(100%)";
-        if (letter) letter.style.transform = "scale(0)";
-        if (person) {
-          person.style.transform = "translateY(0)";
-          person.style.opacity = "1";
-        }
+      if (portrait) portrait.style.transform = "";
+      if (letter) letter.style.transform = "";
+      if (person) {
+        person.style.transform = "";
+        person.style.opacity = "1";
       }
     });
   }
@@ -2038,6 +2034,10 @@ function initReviewsOfficialScrollEffect() {
       const letter = slide.querySelector(".reviews-letter-img");
       const person = slide.querySelector(".reviews-person-info");
       const frame = slide.querySelector(".reviews-letter-frame");
+      
+      // Reset opacity for desktop
+      slide.style.opacity = "";
+      
       if (frame) {
         frame.style.transformOrigin = "";
         frame.style.transform = "";
@@ -2074,98 +2074,138 @@ function initReviewsOfficialScrollEffect() {
     const maxScroll = Math.max(1, sectionHeight - windowHeight);
     const currentScroll = Math.max(0, -rect.top);
 
-    let scrollProgress;
-    if (currentScroll < maxScroll * 0.1) {
-      scrollProgress = 0;
-    } else {
-      const animatedScroll = currentScroll - maxScroll * 0.1;
-      const animatedMaxScroll = maxScroll * 0.9;
-      scrollProgress = Math.min(3, (animatedScroll / animatedMaxScroll) * 2 + 1);
-    }
-
-    const textScrollProgress = Math.min(3, (currentScroll / maxScroll) * 3);
-    const textSlide = Math.min(Math.floor(textScrollProgress), totalSlides - 1);
-    const textLocalProgress = Math.min(1, textScrollProgress - textSlide);
-
-    const targetSlide = Math.min(Math.floor(scrollProgress), totalSlides - 1);
-    const localProgress = Math.min(1, scrollProgress - targetSlide);
-
-    if (targetSlide !== currentSlide) {
-      slides.forEach((s) => s.classList.remove("active"));
-      if (slides[targetSlide]) slides[targetSlide].classList.add("active");
-      currentSlide = targetSlide;
-    }
-
-    if (currentSlide === 0) {
-      const firstSlide = slides[0];
-      const portrait = firstSlide.querySelector(".reviews-portrait-img");
-      const letter = firstSlide.querySelector(".reviews-letter-img");
-      if (portrait) portrait.style.transform = "translateY(0)";
-      if (letter) letter.style.transform = "scale(1)";
-
-      if (slides[1]) {
-        const nextPortrait = slides[1].querySelector(".reviews-portrait-img");
-        const nextLetter = slides[1].querySelector(".reviews-letter-img");
-        if (nextPortrait) nextPortrait.style.transform = "translateY(100%)";
-        if (nextLetter) nextLetter.style.transform = "scale(0)";
-      }
-    }
-
-    if (currentSlide > 0) {
-      const activeSlide = slides[currentSlide];
-      const portrait = activeSlide.querySelector(".reviews-portrait-img");
-      const letter = activeSlide.querySelector(".reviews-letter-img");
-      const frame = activeSlide.querySelector(".reviews-letter-frame");
-
-      if (portrait) {
-        const portraitY = (1 - localProgress) * 100;
-        portrait.style.transform = `translateY(${portraitY}%)`;
-      }
-      if (letter) {
-        const letterScale = localProgress;
-        letter.style.transform = `scale(${letterScale})`;
-      }
-      if (frame) {
-        const frameScale = localProgress;
-        frame.style.transformOrigin = "50.25% 45%";
-        frame.style.transform = `scale(${frameScale})`;
-      }
-
-      for (let i = currentSlide + 1; i < totalSlides; i += 1) {
-        const nextSlide = slides[i];
-        const nextPortrait = nextSlide.querySelector(".reviews-portrait-img");
-        const nextLetter = nextSlide.querySelector(".reviews-letter-img");
-        if (nextPortrait) nextPortrait.style.transform = "translateY(100%)";
-        if (nextLetter) nextLetter.style.transform = "scale(0)";
-      }
-    }
-
     const narrow = isReviewsMobileStack();
 
-    slides.forEach((slide, index) => {
-      const slidePerson = slide.querySelector(".reviews-person-info");
-      if (!slidePerson) return;
-
-      if (narrow) {
-        if (index < textSlide) {
-          slidePerson.style.transform = "";
-          slidePerson.style.opacity = "0";
-        } else if (index === textSlide) {
-          let personOpacity;
-          if (textLocalProgress < 0.3) {
-            personOpacity = textLocalProgress / 0.3;
-          } else if (textLocalProgress > 0.7) {
-            personOpacity = Math.max(0, (1 - textLocalProgress) / 0.3);
-          } else {
-            personOpacity = 1;
-          }
-          slidePerson.style.transform = "";
-          slidePerson.style.opacity = String(personOpacity);
-        } else {
-          slidePerson.style.transform = "";
-          slidePerson.style.opacity = "0";
+    if (narrow) {
+      // Mobile: Simple fade animation for entire slides
+      // Map actual scroll to virtual scroll (2x range)
+      const virtualScroll = (currentScroll / maxScroll) * (maxScroll * 2);
+      const totalScrollRange = maxScroll * 2;
+      const slideScrollSpace = totalScrollRange / totalSlides;
+      let activeSlideIndex = 0;
+      let fadeProgress = 0;
+      
+      for (let i = 0; i < totalSlides; i++) {
+        const slideStart = i * slideScrollSpace;
+        const slideEnd = (i + 1) * slideScrollSpace;
+        
+        if (virtualScroll >= slideStart && virtualScroll < slideEnd) {
+          activeSlideIndex = i;
+          fadeProgress = (virtualScroll - slideStart) / slideScrollSpace;
+          break;
+        } else if (i === totalSlides - 1 && virtualScroll >= slideStart) {
+          activeSlideIndex = i;
+          fadeProgress = 1;
         }
+      }
+
+      if (activeSlideIndex !== currentSlide) {
+        slides.forEach((s) => s.classList.remove("active"));
+        if (slides[activeSlideIndex]) slides[activeSlideIndex].classList.add("active");
+        currentSlide = activeSlideIndex;
+      }
+
+      // Apply opacity based on fade progress
+      slides.forEach((slide, index) => {
+        if (index < activeSlideIndex) {
+          slide.style.opacity = "0";
+        } else if (index === activeSlideIndex) {
+          if (index === totalSlides - 1) {
+            // Last slide stays visible
+            slide.style.opacity = "1";
+          } else if (fadeProgress < 0.3) {
+            // Fully visible phase
+            slide.style.opacity = "1";
+          } else if (fadeProgress < 0.5) {
+            // Fade out phase
+            slide.style.opacity = String(1 - ((fadeProgress - 0.3) / 0.2));
+          } else {
+            slide.style.opacity = "0";
+          }
+        } else if (index === activeSlideIndex + 1) {
+          if (fadeProgress < 0.5) {
+            slide.style.opacity = "0";
+          } else {
+            // Fade in phase
+            slide.style.opacity = String((fadeProgress - 0.5) / 0.5);
+          }
+        } else {
+          slide.style.opacity = "0";
+        }
+      });
+    } else {
+      // Desktop: Keep existing complex animation
+      let scrollProgress;
+      if (currentScroll < maxScroll * 0.1) {
+        scrollProgress = 0;
       } else {
+        const animatedScroll = currentScroll - maxScroll * 0.1;
+        const animatedMaxScroll = maxScroll * 0.9;
+        scrollProgress = Math.min(3, (animatedScroll / animatedMaxScroll) * 2 + 1);
+      }
+
+      const textScrollProgress = Math.min(3, (currentScroll / maxScroll) * 3);
+      const textSlide = Math.min(Math.floor(textScrollProgress), totalSlides - 1);
+      const textLocalProgress = Math.min(1, textScrollProgress - textSlide);
+
+      const targetSlide = Math.min(Math.floor(scrollProgress), totalSlides - 1);
+      const localProgress = Math.min(1, scrollProgress - targetSlide);
+
+      if (targetSlide !== currentSlide) {
+        slides.forEach((s) => s.classList.remove("active"));
+        if (slides[targetSlide]) slides[targetSlide].classList.add("active");
+        currentSlide = targetSlide;
+      }
+
+      if (currentSlide === 0) {
+        const firstSlide = slides[0];
+        const portrait = firstSlide.querySelector(".reviews-portrait-img");
+        const letter = firstSlide.querySelector(".reviews-letter-img");
+        if (portrait) portrait.style.transform = "translateY(0)";
+        if (letter) letter.style.transform = "scale(1)";
+
+        if (slides[1]) {
+          const nextPortrait = slides[1].querySelector(".reviews-portrait-img");
+          const nextLetter = slides[1].querySelector(".reviews-letter-img");
+          if (nextPortrait) nextPortrait.style.transform = "translateY(100%)";
+          if (nextLetter) nextLetter.style.transform = "scale(0)";
+        }
+      }
+
+      if (currentSlide > 0) {
+        const activeSlide = slides[currentSlide];
+        const portrait = activeSlide.querySelector(".reviews-portrait-img");
+        const letter = activeSlide.querySelector(".reviews-letter-img");
+        const frame = activeSlide.querySelector(".reviews-letter-frame");
+
+        if (portrait) {
+          const portraitY = (1 - localProgress) * 100;
+          portrait.style.transform = `translateY(${portraitY}%)`;
+        }
+        if (letter) {
+          const letterScale = localProgress;
+          letter.style.transform = `scale(${letterScale})`;
+        }
+        if (frame) {
+          const frameScale = localProgress;
+          frame.style.transformOrigin = "50.25% 45%";
+          frame.style.transform = `scale(${frameScale})`;
+        }
+
+        for (let i = currentSlide + 1; i < totalSlides; i += 1) {
+          const nextSlide = slides[i];
+          const nextPortrait = nextSlide.querySelector(".reviews-portrait-img");
+          const nextLetter = nextSlide.querySelector(".reviews-letter-img");
+          if (nextPortrait) nextPortrait.style.transform = "translateY(100%)";
+          if (nextLetter) nextLetter.style.transform = "scale(0)";
+        }
+      }
+
+      // Desktop text animation
+      slides.forEach((slide, index) => {
+        const slidePerson = slide.querySelector(".reviews-person-info");
+        if (!slidePerson) return;
+
         if (index < textSlide) {
           slidePerson.style.transform = "translateY(-800px)";
           slidePerson.style.opacity = "0";
@@ -2186,8 +2226,13 @@ function initReviewsOfficialScrollEffect() {
           slidePerson.style.transform = "translateY(200px)";
           slidePerson.style.opacity = "0";
         }
-      }
-    });
+      });
+
+      // Reset slide opacity for desktop
+      slides.forEach((slide) => {
+        slide.style.opacity = "";
+      });
+    }
   }
 
   window.addEventListener("resize", () => {
