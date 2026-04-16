@@ -11,8 +11,25 @@
 :root {
   --bg-color: #0a0a0a;
   --text-white: #ffffff;
+  --real-vh: 100vh;
   /* Дистанция скролла, пока промо «прилипло», и наезд следующей секции поверх */
   --promo-overlap-scroll: min(220vh, 3200px);
+}
+
+.videoteka-tabs-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 17px;
+    flex-wrap: wrap;
+    flex: 1;
+}
+
+.videoteka-tabs-trigger {
+    display: none;
+}
+
+.videoteka-tabs-dropdown {
+    display: none !important;
 }
 
 /* Мобилка: длиннее «дорожка» скролла пока промо sticky — жест сначала проигрывает карточки, потом уезжает страница */
@@ -22,11 +39,7 @@
     }
 }
 
-@media (max-width: 768px) {
-    :root {
-        --promo-overlap-scroll: min(280vh, 3000px);
-    }
-}
+
 
 * {
     margin: 0;
@@ -862,51 +875,9 @@ body.site-menu-open {
 }
 
 /* Мобильное меню на всю ширину экрана (узкий планшет / телефон) */
-@media (max-width: 900px) {
-    .site-menu__shell {
-        width: 100%;
-        max-width: 100%;
-        left: 0;
-        right: 0;
-    }
 
-    .page-menu-btn {
-        left: auto;
-        right: max(16px, env(safe-area-inset-right, 0px));
-    }
-}
 
-@media (min-width: 1201px) {
-    .site-menu__shell {
-        max-height: 100dvh;
-        min-height: 0;
-    }
 
-    .site-menu__panel {
-        display: flex;
-        flex-direction: column;
-        min-height: 0;
-        max-height: 100%;
-        overflow: hidden;
-    }
-
-    .site-menu__content {
-        flex: 1 1 auto;
-        min-height: 0;
-        overflow-y: auto;
-        overflow-x: hidden;
-        overscroll-behavior: contain;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
-        -ms-overflow-style: none;
-    }
-
-    .site-menu__content::-webkit-scrollbar {
-        width: 0;
-        height: 0;
-        display: none;
-    }
-}
 
 
 /* Radio Section Styles */
@@ -989,12 +960,7 @@ body.site-menu-open {
     font-size: 30px;
 }
 
-@media (max-width: 1520px) {
-    .headliners__copy.sales-copy.reveal-text.in-view {
-        font-size: 24px;
-        margin-top: 15px;
-    }
-}
+
 
 .radio-pulse-dot {
     position: absolute;
@@ -1497,8 +1463,8 @@ body.site-menu-open {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    max-height: 100vh;
-    height: 100vh;
+    max-height: var(--real-vh);
+    height: var(--real-vh);
     max-width: 1920px;
     margin: 0 auto;
     overflow: visible;
@@ -1571,7 +1537,7 @@ body.site-menu-open {
 
 
 .main-content {
-    height: 65vh;
+    height: 85vh;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -1655,7 +1621,7 @@ body.site-menu-open {
 .countdown-pin {
     position: sticky;
     top: 0;
-    height: 100vh;
+    height: var(--real-vh);
     background: url('./assets/bg_lines_4005_123.svg') center/cover no-repeat, #0F0F0F;
     overflow: hidden;
 }
@@ -1996,12 +1962,7 @@ body.site-menu-open {
     transform: translateY(-4px);
 }
 
-@media (max-width: 768px) {
-    .status-footer {
-        bottom: 40px;
-        font-size: clamp(60px, 12vw, 120px);
-    }
-}
+
 
 .status-statue-stage {
     position: absolute;
@@ -2066,111 +2027,20 @@ body.site-menu-open {
 }
 
 /* «28 мая»: при «масштаб» — ширина ≥1200: футер + оверлеи; <1200: только футер */
-@media (min-width: 1200px) {
-    .status:has(.status-title-sub-1.is-active) {
-        --status-foot-cluster-lower: 50px;
-        --status-view-lift: max(0px, calc(var(--status-h) - 100dvh));
-    }
 
-    .status:has(.status-title-sub-1.is-active) .status-statue-overlay--award,
-    .status:has(.status-title-sub-1.is-active) .status-statue-overlay--date {
-        transform: translateY(calc(-1 * var(--status-view-lift) + var(--status-foot-cluster-lower)));
-    }
-}
 
-@media (min-width: 1700px) and (max-height: 962px)  {
-   
-    .status-award-main {
-        font-size: 31px;
-    }
-    .status-award-sub {
-    margin: 10px 0 0;
-    max-width: 276px;
-    text-align: right;
-    color: rgba(255, 255, 255, 0.48);
-    font-family: "Manrope", sans-serif;
-    font-size: 19.973px;
-    font-weight: 400;
-    line-height: normal;
-}
-} 
+ 
 
 /* ПК, низкое окно: при «масштаб» сильнее опустить оверлеи к футеру «28 МАЯ 2026» */
-@media (min-width: 1200px) and (max-height: 962px) {
-    .status:has(.status-title-sub-1.is-active) {
-        --status-foot-cluster-lower: clamp(
-            62px,
-            calc(var(--status-view-lift) * 0.36 + 54px),
-            310px
-        );
-    }
-    
 
-    /* Правый оверлей (дата) — на 20px выше левого при низком окне */
-    .status:has(.status-title-sub-1.is-active) .status-statue-overlay--date {
-        transform: translateY(calc(-1 * var(--status-view-lift) + var(--status-foot-cluster-lower) - 20px));
-    }
-}
 
 /* ПК, очень низкое окно (≈835px): оба оверлея ещё на 20px выше */
-@media (min-width: 1200px) and (max-height: 835px) {
-    .status:has(.status-title-sub-1.is-active) .status-statue-overlay--award {
-        transform: translateY(calc(-1 * var(--status-view-lift) + var(--status-foot-cluster-lower) - 20px));
-    }
 
-    .status:has(.status-title-sub-1.is-active) .status-statue-overlay--date {
-        transform: translateY(calc(-1 * var(--status-view-lift) + var(--status-foot-cluster-lower) - 40px));
-    }
-}
 
 /* ПК, высота ≤780px: компактная типографика */
-@media (min-width: 1200px) and (max-height: 780px) {
-    .status-footer {
-        font-size: 160px;
-    }
 
-    .status-title-main,
-    .status-title-sub {
-        font-size: 53px;
-        line-height: 53px;
-    }
 
-    .status-award-main {
-        font-size: 27px;
-    }
 
-    .status-award-sub {
-        font-size: 17px;
-    }
-
-    .status-date-main {
-        font-size: 32px;
-    }
-
-    .status-date-sub {
-        font-size: 19px;
-    }
-}
-
-@media (max-width: 1199px) {
-    .status:has(.status-title-sub-1.is-active) {
-        --status-view-lift: clamp(40px, 12vw, 100px);
-        --status-foot-cluster-lower: 0px;
-    }
-
-    .status-statue-overlay--award {
-        transform: none;
-    }
-
-    .status-statue-overlay--date {
-        transform: none;
-    }
-
-    /* С футером «28 МАЯ» / датой внизу: тот же подъём, что у `.status-footer` через --status-view-lift */
-    .status:has(.status-title-sub-1.is-active) .status-statue-overlay--date {
-        transform: translateY(calc(-1 * var(--status-view-lift) + var(--status-foot-cluster-lower)));
-    }
-}
 
 .status-date-main {
     margin: 0;
@@ -2210,7 +2080,7 @@ body.site-menu-open {
     position: sticky;
     top: 0;
     z-index: 1;
-    height: 100vh;
+    height: var(--real-vh);
     width: 100%;
     overflow: visible;
 }
@@ -2218,7 +2088,7 @@ body.site-menu-open {
 .promo-pin {
     position: relative;
     height: 100%;
-    min-height: 100vh;
+    min-height: var(--real-vh);
     width: 100%;
     background: #f9f0e8;
     overflow: hidden;
@@ -2230,7 +2100,7 @@ body.site-menu-open {
     left: 50%;
     top: 0;
     width: 120%;
-    height: 100vh;
+    height: var(--real-vh);
     pointer-events: none;
     background-image: url("data:image/svg+xml,%3Csvg preserveAspectRatio='none' width='100%25' height='100%25' viewBox='0 0 2794 1317' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cline x1='0' y1='0' x2='2794' y2='1317' stroke='rgba(82,58,37,0.27)' stroke-width='1.5'/%3E%3Cline x1='2794' y1='0' x2='0' y2='1317' stroke='rgba(82,58,37,0.27)' stroke-width='1.5'/%3E%3Cline x1='51' y1='658.5' x2='2743' y2='658.5' stroke='rgba(82,58,37,0.27)' stroke-width='1.5'/%3E%3C/svg%3E");
     z-index: 0;
@@ -2501,7 +2371,7 @@ body.site-menu-open {
     width: 100%;
     margin: 0 auto;
     background: #f9f0e8;
-    min-height: 100vh;
+    min-height: var(--real-vh);
     z-index: 5;
 }
 
@@ -2760,7 +2630,7 @@ body.site-menu-open {
     width: 100%;
     margin: 0 auto;
     background: #f9f0e8;
-    min-height: 100vh;
+    min-height: var(--real-vh);
     height: 130vh;
     z-index: 2;
     overflow: hidden;
@@ -2771,7 +2641,7 @@ body.site-menu-open {
     top: 0;
     left: 0;
     width: 100%;
-    height: 100vh;
+    height: var(--real-vh);
     z-index: 1;
 }
 
@@ -3987,13 +3857,7 @@ left: 0;
     z-index: 6;
 }
 
-@media (max-width: 1520px) {
-    .headliners__card-label {
-        transform: scale(0.8);
-        left: -16px !important;
-        bottom: 10px !important;
-    }
-}
+
 
 .headliners {
     padding: 101px 100px 100px;
@@ -4133,7 +3997,7 @@ left: 0;
 }
 
 .sales-ceremony {
-    min-height: 100vh;
+    min-height: var(--real-vh);
     position: relative;
     max-width: 1920px;
     margin: auto;
@@ -5049,7 +4913,7 @@ left: 0;
   .reviews-sticky-wrapper {
     position: sticky;
     top: 0;
-    height: 100vh;
+    height: var(--real-vh);
     overflow: visible;
     z-index: 1;
   }
@@ -5702,33 +5566,7 @@ left: 0;
       box-shadow: none;
     }
   }
-  @media (max-width: 1865px) {
-    .reviews-letter-wrapper {
-      width: 900px;
-      height: 916px;
-    }
-
-    .reviews-letter-frame {
-      width: 900px;
-      height: 916px;
-    }
-
-    .reviews-letter-img {
-      width: 460px;
-      height: 793px;
-      left: 220px;
-      top: 16px;
-    }
-    .reviews-media-title-top {
-        font-size: 120px;
-    }
-    .reviews-media-title-bottom {
-        font-size: 120px;
-    }
-    .reviews-person-info {
-        top: 1020px !important
-    }
-  }
+  
   
   .reviews-person-info {
     position: absolute;
@@ -5752,64 +5590,9 @@ left: 0;
     font: 400 24px / 1.38 "Manrope", sans-serif;
   }
 
-  @media (max-width: 1800px) {
-    .reviews-letter-wrapper {
-      width: 840px;
-      height: 855px;
-    }
+  
 
-    .reviews-letter-frame {
-      width: 840px;
-      height: 855px;
-    }
-
-    .reviews-letter-img {
-      width: 428px;
-      height: 737px;
-      left: 206px;
-      top: 15px;
-    }
-
-    .reviews-portrait-wrapper {
-      width: 224px;
-      height: 244px;
-      top: 500px;
-    }
-
-    .reviews-person-info {
-      top: 1000px !important;
-      width: 500px;
-    }
-
-    .reviews-person-info h3 {
-      margin: 0 0 18px;
-      font: 300 76px / 1.06 "Roboto", sans-serif;
-      letter-spacing: -4px;
-    }
-
-    .reviews-person-info p {
-      font: 400 21px / 1.35 "Manrope", sans-serif;
-    }
-  }
-
-  @media (max-width: 1600px) {
-    .reviews-letter-wrapper {
-      width: 760px;
-      height: 774px;
-    }
-
-    .reviews-letter-frame {
-      width: 760px;
-      height: 774px;
-    }
-
-    .reviews-letter-img {
-      width: 387px;
-      height: 667px;
-      left: 186px;
-      top: 14px;
-    }
-  }
+  
 
  
   
@@ -6060,565 +5843,15 @@ left: 0;
 
 
 
-@media (max-width: 1700px) {
-    .partners-header {
-        margin-bottom: 120px;
-    }
-    .reviews-person-info h3 {
-        font-size: 60px;
-    }
-    .reviews-person-info {
-        top: 1030px !important;
-    }
-    .reviews-person-info p {
-        font-size: 18px;
-        width: 400px;
-    }
-    .partners-features-wrapper {
-        margin: auto;
-        max-width: 380px;
-        margin-top: 230px;
-        margin-left: 0;
-    }
-    .partners-top-button {
-        left: 640px;
-        font-size: 22px;
-        width: 300px;
-        height: 55px;
-    }
-    .nomarg {
-        margin-top: 0;
-    }
-    .partners-title {
-        font-size: 120px;
-    }
-    .sales-top-layout {
-        gap: 50px;
-    }
-    .sales-gallery-slide.swiper-slide {
-        width: 100%;
-    }
-    .title-top, .title-bottom {
-        font-size: 100px;
-    }
 
-    .gradient-text {
-        margin-left: 55px;
-    }
 
-    .main-content {
-        min-height: 400px;
-        height: 60vh;
-    }
 
-    .sales-nominee-sides {
-        height: 500px;
-    }
 
-    .badge {
-        height: 50px;
-    }
 
-    .titles-wrapper {
-        padding-left: 30px;
-        padding-right: 30px;
-        max-width: 1300px;
-    }
 
-    .title-white, .title-gold {
-        font-size: 110px;
-    }
 
-    .cards-group {
-        max-width: 1360px;
-    }
 
-    .timer-card {
-        width: 230px;
-        height: 210px;
-    }
 
-    .timer-card .number {
-        font-size: 116px;
-        line-height: 116px;
-    }
-
-    .timer-card .label {
-        font-size: 18px;
-        line-height: 18px;
-    }
-
-    .status {
-        height: 1540px;
-        --status-h: 1540px;
-    }
-
-    .status-statue-img {
-        height: 2150px;
-    }
-
-    .status-title-main, .status-title-sub {
-        font-size: 65px;
-    }
-
-    .status-statue-overlay--award {
-        left: 10px;
-    }
-
-    .benefit-copy {
-        font-size: 18px;
-        width: 350px;
-        max-width: 350px;
-    }
-
-    .benefits-header {
-        width: 1000px;
-        margin: 0 auto;
-        margin-left: 100px;
-    }
-
-    .benefits-title, .benefits-subtitle, .benefits-decor-o {
-        font-size: 80px;
-    }
-
-    .benefit-right {
-        left: calc(100% - 80px - clamp(180px, 18vw, 340px));
-        width: clamp(180px, 18vw, 340px);
-        transition: left 800ms cubic-bezier(0.4, 0, 0.2, 1), transform 800ms cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .benefit-item:hover .benefit-right {
-        left: 50%;
-        transform: translateX(-50%);
-    }
-
-    .sales-nominee-title {
-        font-size: 100px;
-        letter-spacing: -6%;
-        line-height: 100px;
-    }
-    .sales-nominee-top-o {
-        font-size: 100px;
-    }
-    .sales-nominee-note {
-        font-size: 26px;
-    }
-    .sales-nominee-btn {
-        width: 350px;
-        height: 90px;
-        font-size: 22px;
-    }
-    .sales-nominee-o {
-        font-size: 100px;
-    }
-    .radio-text-div {
-        width: 1241px !important;
-    }
-    .radio-map-image {
-        transform: translateX(-229px) !important;
-    }
-    .radio-cities {
-            left: -114px !important; 
-    }
-}
-
-@media (max-width: 1600px) {
-    .reviews-person-info {
-        top: 947px !important;
-        left: 263px !important;
-    }
-    .reviews-portrait-wrapper {
-        width: 200px;
-        height: 220px;
-    }
-    .reviews-media-title-top {
-        font-size: 100px;
-    }
-    .reviews-media-title-bottom {
-        font-size: 100px;
-        transform: translate(-243px, 27px);
-    }
-
-}
-
-@media (max-width: 1520px) {
-    .news-title {
-        font-size: 100px;
-    }
-    .news-tab {
-        font-size: 18px;
-    }
-    .news-title-o {
-        font-size: 100px;
-        margin-top: 11px;
-        
-    }
-    .reviews-media-tab[data-reviews-tab="gratitude"] {
-        width: auto;
-    }
-    .reviews-media-tab[data-reviews-tab="feedback"] {
-        width: auto;
-    }
-    .reviews-media-tab[data-reviews-tab="official"] {
-        width: auto;
-    }
-    .reviews-media-tab {
-        font-size: 18px;
-    }
-    .advert-title, .section-heading {
-        font-size: 145px;
-    }
-    .advert-subtitle {
-        font-size: 28px;
-    }
-    .radio-text-div {
-        width: 1041px !important;
-    }
-    .radio-map-image {
-        transform: translateX(-329px) !important;
-    }
-    .radio-cities {
-            left: -214px !important; 
-    }
-    .radio-title-right {
-    transform: translate(100px, 283px) !important;
-     }
-    .sales-nominee-title {
-        font-size: 80px;
-        letter-spacing: -6%;
-        line-height: 70px;
-    }
-    .sales-nominee-top-o {
-        font-size: 80px;
-    }
-    .sales-nominee-note {
-        font-size: 22px;
-    }
-    .sales-nominee-btn {
-        width: 350px;
-        height: 90px;
-        font-size: 20px;
-    }
-    .sales-nominee-o {
-        font-size: 80px;
-    }
-    .sales-gallery-slide.swiper-slide {
-        height: 83%;
-    }
-    .sales-col-left {
-        height: 690px;
-        width: 50%;
-    }
-
-    .sales-nominee-cta {
-        margin-top: 200px;
-        margin-bottom: 144px;
-    }
-
-    .sales-col-right {
-        max-width: 850px;
-        flex: 1 1 auto;
-    }
-    .sales-col-right .sales-gallery,
-    .sales-col-right .sales-gallery-main.swiper,
-    .sales-col-right .swiper-wrapper,
-    .sales-col-right .sales-gallery-slide.swiper-slide {
-        height: 690px !important;
-    }
-    .sales-title {
-        font-size: 80px;
-    }
-    .sales-title-o {
-        font-size: 80px;
-    }
-    .sales-copy {
-        font-size: 18px;
-        max-width: 500px;
-        margin-left: 0;
-    }
-
-    .sales-nominee-sides {
-        height: 420px;
-    }
-
-    .sales-bottom {
-        margin-top: auto;
-    }
-    .sales-conditions {
-        font-size: 18px;
-        width: 295px;
-        height: 75px;
-    }
-    .titles-wrapper {
-        padding-left: 30px;
-        padding-right: 30px;
-        max-width: 1200px;
-        padding-top: 15vh;
-    }
-
-    .main-content {
-        min-height: 400px;
-        height: 75vh;
-        padding-top: 50px;
-    }
-
-    .title-white, .title-gold {
-        font-size: 100px;
-    }
-
-    .cards-group {
-        max-width: 1160px;
-    }
-
-    .timer-card {
-        width: 190px;
-        height: 170px;
-    }
-
-    .timer-card .number {
-        font-size: 100px;
-        line-height: 100px;
-    }
-
-    .timer-card .label {
-        font-size: 15px;
-        line-height: 15px;
-    }
-
-    .status {
-        padding-top: 200px;
-        height: 1420px;
-        --status-h: 1420px;
-    }
-
-    .status-statue-img {
-        height: 1950px;
-    }
-
-    .status-title-main, .status-title-sub {
-        font-size: 55px;
-        margin-bottom: 20px;
-    }
-
-    .status-quote {
-        right: 100px;
-        width: 340px;
-        min-height: 55px;
-    }
-
-    .status-quote p {
-        font-size: 18px;
-    }
-
-    .status-statue-overlay--award {
-        width: 255px;
-        left: 60px;
-    }
-
-    .benefit-copy {
-        font-size: 16px;
-        width: 320px;
-        max-width: 320px;
-        right: 80px;
-    }
-
-    .benefit-right {
-        left: calc(100% - 70px - clamp(160px, 16vw, 300px));
-        width: clamp(160px, 16vw, 300px);
-        transition: left 800ms cubic-bezier(0.4, 0, 0.2, 1), transform 800ms cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .benefit-item:hover .benefit-right {
-        left: 50%;
-        transform: translateX(-50%);
-    }
-
-    .status-award-main {
-        font-size: 28px;
-        width: 255px;
-    }
-
-    .status-date-sub {
-        font-size: 17px;
-    }
-
-    .status-date-main {
-        font-size: 28px;
-    }
-
-    .status-award-sub {
-        font-size: 17px;
-        line-height: 17px;
-    }
-
-    .status-bracket {
-        height: 80px;
-    }
-    .promo-title span{
-        font-size: 70px;
-    }
-    
-    .promo-copy {
-        font-size: 16px;
-    }
-
-    .screen-benefits {
-        padding-bottom: 90px;
-    }
-
-    .benefit-item {
-        padding: 20px 60px;
-        min-height: 230px;
-    }
-
-    .benefit-name {
-        font-size: 50px;
-    }
-
-    .benefit-index {
-        font-size: 70px;
-    }
-
-    .benefits-btn {
-        font-size: 20px;
-        width: 300px;
-        height: 90px;
-    }
-
-    .benefits-link {
-        font-size: 20px;
-    }
-
-    .benefits-cta {
-        margin-top: 0;
-    }
-
-    .sales-ceremony-title {
-        padding-left: 200px;
-    }
-    .sales-info2 {
-        transform: translate(0, 104px);
-    }
-    .sales-info3 {
-        transform: translate(120px, -84px);
-    }
-
-    .media-content-overlay {
-        width: 1000px;
-    }
-
-    .media-title, .media-title-o {
-        font-size: 140px;
-    }
-
-    .media-title-group {
-        padding: 0;
-        padding-top: 100px;
-    }
-
-    .media-book-frame {
-        width: 170vh;
-        height: 170vh;
-        margin-top: 280px;
-        padding-bottom: 200px;
-    }
-
-    .media-scroll-hint {
-        top: 320px;
-        font-size: 13px;
-    }
-}
-
-@media (max-width: 1500px) {
-    .reviews-letter-wrapper {
-      width: 648px;
-      height: 660px;
-    }
-
-    .organizer-pattern {
-        width: 648px;
-        height: 240px;
-    }
-    .organizer-kicker {
-        font-size: 34px;
-    }
-    .organizer-award-name {
-        font-size: 38px;
-    }
-    .reviews-letter-frame {
-      width: 648px;
-      height: 660px;
-    }
-
-    .reviews-letter-img {
-      width: 330px;
-      height: 569px;
-      left: 159px;
-      top: 12px;
-    }
-    .reviews-portrait-wrapper {
-        top: 430px;
-    }
-    .reviews-person-info {
-        top: 825px !important;
-        left: 200px !important;
-    }
-    .reviews-media-title-top{
-        font-size: 80px;
-    }
-    .reviews-media-title-bottom {
-        font-size: 80px;
-        transform: translate(-150px, 10px);
-    }
-    .reviews-person-info h3 {
-        font-size: 50px;
-    }
-    .reviews-person-info p {
-        font-size: 16px;
-    }
-  }
-
-@media(max-width: 1370px) {
-    .screen-reviews .reviews-letter-wrapper {
-      width: 560px;
-      height: 570px;
-    }
-    .reviews-media-head {
-        align-items: center;
-    }
-    .screen-reviews .reviews-letter-frame {
-      width: 560px;
-      height: 570px;
-    }
-
-    .screen-reviews .reviews-letter-img {
-      width: 285px;
-      height: 492px;
-      left: 138px;
-      top: 10px;
-    }
-
-    .screen-reviews .reviews-person-info {
-      top: 735px !important;
-    }
-
-    .screen-reviews .reviews-portrait-wrapper {
-      top: 440px;
-    }
-
-     .sales-ceremony-title {
-        
-    }
-    .sales-info1 {
-        transform: translate(-60px, 14px);
-    }
-    .sales-info2 {
-        transform: translate(0, 104px);
-    }
-    .sales-info3 {
-        transform: translate(50px, -104px);
-    }
-}
 
 /* Планшет/Телефон */
 @media (max-width: 1200px) {
@@ -6748,7 +5981,7 @@ left: 0;
     .screen-reviews {
         padding: 0 0 0px;
         height: auto;
-        min-height: 100vh;
+        min-height: var(--real-vh);
         overflow: visible;
     }
     
@@ -6865,7 +6098,7 @@ left: 0;
         align-content: flex-start;
         gap: 0 20px;
         inset: 0;
-        min-height: 100vh;
+        min-height: var(--real-vh);
         padding-top: 220px;
         padding-left: 16px;
         padding-right: 16px;
@@ -7832,7 +7065,7 @@ left: 0;
         margin-right: auto;
         position: relative;
         height: 100%;
-        min-height: 100vh;
+        min-height: var(--real-vh);
         box-sizing: border-box;
     }
 
@@ -8271,15 +7504,7 @@ left: 0;
     }
 }
 
-@media (max-width: 590px) {
-    .status-footer {
-        font-size: 67px;
-        bottom: calc(56px + var(--status-view-lift));
-    }
-    .radio-map-shell {
-        overflow: visible;
-    }
-}
+
 
 
 /* Interview Section Styles */
@@ -8751,558 +7976,11 @@ a.interview-node {
 }
 
 
-@media (max-width: 1700px) {
-    .sales-top-layout {
-        gap: 90px;
-        padding-left: 100px;
-    }
-    .sales-gallery-slide.swiper-slide {
-        width: 100%;
-        min-height: unset;
-    }
-    .sales-gallery {
-        min-height: unset;
-        height: auto;
-    }
-    .sales-gallery-main.swiper {
-        min-height: unset;
-    }
-    .title-top, .title-bottom {
-        font-size: 100px;
-    }
 
-    .gradient-text {
-        margin-left: 55px;
-    }
 
-    .main-content {
-        min-height: 400px;
-        height: 60vh;
-    }
 
-    .sales-nominee-sides {
-        height: 500px;
-    }
 
-    .badge {
-        height: 50px;
-    }
 
-    .titles-wrapper {
-        padding-left: 30px;
-        padding-right: 30px;
-        max-width: 1300px;
-    }
-
-    .title-white, .title-gold {
-        font-size: 110px;
-    }
-
-    .cards-group {
-        max-width: 1360px;
-    }
-
-    .timer-card {
-        width: 230px;
-        height: 210px;
-    }
-
-    .timer-card .number {
-        font-size: 116px;
-        line-height: 116px;
-    }
-
-    .timer-card .label {
-        font-size: 18px;
-        line-height: 18px;
-    }
-
-    .status {
-        height: 1540px;
-        --status-h: 1540px;
-    }
-
-    .status-statue-img {
-        height: 2150px;
-    }
-
-    .status-title-main, .status-title-sub {
-        font-size: 65px;
-    }
-
-    .status-statue-overlay--award {
-        left: 10px;
-    }
-
-    .benefit-copy {
-        font-size: 18px;
-        width: 350px;
-        max-width: 350px;
-    }
-
-    .benefits-header {
-        width: 1000px;
-        margin: 0 auto;
-        margin-left: 100px;
-    }
-
-    .benefits-title, .benefits-subtitle, .benefits-decor-o {
-        font-size: 80px;
-    }
-
-    .benefit-right {
-        left: calc(100% - 80px - clamp(180px, 18vw, 340px));
-        width: clamp(180px, 18vw, 340px);
-        transition: left 800ms cubic-bezier(0.4, 0, 0.2, 1), transform 800ms cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .benefit-item:hover .benefit-right {
-        left: 50%;
-        transform: translateX(-50%);
-    }
-
-    .sales-nominee-title {
-        font-size: 100px;
-        letter-spacing: -6%;
-        line-height: 100px;
-    }
-    .sales-nominee-top-o {
-        font-size: 100px;
-    }
-    .sales-nominee-note {
-        font-size: 26px;
-    }
-    .sales-nominee-btn {
-        width: 350px;
-        height: 90px;
-        font-size: 22px;
-    }
-    .sales-nominee-o {
-        font-size: 100px;
-    }
-}
-
-@media (max-width: 1700px) and (min-width: 1201px) {
-    .sales-nominee-title {
-        font-size: 80px;
-        letter-spacing: -6%;
-        line-height: 70px;
-    }
-    .sales-nominee-top-o {
-        font-size: 80px;
-    }
-    .sales-nominee-note {
-        font-size: 22px;
-    }
-    .sales-nominee-btn {
-        width: 350px;
-        height: 90px;
-        font-size: 20px;
-    }
-    .sales-nominee-o {
-        font-size: 80px;
-    }
-    .sales-gallery-slide.swiper-slide {
-        height: 83%;
-    }
-    .sales-col-left {
-        height: 690px;
-        width: auto;
-    }
-
-    .sales-nominee-cta {
-        margin-top: 50px;
-        margin-bottom: 144px;
-    }
-
-    .sales-col-right {
-        max-width: 850px;
-        flex: 1 1 auto;
-    }
-    .sales-col-right .sales-gallery,
-    .sales-col-right .sales-gallery-main.swiper,
-    .sales-col-right .swiper-wrapper,
-    .sales-col-right .sales-gallery-slide.swiper-slide {
-        height: 690px !important;
-    }
-    .sales-title {
-        font-size: 100px;
-    }
-    .sales-title-o {
-        font-size: 100px;
-    }
-    .sales-copy {
-        font-size: 18px;
-        margin-left: 0;
-    }
-
-    .sales-nominee-sides {
-        height: 420px;
-    }
-
-    .sales-bottom {
-        margin-top: auto;
-    }
-    .sales-conditions {
-        font-size: 18px;
-        width: 295px;
-        height: 75px;
-    }
-    .titles-wrapper {
-        padding-left: 30px;
-        padding-right: 30px;
-        max-width: 1200px;
-        padding-top: 15vh;
-    }
-
-    .main-content {
-        min-height: 400px;
-        height: 75vh;
-        padding-top: 50px;
-    }
-
-    .title-white, .title-gold {
-        font-size: 100px;
-    }
-
-    .cards-group {
-        max-width: 1160px;
-    }
-
-    .timer-card {
-        width: 190px;
-        height: 170px;
-    }
-
-    .timer-card .number {
-        font-size: 100px;
-        line-height: 100px;
-    }
-
-    .timer-card .label {
-        font-size: 15px;
-        line-height: 15px;
-    }
-
-    .status {
-        padding-top: 200px;
-        height: 1420px;
-        --status-h: 1420px;
-    }
-
-    .status-statue-img {
-        height: 1950px;
-    }
-
-    .status-title-main, .status-title-sub {
-        font-size: 55px;
-        margin-bottom: 20px;
-    }
-
-    .status-quote {
-        right: 100px;
-        width: 340px;
-        min-height: 55px;
-    }
-
-    .status-quote p {
-        font-size: 18px;
-    }
-
-    .status-statue-overlay--award {
-        width: 255px;
-        left: 60px;
-    }
-
-    .benefit-copy {
-        font-size: 16px;
-        width: 320px;
-        max-width: 320px;
-        right: 80px;
-    }
-
-    .benefit-right {
-        left: calc(100% - 70px - clamp(160px, 16vw, 300px));
-        width: clamp(160px, 16vw, 300px);
-        transition: left 800ms cubic-bezier(0.4, 0, 0.2, 1), transform 800ms cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .benefit-item:hover .benefit-right {
-        left: 50%;
-        transform: translateX(-50%);
-    }
-
-    .status-award-main {
-        font-size: 28px;
-        width: 255px;
-    }
-
-    .status-date-sub {
-        font-size: 17px;
-    }
-
-    .status-date-main {
-        font-size: 28px;
-    }
-
-    .status-award-sub {
-        font-size: 17px;
-        line-height: 17px;
-    }
-
-    .status-bracket {
-        height: 80px;
-    }
-    .promo-title span{
-        font-size: 70px;
-    }
-    
-    .promo-copy {
-        font-size: 16px;
-    }
-
-    .screen-benefits {
-        padding-bottom: 90px;
-    }
-
-    .benefit-item {
-        padding: 20px 60px;
-        min-height: 230px;
-    }
-
-    .benefit-name {
-        font-size: 50px;
-    }
-
-    .benefit-index {
-        font-size: 70px;
-    }
-
-    .benefits-btn {
-        font-size: 20px;
-        width: 300px;
-        height: 90px;
-    }
-
-    .benefits-link {
-        font-size: 20px;
-    }
-
-    .benefits-cta {
-        margin-top: 0;
-    }
-
-    .sales-ceremony-title {
-        padding-left: 200px;
-    }
-    .sales-info2 {
-        transform: translate(0, 104px);
-    }
-    .sales-info3 {
-        transform: translate(120px, -84px);
-    }
-
-    .media-content-overlay {
-        width: 1000px;
-    }
-
-    .media-title, .media-title-o {
-        font-size: 140px;
-    }
-
-    .media-title-group {
-        padding: 0;
-        padding-top: 100px;
-    }
-
-    .media-book-frame {
-        width: 170vh;
-        height: 170vh;
-        margin-top: 280px;
-        padding-bottom: 200px;
-    }
-
-    .media-scroll-hint {
-        top: 320px;
-        font-size: 13px;
-    }
-
-    .sales-top-layout  {
-        padding-left: 60px;
-    }
-
-    .interview {
-        padding: 80px 80px 80px;
-        min-height: 1140px;
-    }
-
-    .interview-heading {
-        width: 1190px;
-        margin: 0 auto 100px;
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%) scale(0.9);
-        transform-origin: center top;
-    }
-
-    .interview-title {
-        font-size: 65px;
-        line-height: 70px;
-        letter-spacing: -3.9px;
-    }
-
-    .interview-title-o {
-        font-size: 67px;
-        top: 11px;
-    }
-
-    .interview-ellipse-top {
-        width: 1100px;
-        height: 200px;
-        top: 253px;
-    }
-
-    .interview-ellipse-mid {
-        width: 1100px;
-        height: 200px;
-        top: 405px;
-    }
-
-    .interview-ellipse-low {
-        width: 1100px;
-        height: 200px;
-        top: 552px;
-    }
-
-    .interview-ellipse-bottom {
-        width: 920px;
-        height: 180px;
-        top: 730px;
-    }
-
-    .interview-axis {
-        top: 340px !important;
-        height: 600px !important;
-    }
-
-    .interview-info-card {
-        left: 50% !important;
-        top: 285px !important;
-        transform: translateX(-50%) scale(0.65);
-        transform-origin: center;
-    }
-
-    .interview-info-title,
-    .interview-info-subtitle {
-        font-size: 18px;
-    }
-
-    .interview-node {
-        transform: scale(0.8);
-        transform-origin: left center;
-    }
-
-    .interview-card-monte-2025 { left: calc(50% - 440px); top: 355px; }
-    .interview-card-kommersant-2025 { left: calc(50% - 235px); top: 390px; }
-    .interview-card-kp1-2025 { left: calc(50% + 40px); top: 385px; }
-    .interview-card-other-2025 { left: calc(50% + 320px); top: 360px; }
-
-    .interview-card-monte-2024 { left: calc(50% - 440px); top: 505px; }
-    .interview-card-kommersant-2024 { left: calc(50% - 235px); top: 540px; }
-    .interview-card-russian-2024 { left: calc(50% + 60px); top: 540px; }
-    .interview-card-other-2024 { left: calc(50% + 260px); top: 520px; }
-
-    .interview-card-monte-2023 { left: calc(50% - 440px); top: 657px; }
-    .interview-card-kommersant-2023 { left: calc(50% - 235px); top: 692px; }
-    .interview-card-kp1-2023 { left: calc(50% + 60px); top: 677px; }
-    .interview-card-kp2-2023 { left: calc(50% + 320px); top: 647px; }
-
-    .interview-year {
-        transform: scale(0.7);
-        transform-origin: left center;
-    }
-
-    .interview-year-2025 { left: calc(50% - 520px); top: 335px !important; }
-    .interview-year-2024 { left: calc(50% - 520px); top: 490px !important; }
-    .interview-year-2023 { left: calc(50% - 520px); top: 635px !important; }
-
-    .interview-reveal.is-visible {
-        transform: scale(0.65);
-    }
-
-    .interview-period {
-        transform: scale(0.65);
-        transform-origin: center;
-        top: 858px !important;
-    }
-
-    .interview-period-left { left: calc(50% - 330px); }
-    .interview-period-right { left: calc(50% + 180px); }
-
-    .interview-mini-year {
-        transform: scale(0.65);
-        transform-origin: left center;
-    }
-
-    .interview-year-trail.is-open .interview-mini-year {
-        transform: translateY(0) scale(0.7);
-    }
-
-    .interview-year-trail.is-open .interview-mini-year-2010 { transform: translateY(-45px) scale(0.7) !important; }
-    .interview-year-trail.is-open .interview-mini-year-2011a { transform: translateY(-15px) scale(0.7) !important; }
-    .interview-year-trail.is-open .interview-mini-year-2011b { transform: translateY(12px) scale(0.7) !important; }
-    .interview-year-trail.is-open .interview-mini-year-2012 { transform: translateY(28px) scale(0.7) !important; }
-    .interview-year-trail.is-open .interview-mini-year-2013 { transform: translateY(28px) scale(0.7) !important; }
-    .interview-year-trail.is-open .interview-mini-year-2014 { transform: translateY(12px) scale(0.7) !important; }
-    .interview-year-trail.is-open .interview-mini-year-2015 { transform: translateY(-15px) scale(0.7) !important; }
-    .interview-year-trail.is-open .interview-mini-year-2016 { transform: translateY(-45px) scale(0.7) !important; }
-    .interview-year-trail.is-open .interview-mini-year-2017 { transform: translateY(-15px) scale(0.7) !important; }
-    .interview-year-trail.is-open .interview-mini-year-2018 { transform: translateY(12px) scale(0.7) !important; }
-    .interview-year-trail.is-open .interview-mini-year-2019 { transform: translateY(28px) scale(0.7) !important; }
-    .interview-year-trail.is-open .interview-mini-year-2020 { transform: translateY(28px) scale(0.7) !important; }
-    .interview-year-trail.is-open .interview-mini-year-2021 { transform: translateY(12px) scale(0.7) !important; }
-    .interview-year-trail.is-open .interview-mini-year-2022 { transform: translateY(-15px) scale(0.7) !important; }
-
-    .interview-mini-year-2010 { left: calc(50% - 470px) !important; top: 840px !important; }
-    .interview-mini-year-2011a { left: calc(50% - 395px) !important; top: 840px !important; }
-    .interview-mini-year-2011b { left: calc(50% - 320px) !important; top: 840px !important; }
-    .interview-mini-year-2012 { left: calc(50% - 245px) !important; top: 840px !important; }
-    .interview-mini-year-2013 { left: calc(50% + 180px) !important; top: 840px !important; }
-    .interview-mini-year-2014 { left: calc(50% + 255px) !important; top: 840px !important; }
-    .interview-mini-year-2015 { left: calc(50% + 330px) !important; top: 840px !important; }
-    .interview-mini-year-2016 { left: calc(50% + 405px) !important; top: 840px !important; }
-    .interview-mini-year-2017 { left: calc(50% - 460px) !important; top: 840px !important; }
-    .interview-mini-year-2018 { left: calc(50% - 360px) !important; top: 840px !important; }
-    .interview-mini-year-2019 { left: calc(50% - 250px) !important; top: 840px !important; }
-    .interview-mini-year-2020 { left: calc(50% + 180px) !important; top: 840px !important; }
-    .interview-mini-year-2021 { left: calc(50% + 290px) !important; top: 840px !important; }
-    .interview-mini-year-2022 { left: calc(50% + 390px) !important; top: 840px !important; }
-
-    .interview-dot-1 { left: calc(50% - 310px); }
-    .interview-dot-2 { left: calc(50% - 70px); }
-    .interview-dot-3 { left: calc(50% + 250px); }
-    .interview-dot-4 { left: calc(50% + 190px); }
-    .interview-dot-5 { left: calc(50% - 70px); }
-
-    .interview-cta {
-        left: 50% !important;
-        transform: translateX(-50%) scale(0.65);
-        transform-origin: center;
-        top: 858px !important;
-    }
-}
-
-@media(max-width: 1370px) {
-    .sales-info1 {
-        transform: translate(-60px, 14px);
-    }
-    .sales-info2 {
-        transform: translate(0, 104px);
-    }
-    .sales-info3 {
-        transform: translate(50px, -104px);
-    }
-}
 
 /* Планшет/Телефон */
 @media (max-width: 1200px) {
@@ -9927,7 +8605,7 @@ a.interview-node {
         margin-right: auto;
         position: relative;
         height: 100%;
-        min-height: 100vh;
+        min-height: var(--real-vh);
         box-sizing: border-box;
     }
 
@@ -10682,11 +9360,7 @@ a.interview-node {
     text-transform: uppercase;
 }
 
-@media(max-width: 1600px) {
-    .reviews-media-library  {
-        font-size: 214px;
-    }
-}
+
 
 .reviews-media-arc {
     position: absolute;
@@ -10934,17 +9608,7 @@ a.interview-node {
     }
 }
 
-@media (max-width: 900px) {
-    .screen-media-library {
-        padding-top: 60px;
-    }
 
-    .reviews-media-library {
-        font-size: 70px;
-        line-height: 70px;
-        letter-spacing: -6%;
-    }
-}
 
 /* ============================================
    VIDEOTEKA SECTION
@@ -11293,12 +9957,7 @@ a.interview-node {
     background: rgba(255, 189, 138, 1);
 }
 
-@media (max-width: 480px) {
-    .yt-thumb {
-        image-rendering: -webkit-optimize-contrast;
-        image-rendering: crisp-edges;
-    }
-}
+
 
 /* Mobile styles */
 @media (max-width: 1200px) {
@@ -11535,30 +10194,7 @@ a.interview-node {
 }
 
 /* Desktop styles restore */
-@media (min-width: 1201px) {
-    .videoteka-tabs {
-        display: flex;
-        gap: 17px;
-    }
 
-    .videoteka-tabs-wrapper {
-        display: flex;
-        gap: 17px;
-        flex-wrap: wrap;
-    }
-
-    .videoteka-tabs-trigger {
-        display: none;
-    }
-
-    .videoteka-tabs-dropdown {
-        display: none !important;
-    }
-
-    .videoteka-title-mobile {
-        display: none;
-    }
-}
 
 /* ============================================
    SUBSCRIBE NEWS SECTION
@@ -11725,37 +10361,7 @@ a.interview-node {
     cursor: pointer;
 }
 
-@media (max-width: 1520px) {
-    .subscribe-news-field-email, .subscribe-news-field-phone {
-        width: 350px;
-        height: 100px;
-    }
 
-    .subscribe-news-submit {
-        width: 300px;
-        height: 100px;
-        font-size: 25px;
-    }
-
-    .subscribe-news-input {
-        height: 100px;
-        font-size: 25px;
-    }
-
-    .subscribe-news-subtitle {
-        font-size: 32px;
-    }
-
-    .subscribe-news-title, .subscribe-news-title-o {
-        font-size: 70px;
-        letter-spacing: -6%;
-    }
-
-    .subscribe-news-consent-text {
-        margin-top: 0;
-        font-size: 16px;
-    }
-}
 
 /* Mobile styles */
 @media (max-width: 1200px) {
@@ -12169,94 +10775,7 @@ a.interview-node {
     opacity: 0;
 }
 
-@media (max-width: 1520px) {
-    .contacts-section {
-        padding: 137px 40px 100px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
 
-    .contacts-cards {
-        gap: 17px;
-    }
-
-    .contacts-title {
-        font-size: 79px;
-        line-height: 141px;
-        margin-bottom: 55px;
-        text-align: center;
-    }
-
-    .contacts-card {
-        width: 308px;
-    }
-
-    .contacts-card-photo-shell {
-        width: 308px;
-        height: 239px;
-        margin-bottom: 40px;
-    }
-
-    .contacts-card-photo-anna {
-        left: -83px;
-        top: -33px;
-        width: 449px;
-        height: 306px;
-    }
-
-    .contacts-card-photo-valentina,
-    .contacts-card-photo-ratnikova {
-        width: 308px;
-        height: 239px;
-    }
-
-    .contacts-card-photo-pavel {
-        width: 308px;
-        height: 463px;
-    }
-
-    .contacts-card-role {
-        height: 44px;
-        font-size: 20px;
-        padding: 0 17px;
-        top: 164px;
-    }
-
-    .contacts-card-info {
-        width: 308px;
-        min-height: 187px;
-        padding: 20px 15px;
-    }
-
-    .contacts-card-name,
-    .contacts-card-link {
-        font-size: 20px;
-        line-height: 28px;
-    }
-
-    .contacts-card-name + .contacts-card-link {
-        margin-top: 18px;
-    }
-
-    .contacts-card-link + .contacts-card-link {
-        margin-top: 12px;
-    }
-
-    .contacts-card-actions {
-        gap: 6px;
-    }
-
-    .contacts-card-action {
-        width: 40px;
-        height: 40px;
-    }
-
-    .contacts-card-action-icons {
-        width: 18px;
-        height: 18px;
-    }
-}
 
 @media (max-width: 1200px) {
     .contacts-section {
@@ -12722,17 +11241,7 @@ body.modal-open {
     to   { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
 }
 
-@media (max-width: 480px) {
-    @keyframes popupAppear {
-        from { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
-        to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-    }
 
-    @keyframes popupDisappear {
-        from { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-        to   { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
-    }
-}
 
 .sales-popup-backdrop {
     position: absolute;
@@ -12944,140 +11453,7 @@ body.modal-open {
 .sales-popup-corner-br { left: 50%; top: 726px; margin-left: 596px; transform: scaleY(-1); }
 
 /* Adaptive 1200-1520px */
-@media (max-width: 1520px) {
-    .footer-section {
-        padding: 37px 60px 40px;
-    }
 
-    .footer-logo {
-        width: 186px;
-        height: 53px;
-    }
-
-    .footer-cta {
-        width: 185px;
-        height: 43px;
-        font-size: 17px;
-    }
-
-    .footer-cta-secondary {
-        width: 215px;
-    }
-
-    .footer-cta-arrow {
-        width: 16px;
-        height: 12px;
-    }
-
-    .footer-columns {
-        gap: 35px 95px;
-        margin-bottom: 80px;
-    }
-
-    .footer-column {
-        flex: 1 1 240px;
-        max-width: 300px;
-    }
-
-    .footer-column:nth-child(3) {
-        flex: 1 1 237px;
-    }
-
-    .footer-column:nth-child(4) {
-        flex: 1 1 244px;
-    }
-
-    .footer-column-title {
-        margin-bottom: 26px;
-        font-size: 18px;
-    }
-
-    .footer-column-links {
-        gap: 16px;
-    }
-
-    .footer-link {
-        padding-left: 26px;
-        font-size: 17px;
-    }
-
-    .footer-link::before {
-        height: 24px;
-    }
-
-    .footer-column-legal .footer-link {
-        padding-left: 35px;
-    }
-
-    .footer-column-legal .footer-link.is-accent {
-        font-size: 18px;
-    }
-
-    .footer-divider {
-        margin-bottom: 22px;
-    }
-
-    .footer-left {
-        gap: 88px;
-    }
-
-    .footer-newsletter {
-        gap: 30px;
-    }
-
-    .footer-newsletter-label {
-        font-size: 15px;
-    }
-
-    .footer-newsletter-row {
-        width: 289px;
-        height: 41px;
-    }
-
-    .footer-newsletter-input {
-        width: 115px;
-        font-size: 17px;
-        line-height: 23px;
-    }
-
-    .footer-newsletter-line {
-        width: 286px;
-    }
-
-    .footer-newsletter-submit {
-        width: 41px;
-        height: 41px;
-        top: -19px;
-    }
-
-    .footer-newsletter-submit::after {
-        width: 12px;
-        height: 12px;
-    }
-
-    .footer-socials {
-        grid-template-columns: 83px 144px 83px;
-        column-gap: 27px;
-        row-gap: 19px;
-    }
-
-    .footer-social-link {
-        font-size: 17px;
-    }
-
-    .footer-bottom-links {
-        gap: 19px;
-    }
-
-    .footer-bottom-link {
-        font-size: 15px;
-    }
-
-    .footer-copyright {
-        margin-top: 23px;
-        font-size: 15px;
-    }
-}
 
 /* Mobile styles */
 @media (max-width: 1200px) {
@@ -13550,16 +11926,7 @@ body.modal-open {
    }
 }
 
-@media (max-width: 375px) {
-    .gradient-text {
-        letter-spacing: -12%;
-        font-size: 40px;
-    }
-    .hero .title-top {
-        letter-spacing: -10%;
-        font-size: 50px;
-    }
-}
+
 
 
 /* Mobile: smoother promo header transition */
@@ -13716,19 +12083,7 @@ body.modal-open {
     line-height: 1.5;
 }
 
-@media (max-width: 1700px) {
-    .ceremonia-host-name {
-        font-size: 37px;
-        margin-bottom: 73px;
-    }
-    .ceremonia-host-desc {
-        font-size: 16px;
-    }
 
-        .partners-features-wrapper {
-        max-width: none;
-    }
-}
 
 @media (max-width: 1200px) {
     .sales-top-layout-wrapp.ceremonia .sales-title {
@@ -13766,12 +12121,4 @@ body.modal-open {
  * Status: ширина ≥1700px, высота 781–962px (<963) — меньше «28 МАЯ», .status-quote на 20px выше.
  * (min-height:781px) не пересекается с блоком ≤780px. Конец файла + #statusScreen + !important — перебить каскад.
  */
-@media (min-width: 1700px) and (max-height: 962px) and (min-height: 781px) {
-    #statusScreen .status-footer {
-        font-size: clamp(72px, 7.5vw, 168px) !important;
-    }
 
-    #statusScreen .status-quote {
-        top: 280px !important;
-    }
-}

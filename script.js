@@ -1,3 +1,22 @@
+// Масштабирование страницы пропорционально ширине экрана (только >1200px)
+(function applyPageScale() {
+  function updateScale() {
+    const w = window.innerWidth;
+    if (w >= 1200) {
+      const scale = Math.min(1, w / 1920);
+      document.documentElement.style.zoom = scale;
+      // Компенсируем vh: делим на scale чтобы получить реальный размер
+      const compensatedVh = (window.innerHeight / scale) + 'px';
+      document.documentElement.style.setProperty('--real-vh', compensatedVh);
+    } else {
+      document.documentElement.style.zoom = '';
+      document.documentElement.style.setProperty('--real-vh', window.innerHeight + 'px');
+    }
+  }
+  updateScale();
+  window.addEventListener('resize', updateScale, { passive: true });
+})();
+
 function escapeHtml(text) {
   return String(text)
     .replace(/&/g, "&amp;")
@@ -2495,10 +2514,12 @@ initMediaLibCarousel();
 function initVideotekaTabs() {
   const BREAKPOINT = 1200;
   const tabs = document.querySelector('.videoteka-tabs');
-  if (!tabs) return;
+  if (!tabs || tabs.dataset.initialized) return;
+  tabs.dataset.initialized = 'true';
 
   const title = tabs.querySelector('.videoteka-title-mobile');
   const buttons = Array.from(tabs.querySelectorAll('.videoteka-tab'));
+  const extraBtn = tabs.querySelector('.videoteba-tab-btn');
   if (!title || !buttons.length) return;
 
   const firstActive = buttons.find(b => b.classList.contains('is-active')) || buttons[0];
@@ -2526,6 +2547,7 @@ function initVideotekaTabs() {
   const wrapper = document.createElement('div');
   wrapper.className = 'videoteka-tabs-wrapper';
   buttons.forEach(btn => wrapper.appendChild(btn));
+  if (extraBtn) wrapper.appendChild(extraBtn);
   tabs.appendChild(wrapper);
 
   tabs.insertBefore(trigger, wrapper);
@@ -2572,6 +2594,55 @@ function initVideotekaTabs() {
 if (document.querySelector('.videoteka-tabs')) {
   initVideotekaTabs();
 }
+
+// Videoteka tab filtering
+(function initVideotekaFilter() {
+  const tabs = document.querySelector('.videoteka-tabs');
+  const list = document.querySelector('.videoteka-list');
+  if (!tabs || !list) return;
+
+  const items = Array.from(list.querySelectorAll('.videoteka-item'));
+
+  function filterByCategory(category) {
+    items.forEach(item => {
+      if (!category || category === 'all' || item.dataset.category === category) {
+        item.style.display = '';
+      } else {
+        item.style.display = 'none';
+      }
+    });
+  }
+
+  // Initial filter — show all
+  filterByCategory('all');
+
+  tabs.addEventListener('click', (e) => {
+    const btn = e.target.closest('.videoteka-tab');
+    const allBtn = e.target.closest('.videoteba-tab-btn');
+
+    if (allBtn) {
+      // Show all videos
+      tabs.querySelectorAll('.videoteka-tab').forEach(b => {
+        b.classList.remove('is-active');
+        b.setAttribute('aria-selected', 'false');
+      });
+      filterByCategory('all');
+      return;
+    }
+
+    if (!btn) return;
+
+    // Update active state
+    tabs.querySelectorAll('.videoteka-tab').forEach(b => {
+      b.classList.remove('is-active');
+      b.setAttribute('aria-selected', 'false');
+    });
+    btn.classList.add('is-active');
+    btn.setAttribute('aria-selected', 'true');
+
+    filterByCategory(btn.dataset.category);
+  });
+})();
 
 // ============================================
 // YOUTUBE PLAYER
