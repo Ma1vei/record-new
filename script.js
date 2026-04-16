@@ -880,7 +880,7 @@ requestAnimationFrame(raf);
       const rxT = rxTop + (rxBot - rxTop) * radialT;
       ptsArray.push([cx + Math.cos(angle) * rxT, cy - ry + t * ry * 2]);
     }
-    return ptsArray;
+    return ptsArray.reverse();
   }
 
   window._updateOrbitPhase = function () {
