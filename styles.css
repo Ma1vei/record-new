@@ -860,6 +860,21 @@ body.site-menu-open {
     }
 }
 
+/* Мобильное меню на всю ширину экрана (узкий планшет / телефон) */
+@media (max-width: 900px) {
+    .site-menu__shell {
+        width: 100%;
+        max-width: 100%;
+        left: 0;
+        right: 0;
+    }
+
+    .page-menu-btn {
+        left: auto;
+        right: max(16px, env(safe-area-inset-right, 0px));
+    }
+}
+
 @media (min-width: 1201px) {
     .site-menu__shell {
         max-height: 100dvh;
@@ -10130,7 +10145,7 @@ a.interview-node {
     }
 
     .status-statue-overlay--award {
-        left: 10px;
+        left: 3px;
         top: 80px;
         width: 135px;
     }
@@ -10997,6 +11012,45 @@ a.interview-node {
     height: 14px;
 }
 
+.videoteka-all-videos-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    margin-top: 48px;
+    padding: 0 28px;
+    box-sizing: border-box;
+    min-height: 50px;
+    border: none;
+    border-radius: 45px;
+    background: linear-gradient(180deg, #f5c3a0 37.149%, #f1a775 100%);
+    color: #523a25;
+    font: 300 16px/1 "Manrope", sans-serif;
+    letter-spacing: 0;
+    cursor: pointer;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.videoteka-all-videos-btn:hover,
+.videoteka-all-videos-btn:focus-visible {
+    opacity: 0.9;
+}
+
+.videoteka-all-videos-btn:focus-visible {
+    outline: 2px solid #dc1924;
+    outline-offset: 3px;
+}
+
+.videoteka-all-videos-btn img {
+    display: block;
+    width: 11px;
+    height: 15px;
+    flex-shrink: 0;
+    object-fit: contain;
+    transform: translateY(3px);
+}
+
 .videoteka-tab:hover:not(.is-active),
 .videoteka-tab:focus-visible:not(.is-active) {
     background: #DC1924;
@@ -11013,16 +11067,6 @@ a.interview-node {
     width: 100%;
     max-width: 1920px;
     margin: 0 auto;
-}
-
-.videoteka-list::before {
-    content: '';
-    position: absolute;
-    width: 460px;
-    left: 0;
-    top: 0;
-    height: 2px;
-    background-color: rgba(255, 255, 255, 0.23);
 }
 
 .videoteka-item {
@@ -11100,16 +11144,6 @@ a.interview-node {
     border: none;
     cursor: pointer;
     transition: opacity 220ms ease, transform 220ms ease;
-}
-
-.videoteka-item-play::before {
-    content: "";
-    position: absolute;
-    left: 23px;
-    top: 18px;
-    border-top: 12px solid transparent;
-    border-bottom: 12px solid transparent;
-    border-left: 17px solid #ffffff;
 }
 
 .videoteka-item.is-featured .videoteka-item-play {
@@ -11271,6 +11305,18 @@ a.interview-node {
         padding-right: 20px;
     }
 
+    .videoteka-all-videos-btn {
+        margin-top: 36px;
+        font-size: 18px;
+        min-height: 47px;
+        padding: 0 22px;
+    }
+
+    .videoteka-all-videos-btn img {
+        width: 10px;
+        height: 14px;
+    }
+
     .videoteka-tabs {
         display: block;
         margin-bottom: 40px;
@@ -11394,10 +11440,6 @@ a.interview-node {
         padding-right: 0;
     }
 
-    .videoteka-list::before {
-        width: 335px;
-    }
-
     .videoteka-item {
         grid-template-columns: 335px;
         grid-template-rows: auto auto;
@@ -11461,10 +11503,6 @@ a.interview-node {
 
 /* Desktop styles restore */
 @media (min-width: 1201px) {
-    .videoteka-list::before {
-        width: 100%;
-    }
-
     .videoteka-tabs {
         display: flex;
         gap: 17px;

@@ -838,9 +838,11 @@ requestAnimationFrame(raf);
     ctx.lineJoin = "round";
 
     cx = W * 0.5;
-    cy = isMobileOrbit ? H * 0.685 : isNarrowDesktopOrbit ? H * 0.695 : H * 0.7;
+    /* Мобилка: спираль ниже по экрану */
+    cy = isMobileOrbit ? H * 0.86 : isNarrowDesktopOrbit ? H * 0.695 : H * 0.7;
     rx = isMobileOrbit ? W * 0.46 : isNarrowDesktopOrbit ? W * 0.22 : W * 0.13;
-    ry = isMobileOrbit ? H * 0.32 : isNarrowDesktopOrbit ? H * 0.25 : H * 0.24;
+    /* ry: половина вертикального хода; больше ry → больше вертикальный «период» между витками */
+    ry = isMobileOrbit ? H * 0.36 : isNarrowDesktopOrbit ? H * 0.28 : H * 0.27;
 
     spiralPoints = buildSpiral(TURNS, STEPS);
 
@@ -860,8 +862,9 @@ requestAnimationFrame(raf);
     let rxTop;
     let rxBot;
     if (isMobileOrbit) {
-      rxTop = W * 0.34;
-      rxBot = W * 0.52;
+      /* Шире спираль на мобилке (было 0.34 / 0.52) */
+      rxTop = W * 0.41;
+      rxBot = W * 0.6;
     } else if (isNarrowDesktopOrbit) {
       rxTop = W * 0.11;
       rxBot = W * 0.3;
