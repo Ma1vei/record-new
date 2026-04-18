@@ -2111,35 +2111,44 @@ function initReviewsSliders() {
     const stageRect = reviewsFeedbackStage.getBoundingClientRect();
     let w = reviewsFeedbackList.clientWidth || reviewsFeedbackList.offsetWidth;
     let h = reviewsFeedbackList.clientHeight || reviewsFeedbackList.offsetHeight;
+    
     if (w < 40 || h < 40) {
       w = Math.max(stageRect.width, Math.min(window.innerWidth, 1920) * 0.72, 360);
       h = Math.max(stageRect.height, window.innerHeight * 0.5, 420);
     }
 
     const isMobile = window.innerWidth <= 1200;
-    /** Видимая полоска соседнего слайда слева/справа (px), одинаково для любого центрального кадра */
-    const PEEK = isMobile ? 26 : 32;
-    const scaleAd = (ad) => Math.max(0.34, Math.pow(0.82, ad));
 
+    // Максимальные габариты, которые мы можем занять
     const maxCardW = isMobile ? Math.min(w * 0.88, 720) : Math.min(w * 0.5, 900);
     const maxCardH = isMobile ? Math.min(h * 0.88, 920) : Math.min(h * 0.82, 960);
-    let uniW = maxCardW;
-    let uniH = Math.min(maxCardH, uniW * 1.08);
-    uniW = Math.min(uniW, uniH * 1.1);
 
+    // Считываем реальные пропорции активной картинки
+    const activeCard = reviewsFeedbackCards[reviewsFeedbackActiveIndex];
+    let imgRatio = 0.8; // Дефолтное соотношение, если картинка еще не прогрузилась
+    if (activeCard && activeCard.naturalWidth && activeCard.naturalHeight) {
+      imgRatio = activeCard.naturalWidth / activeCard.naturalHeight;
+    }
+
+    // Вписываем карточку в максимальные размеры с сохранением пропорций (аналог object-fit: contain)
+    let uniW = maxCardW;
+    let uniH = uniW / imgRatio;
+
+    if (uniH > maxCardH) {
+      uniH = maxCardH;
+      uniW = uniH * imgRatio;
+    }
+
+    // Масштаб для каскада
+    const scaleAd = (ad) => Math.max(0.4, 1 - ad * 0.15);
+
+    // Отступы теперь базируются на РЕАЛЬНОЙ ширине картинки (uniW), дыр не будет
     const txAbsForRings = (ad) => {
       if (ad <= 0) return 0;
-      let sum = 0;
-      for (let k = 1; k <= ad; k += 1) {
-        const sPrev = k === 1 ? 1 : scaleAd(k - 1);
-        const sK = scaleAd(k);
-        // Для первого кольца (соседние слайды) ставим впритык к центральному
-        // Отступ = половина ширины центральной + половина ширины соседней
-        const segment = (uniW * sPrev) / 2 + (uniW * sK) / 2;
-        const part = k === 1 ? segment : segment * Math.pow(0.87, k - 1);
-        sum += part;
-      }
-      return sum;
+      if (ad === 1) return uniW * 0.65;
+      if (ad === 2) return uniW * 1.15;
+      if (ad === 3) return uniW * 1.55;
+      return uniW * (1.55 + (ad - 3) * 0.3);
     };
 
     const maxR = Math.min(3, Math.floor(total / 2));
@@ -2176,11 +2185,12 @@ function initReviewsSliders() {
         return;
       }
 
+      // Формирование трансформации для каскада
       const scale = scaleAd(ad);
-      const tz = -ad * 108;
+      const tz = -ad * 50; 
       const txAbs = txAbsForRings(ad);
       const tx = sign * txAbs;
-      const ty = ad * 10;
+      const ty = 0; 
 
       card.style.left = "50%";
       card.style.top = "50%";

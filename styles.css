@@ -390,12 +390,25 @@ body.site-menu-open {
     align-items: center;
     margin-bottom: 50px;
     gap: 14px;
+    overflow: hidden;
+    width: 279px;
+    height: 101px;
 }
 
+.site-menu__logo-video {
+    width: 119px;
+    height: 117px;
+    object-fit: cover;
+}
+
+
+
 .site-menu__logo-mark {
-    height: 42px;
-    width: auto;
+    height: 77px;
+    transform: translateY(-12px);
+    width: 162px;
     display: block;
+    margin-left: -24px;
 }
 
 .site-menu__logo-text {
@@ -403,7 +416,6 @@ body.site-menu-open {
     height: auto;
     display: block;
 }
-
 .site-menu__actions {
     display: flex;
     flex-wrap: wrap;
@@ -820,6 +832,7 @@ body.site-menu-open {
     .site-menu__logo {
         margin-bottom: 25px;
         justify-content: center;
+        width: 100%;
     }
 
     .site-menu__logo-text {
@@ -1515,12 +1528,13 @@ body.site-menu-open {
 
 .hero-oscar-img {
     position: absolute;
-    left: calc((657 / 1920) * 100%);
+    left: 50%;
     top: calc((155 / 1080) * 100%);
     width: calc((680 / 1920) * 100%);
     height: calc((1100 / 1080) * 100%);
     object-fit: contain;
     object-position: center top;
+    transform: translateX(-50%) !important;
     transform-origin: center center;
     will-change: transform;
     pointer-events: none;
@@ -1677,7 +1691,7 @@ body.site-menu-open {
     bottom: 0;
     height: 100%;
     width: auto;
-    transform: translateX(-50%);
+    transform: translateX(calc(-50% - 30px));
     object-fit: contain;
     pointer-events: none;
     z-index: 2;
@@ -1699,7 +1713,8 @@ body.site-menu-open {
 
 @media (max-width: 1200px) {
     .count-clock-video {
-        clip-path: circle(7% at 52.1% 73.9%);
+       clip-path: circle(10% at 48% 74.4%);
+        transform: translateX(calc(-50% - 17px));
     }
 
     .count-clock-video {
@@ -2037,7 +2052,7 @@ body.site-menu-open {
 .status-statue-stage {
     position: absolute;
     top: 72px;
-    left: 50%;
+    left: calc(50% + 50px);
     transform: translateX(-50%);
     display: flex;
     flex-direction: column;
@@ -2054,6 +2069,7 @@ body.site-menu-open {
     transform-origin: center center;
     will-change: transform;
     transition: transform 1.2s cubic-bezier(0.22, 0.8, 0.22, 1);
+    margin: 0 auto;
 }
 
 /* transform статуи: script.js → applyStatusStatueImgTransform (инлайн надёжнее каскада) */
@@ -2747,6 +2763,7 @@ body.site-menu-open {
     height: 100%;
     margin: 0 auto;
     z-index: 0;
+    position: relative;
     pointer-events: none;
 }
 
@@ -3957,6 +3974,9 @@ left: 0;
         padding-bottom: 40px;
     }
 
+    .media-content-overlay {
+        position:unset !important;
+    }
     .sales-top-layout-wrapp--before-sales .sales-top-layout {
         align-items:  center;
         gap: 30px;
@@ -4833,6 +4853,12 @@ left: 0;
     }
 }
 
+.reviews-feedback-list {
+  /* Твои текущие стили */
+  perspective: 1200px;
+  transform-style: preserve-3d;
+}
+
 .advert-title-group {
     left: 50%;
     transform: translateX(-50%);
@@ -5076,7 +5102,7 @@ left: 0;
 .screen-reviews {
     position: relative;
     inset: auto;
-    height: 720vh;
+    height: 900vh;
     z-index: 6;
     background: #0f0f0f;
     overflow: visible;
@@ -5085,7 +5111,7 @@ left: 0;
     transform: translateY(-2px);
     padding-top: 100px;
     padding-left: 100px;
-    padding-bottom: clamp(402px, 9vh, 160px);
+    padding-bottom: 20vh;
     
   }
   
@@ -5320,7 +5346,7 @@ left: 0;
   .reviews-portrait-wrapper {
     position: absolute;
     left: 0;
-    top: 491px;
+    top: 423px;
     width: 240px;
     height: 262px;
     border-radius: 5px;
@@ -5341,7 +5367,7 @@ left: 0;
   .reviews-letter-wrapper {
     position: absolute;
     right: 200px;
-    top: 290px;
+    bottom: -70px;
     width: 600px;
     height: 800px;
     box-sizing: border-box;
@@ -5844,7 +5870,7 @@ left: 0;
   .reviews-person-info {
     position: absolute;
     left: 323px;
-    top: 1119px;
+    bottom: -70px;
     width: 541px;
     color: #f1f1f1;
     z-index: 4;
@@ -6023,7 +6049,7 @@ left: 0;
     display: block;
     margin: 0;
     box-sizing: border-box;
-    border: none;
+    border: 20px solid #0f0f0f;
     object-fit: contain;
     object-position: center center;
     transform-origin: 50% 50%;
@@ -6275,13 +6301,14 @@ left: 0;
 
     .hero-oscar-img {
         left: 50%;
-        width: 437px;
+        width: 393px;
         height: auto;
         aspect-ratio: 680 / 1100;
-        margin-left: -212px;
+        margin-left: 0;
         top: auto;
         bottom: 0;
         object-position: center bottom;
+        transform: translateX(-50%);
     }
 
 
@@ -8438,13 +8465,14 @@ a.interview-node {
 
     .hero-oscar-img {
         left: 50%;
-        width: 437px;
+        width: 393px;
         height: auto;
         aspect-ratio: 680 / 1100;
-        margin-left: -212px;
+        margin-left: 0;
         top: auto;
         bottom: 0;
         object-position: center bottom;
+        transform: translateX(-50%);
     }
 
     .sales-ceremony-title {
@@ -12208,7 +12236,7 @@ body.modal-open {
 
     .footer-newsletter-row {
         width: 100%;
-        max-width: 335px;
+        max-width: 100%;
         height: 41px;
     }
 
@@ -12219,7 +12247,7 @@ body.modal-open {
     }
 
     .footer-newsletter-line {
-        width: 334px;
+        width: 100%;
     }
 
     .footer-newsletter-submit {
@@ -12417,39 +12445,34 @@ body.modal-open {
 /* Мобилка: высота от ~792px — крупнее центральное фото Оскара (только по высоте, без vw) */
 @media (max-width: 1200px) and (min-height: 792px) {
     .hero-oscar-img {
-        width: 495px;
-        margin-left: -248px;
+        width: 446px;
     }
 }
 
 /* Высота ≤923px: не крупный вариант — базовый размер (перекрывает правило выше в диапазоне 792–923) */
 @media (max-width: 1200px) and (min-height: 792px) and (max-height: 923px) {
     .hero-oscar-img {
-        width: 437px;
-        margin-left: -212px;
+        width: 393px;
     }
 }
 
 /* Высота <823px — дополнительно уменьшить центральный Оскар */
 @media (max-width: 1200px) and (max-height: 822px) {
     .hero-oscar-img {
-        width: 410px;
-        margin-left: -205px;
+        width: 369px;
     }
 }
 
 /* Высота ≤788px — ещё меньше (перекрывает правило 822px) */
 @media (max-width: 1200px) and (max-height: 788px) {
     .hero-oscar-img {
-        width: 373px;
-        margin-left: -187px;
+        width: 336px;
     }
 }
 
 @media (max-width: 1200px) and (max-height: 740px) {
     .hero-oscar-img {
-        width: 323px;
-        margin-left: -157px;
+        width: 291px;
     }
 }
 
@@ -12489,22 +12512,19 @@ body.modal-open {
     }
 
     .hero-oscar-img {
-        width: 293px;
-        margin-left: -140px;
+        width: 264px;
     }
 }
 
 @media (max-width: 1200px) and (max-height: 620px) {
     .hero-oscar-img {
-        width: 270px;
-        margin-left: -130px;
+        width: 243px;
    }
 }
 
 @media (max-width: 1200px) and (max-height: 600px) {
     .hero-oscar-img {
-        width: 250px;
-        margin-left: -125px;
+        width: 225px;
    }
 }
 
@@ -12779,13 +12799,17 @@ body.modal-open {
 @media (max-height: 900px) and (min-width: 1201px) {
     .reviews-letter-wrapper {
         transform: scale(0.85) !important;
-        top: 200px;
+        bottom: 0;
+    }
+    .reviews-person-info {
+        transform: scale(0.85) !important;
+        bottom: 0;
     }
 }
 
 @media (max-height: 760px) and (min-width: 1201px) {
     .reviews-letter-wrapper {
-        top: 200px;
+        bottom: calc(760px - 200px - 800px);
     }
 }
 
@@ -12794,10 +12818,15 @@ body.modal-open {
         position: absolute;
         right: 200px;
         transform: scale(0.92);
-        top: 268px;
+        bottom: 0;
         width: 600px;
         height: 800px;
         overflow: hidden;
+    }
+
+    .reviews-person-info {
+        transform: scale(0.92) !important;
+        bottom: 0 !important;
     }
 }
 
@@ -12806,12 +12835,22 @@ body.modal-open {
         position: absolute;
         right: 200px;
         transform: scale(0.78) !important;
-        top: 195px;
+        bottom: 30px;
         width: 600px;
         height: 800px;
         overflow: hidden;
     }
+    
 }
+
+@media (max-height: 900px) and (min-width: 1201px) {
+.reviews-person-info {
+        transform: scale(0.85) !important;
+        bottom: 41px !important;
+    }
+}
+
+ 
 
 /* Только мобилка: при высоком окне чуть сдвинуть блок «ГЛАВНАЯ ПРЕМИЯ»; на ПК не трогать (базовые top/left) */
 @media (max-width: 1200px) and (min-height: 820px) {
@@ -12823,10 +12862,10 @@ body.modal-open {
 }
 
 /* Журнал: при ширине <400px — линейное увеличение в 1.7× к размеру из правила для ≤1200px */
-@media (max-width: 399px) {
+@media (max-width: 499px) {
     .media-book-frame {
-        width: calc(min(480px, calc(100vw - 16px)) * 1.7);
-        height: calc(min(480px, calc(100vw - 16px)) * 1.7);
+        width: calc(min(380px, calc(100vw - 16px)) * 1.7);
+        height: calc(min(380px, calc(100vw - 16px)) * 1.7);
         max-width: none;
     }
 }
@@ -12838,10 +12877,25 @@ body.modal-open {
     .sales-gallery-main.swiper {
         overflow: hidden !important;
     }
+
+    .site-menu__logo {
+        transform: scale(0.7);
+        
+    }
+}
+
+.site-menu__photo {
+   
 }
 
 /* Уменьшаем размер журнала на мобилке */
 @media (max-width: 1200px) {
+    .site-menu__media {
+    position: relative;
+    width: 279px;
+    overflow: hidden;
+    transform: translateX(-32px);
+}
     .media-book {
         transform:
             translate3d(0, var(--book-turn-y), var(--book-turn-z))
@@ -12922,6 +12976,13 @@ body.modal-open {
     }
 }
 
+@media (max-height: 733px) and (min-width: 1201px) {
+.reviews-person-info {
+        bottom: 100px !important;
+    }
+}
+
+
 /* Опускаем журнал ниже на узких экранах */
 @media (max-width: 400px) {
     .media-book-stage {
@@ -12945,4 +13006,30 @@ body.modal-open {
     .radio-advert {
         overflow: visible;
     }
+}
+
+/* Блок с видео и фото в меню */
+.site-menu__media {
+    position: relative;
+    width: 279px;
+    height: 101px;
+    overflow: hidden;
+}
+
+
+.site-menu__video {
+    width: 72px;
+    height: 61px;
+    object-fit: cover;
+    transform: translateX(34px);
+}
+
+.site-menu__photo {
+    position: absolute;
+    top: 0;
+    left: 202px;
+    width: 107px;
+    height: 45px;
+    margin-left: -96px;
+    pointer-events: none;
 }
