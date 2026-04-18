@@ -1455,9 +1455,9 @@ function initAdvertSlider() {
     const halfWidth = rect.width / 2;
     
     if (clickX < halfWidth) {
-      currentAngle += theta; 
-    } else {
       currentAngle -= theta; 
+    } else {
+      currentAngle += theta; 
     }
     updateRing();
   });
@@ -1476,9 +1476,9 @@ function initAdvertSlider() {
     
     if (Math.abs(diff) > 50) {
       if (diff > 0) {
-        currentAngle -= theta; 
-      } else {
         currentAngle += theta; 
+      } else {
+        currentAngle -= theta; 
       }
       updateRing();
     }
