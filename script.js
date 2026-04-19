@@ -1053,13 +1053,12 @@ function getStatusBottomAlignScrollY() {
 
     const vh = getScrollViewportHeight();
     const y0 = countSectionDocumentTop(countEl);
-    const narrow = isMobileOrbit;
+    // Общая дистанция скролла: высота всей секции минус 1 экран (момент открепления)
     const sectionScrollRange = Math.max(1, countEl.offsetHeight - vh);
-    const startAfter = vh * (narrow ? 0.14 : 0.02);
-
-    cachedStartScroll = y0 + startAfter;
-    cachedSpan = Math.max(1, sectionScrollRange - startAfter - vh);
-
+    
+    // Убираем искусственные задержки (startAfter), чтобы спираль шла ровно от начала до конца
+    cachedStartScroll = y0;
+    cachedSpan = sectionScrollRange;
     requestOrbitDraw();
   }
 
@@ -1098,36 +1097,21 @@ function getStatusBottomAlignScrollY() {
   }
 
   window._updateOrbitPhase = function () {
-    const scrollY = readScrollY();
-    const pRaw = (scrollY - cachedStartScroll) / Math.max(1, cachedSpan);
-    const side = countSectionSide();
+  const scrollY = readScrollY();
+  
+  // Вычисляем чистый прогресс скролла: 0 = только прилипли, 1 = сейчас отлипнем
+  const pRaw = (scrollY - cachedStartScroll) / Math.max(1, cachedSpan);
+  
+  // Строго ограничиваем от 0 до 1
+  const clamped = Math.max(0, Math.min(1, pRaw));
 
-    if (side === "below") {
-      // 1. Блок ниже экрана (мы проскроллили наверх страницы).
-      // Сбрасываем фазу. Подготавливаем спираль к обычному росту (сверху вниз).
-      orbitSpiralFromEnd = false;
-      targetPhase = 0;
-      phase = 0; 
-    } else if (side === "above") {
-      // 2. Блок выше экрана (мы проскроллили вниз страницы).
-      // Сбрасываем фазу. Подготавливаем спираль к обратному росту (снизу вверх).
-      orbitSpiralFromEnd = true;
-      targetPhase = 0;
-      phase = 0;
-    } else {
-      // 3. Блок пересекает экран (находится в видимости).
-      let clamped = Math.max(0, Math.min(1, pRaw));
-      
-      // Если мы идем снизу (orbitSpiralFromEnd = true), инвертируем прогресс,
-      // чтобы спираль "росла", а не "стиралась".
-      let raw = orbitSpiralFromEnd ? (1 - clamped) : clamped;
-
-      if (Math.abs(targetPhase - raw) > 0.0001) {
-        targetPhase = raw;
-        requestOrbitDraw();
-      }
-    }
-  };
+  // Если прогресс изменился — обновляем спираль
+  if (Math.abs(targetPhase - clamped) > 0.0001) {
+    targetPhase = clamped;
+    orbitSpiralFromEnd = false; // Всегда рисуем в нормальном направлении
+    requestOrbitDraw();
+  }
+};
 
   function spawnParticle(x, y) {
     if (particles.length >= maxParticles) return;
@@ -1148,9 +1132,10 @@ function getStatusBottomAlignScrollY() {
     orbitDrawQueued = false;
     let needsAnimationFrame = false;
 
-    if (Math.abs(targetPhase - phase) > 0.001) {
-      phase += (targetPhase - phase) * 0.14;
-      needsAnimationFrame = true;
+   // Жесткая привязка спирали к скроллу без отставания
+    if (Math.abs(targetPhase - phase) > 0.0001) {
+      phase = targetPhase; // Мгновенная синхронизация
+      needsAnimationFrame = true; // Оставляем для эффекта летящих искр
     } else {
       phase = targetPhase;
     }
@@ -2500,14 +2485,20 @@ function initReviewsSliders() {
 
     const updateCursor = (event) => {
       const rect = reviewsGratitudeGallery.getBoundingClientRect();
-      const localX = clamp(event.clientX - rect.left, 0, rect.width);
-      const localY = clamp(event.clientY - rect.top, 0, rect.height);
-      const isLeftZone = localX < rect.width * 0.5;
-      reviewsGratitudeGallery.classList.add("is-cursor-active");
-      reviewsGratitudeGallery.classList.toggle("is-left-zone", isLeftZone);
+      const scale = rect.width / reviewsGratitudeGallery.offsetWidth;
+      const localX = clamp((event.clientX - rect.left) / scale, 0, reviewsGratitudeGallery.offsetWidth);
+      const localY = clamp((event.clientY - rect.top) / scale, 0, reviewsGratitudeGallery.offsetHeight);
+      const isLeftZone = localX < reviewsGratitudeGallery.offsetWidth * 0.5;
+      reviewsGratitudeGallery.classList.add("is-cursoft-zone", isLeftZone);
       reviewsGratitudeGallery.classList.toggle("is-right-zone", !isLeftZone);
-      reviewsGratitudeCursor?.style.setProperty("left", `${localX}px`);
-      reviewsGratitudeCursor?.style.setProperty("top", `${localY}px`);
+      
+      // Используем координаты относительно viewport для более точного позиционирования
+      if (reviewsGratitudeCursor) {
+        const cursorX = event.clientX - rect.left;
+        const cursorY = event.clientY - rect.top;
+        reviewsGratitudeCursor.style.left = `${cursorX}px`;
+        reviewsGratitudeCursor.style.top = `${cursorY}px`;
+      }
     };
 
     reviewsGratitudeGallery.addEventListener("pointerdown", (event) => {
@@ -2603,7 +2594,14 @@ function initReviewsTabs() {
   };
 
   reviewsTabs.forEach((tab) => {
-    tab.addEventListener("click", () => setTab(tab.dataset.reviewsTab || "official"));
+    tab.addEventListener("click", () => {
+      setTab(tab.dataset.reviewsTab || "official");
+      
+      // Скролл к блоку reviewsScreen
+      if (reviewsScreen) {
+        reviewsScreen.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
   });
 
   setTab(reviewsScreen.dataset.reviewsTab || "official");

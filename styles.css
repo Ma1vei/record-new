@@ -1663,11 +1663,11 @@ body.site-menu-open {
 .countdown-section {
     position: relative;
     z-index: 2;
-    /* Убираем ограничение в 1920px, чтобы фон тянулся на весь экран */
     max-width: none; 
     width: 100%;
     margin: 0 auto;
-    height: 260vh;
+    height: 350vh; /* Увеличили с 260vh для долгого залипания */
+    min-height: 2500px; /* Жесткий лимит */
     overflow: visible;
 }
 .countdown-pin {
@@ -1710,7 +1710,7 @@ body.site-menu-open {
     object-position: center 20%;
     pointer-events: none;
     z-index: 3;
-    clip-path: circle(8% at 52.1% 73.5%);
+    clip-path: circle(9% at 46.7% 73.5%);
 }
 
 @media (max-width: 1200px) {
@@ -1880,6 +1880,8 @@ body.site-menu-open {
     pointer-events: none;
     cursor: default;
     user-select: none;
+    position: relative;
+    z-index: 10;
 }
 
 .status-title-main.is-active {
@@ -1902,6 +1904,8 @@ body.site-menu-open {
     user-select: none;
     transition: opacity 420ms ease, color 420ms ease, transform 420ms ease;
     transform-origin: left top;
+    position: relative;
+    z-index: 10;
 }
 
 .status-title-sub.is-active {
@@ -2071,13 +2075,15 @@ body.site-menu-open {
     will-change: transform;
     transition: transform 1.2s cubic-bezier(0.22, 0.8, 0.22, 1);
     margin: 0 auto;
+    position: relative;
+    z-index: 1;
 }
 
 /* transform статуи: script.js → applyStatusStatueImgTransform (инлайн надёжнее каскада) */
 
 .status-statue-overlay {
     position: absolute;
-    z-index: 15;
+    z-index: 20;
     pointer-events: none;
 }
 
@@ -10072,7 +10078,7 @@ a.interview-node {
 .media-lib-slide img {
     display: block;
     width: auto;
-    height: 27.5vh;
+    height: 300px; /* Заменили 27.5vh на фиксированные 300px */
     max-height: 440px;
     object-fit: cover;
     pointer-events: none;
@@ -12993,7 +12999,7 @@ body.modal-open {
         bottom: 0;
     }
     .reviews-person-info {
-        transform: scale(0.85) !important;
+        zoom: 0.85; /* ДОБАВЬТЕ ЭТО */
         bottom: 0;
     }
 }
@@ -13007,7 +13013,7 @@ body.modal-open {
 @media (max-height: 1025px) and (min-width: 1201px) {
     .reviews-letter-wrapper {
         position: absolute;
-        right: 200px;
+        right: 100px;
         transform: scale(0.92);
         bottom: 0;
         width: 600px;
@@ -13016,7 +13022,7 @@ body.modal-open {
     }
 
     .reviews-person-info {
-        transform: scale(0.92) !important;
+        zoom: 0.92; /* ДОБАВЬТЕ ЭТО */
         bottom: 0 !important;
     }
 }
@@ -13024,7 +13030,7 @@ body.modal-open {
 @media (max-height: 733px) and (min-width: 1201px) {
     .reviews-letter-wrapper {
         position: absolute;
-        right: 200px;
+        right: 0px;
         transform: scale(0.78) !important;
         bottom: 30px;
         width: 600px;
@@ -13033,10 +13039,9 @@ body.modal-open {
     }
     
 }
-
 @media (max-height: 900px) and (min-width: 1201px) {
 .reviews-person-info {
-        transform: scale(0.85) !important;
+        zoom: 0.85; /* ДОБАВЬТЕ ЭТО */
         bottom: 41px !important;
     }
 }
@@ -13308,4 +13313,10 @@ body.modal-open {
 
 .partners-row-dark-second .partners-card-dark.is-scrolled .partners-logo-new {
     opacity: 0;
+}
+
+@media(max-width: 1520px) {
+    .reviews-media-library-wrapper {
+        padding-bottom: 200px;
+    }
 }
