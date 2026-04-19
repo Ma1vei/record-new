@@ -59,6 +59,7 @@ body {
     linear-gradient(180deg, #0b0b0d 0%, #111113 56%, #09090a 100%);
     background: #0f0f0f;
     color: var(--text-white);
+    overflow-x: hidden;
 }
 
 .page-menu-btn {
@@ -2045,7 +2046,6 @@ body.site-menu-open {
 }
 
 .screen-media-library {
-    transform: translateY(-4px);
 }
 
 
@@ -4196,7 +4196,6 @@ left: 0;
     width: 100%;
     max-width: 1920px;
     margin: auto;
-    transform: translateY(-6px);
     position: relative;
     inset: auto;
     z-index: 6;
@@ -5056,8 +5055,7 @@ left: 0;
     padding-left: 0;
     padding-top: 134px;
     margin: auto;
-    overflow-x: clip;
-    overflow-y: visible;
+    overflow: visible;
     box-sizing: border-box;
 }
 
@@ -5109,7 +5107,6 @@ left: 0;
     overflow: visible;
     max-width: 1920px;
     margin: auto;
-    transform: translateY(-2px);
     padding-top: 100px;
     padding-left: 100px;
     padding-bottom: 20vh;
@@ -5301,8 +5298,8 @@ left: 0;
   }
 
   .reviews-media-stage-gratitude {
-    overflow: hidden;
-    max-width: 1920px;
+    overflow: visible;
+    max-width: 100%;
     width: 100%;
     margin-inline: 0;
     left: 0;
@@ -5435,15 +5432,13 @@ left: 0;
   
   /* Общий контейнер секции */
   .screen-news {
-    transform: translateY(-5px);
     position: relative;
     inset: auto;
     z-index: 6;
-    min-height: 100vh;
+    min-height: auto;
     height: auto;
     background: #f9f0e8;
-    overflow-x: clip;
-    overflow-y: visible;
+    overflow: visible;
     max-width: 100%;
     padding-bottom: 30px;
     box-sizing: border-box;
@@ -5596,9 +5591,8 @@ left: 0;
     /* Было height: 600px + overflow:hidden — карточка выше (img+h3+p), параграф обрезался */
     min-height: 640px;
     height: auto;
-    /* Обрезка слайдов — на .news-gallery-viewport; по горизонтали clip — кастомный курсор не раздувает скролл страницы */
-    overflow-x: clip;
-    overflow-y: visible;
+    /* Обрезка слайдов — на .news-gallery-viewport; курсор не обрезается */
+    overflow: visible;
     margin-top: 61px;    /* Замена разницы координат top */
     margin-left: 0;
     margin-right: 0;
@@ -5666,8 +5660,8 @@ left: 0;
     position: absolute;
     left: 0;
     top: 0;
-    width: 106px;
-    height: 106px;
+    width: 183px;
+    height: 183px;
     opacity: 0;
     transform: translate3d(-50%, -50%, 0) scale(0.84);
     transition: opacity 180ms ease, transform 180ms ease;
@@ -5696,10 +5690,10 @@ left: 0;
   }
   
   .news-cursor-arrow {
-    width: 20px;
-    height: 20px;
-    left: 43px;
-    top: 43px;
+    width: 47px;
+    height: 37px;
+    left: 68px;
+    top: 73px;
     transition: transform 180ms ease;
   }
 
@@ -5895,60 +5889,56 @@ left: 0;
   
 
  
-  
-  /* --- Галерея благодарностей (Gratitude) --- */
-  .reviews-gratitude-gallery {
-    /* Расстояние между соседними карточками (край к краю) = --rg-gap; размеры карточек — из натуральных рамки/грамоты в script.js */
-    --rg-gap: 30px;
-    --rg-card-w: 600px;
-    --rg-card-h: 800px;
+/* --- Галерея благодарностей (Десктоп) --- */
+.reviews-gratitude-gallery {
     position: relative;
     width: 100%;
-    max-width: 1920px;
-    min-height: 800px;
-    margin-inline: 0;
-    overflow: hidden;
+    max-width: 100%;
+    height: 780px;
+    min-height: 780px;
+    margin: 0 auto;
+    overflow: visible;
     box-sizing: border-box;
     display: flex;
     align-items: center;
     justify-content: center;
-  }
-  .screen-videoteka {
-    transform: translateY(-4px);
-  }
-  
-  .reviews-gratitude-card {
+    margin-top: 70px;
+}
+
+.reviews-gratitude-slides-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.reviews-gratitude-card {
     position: absolute;
-    top: 52%;
-    transform: translateY(-50%);
-    width: var(--rg-card-w);
-    height: var(--rg-card-h);
-    transition: left 0.65s cubic-bezier(0.23, 1, 0.32, 1);
+    top: 50%;
+    left: 50%;
+    width: 578px;
+    height: 780px;
+    transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
     box-sizing: border-box;
     border: none;
-    overflow: hidden;
-  }
+    transform-origin: center center;
+    cursor: pointer;
+    opacity: 1;
+    z-index: 40;
+    pointer-events: auto;
+}
 
-  /* Позиции: центр полосы — между двумя центральными карточками ровно var(--rg-gap) */
-  .reviews-gratitude-card.is-left-edge {
-    left: calc(50% - 2 * var(--rg-card-w) - var(--rg-gap) - var(--rg-gap) / 2);
-    z-index: 11;
-  }
-  .reviews-gratitude-card.is-main-left {
-    left: calc(50% - var(--rg-card-w) - var(--rg-gap) / 2);
-    z-index: 12;
-  }
-  .reviews-gratitude-card.is-main-right {
-    left: calc(50% + var(--rg-gap) / 2);
-    z-index: 13;
-  }
-  .reviews-gratitude-card.is-right-edge {
-    left: calc(50% + var(--rg-card-w) + var(--rg-gap) / 2 + var(--rg-gap));
-    z-index: 11;
-  }
-  
-  /* Рамка: натуральный масштаб под контейнер (детали — layoutReviewsGratitudeIntrinsics) */
-  .reviews-gratitude-card-frame {
+@media (min-width: 1201px) {
+    .reviews-gratitude-card.is-hidden {
+        opacity: 0;
+        pointer-events: none;
+        transform: translate(-50%, -50%) scale(0.8);
+    }
+}
+
+
+
+.reviews-gratitude-card-frame {
     position: absolute;
     inset: 0;
     width: 100%;
@@ -5958,9 +5948,9 @@ left: 0;
     z-index: 0;
     pointer-events: none;
     user-select: none;
-  }
+}
 
-  .reviews-gratitude-card-image {
+.reviews-gratitude-card-image {
     position: absolute;
     left: 50%;
     top: 50%;
@@ -5975,8 +5965,8 @@ left: 0;
     z-index: 1;
     pointer-events: none;
     user-select: none;
-  }
-  
+}
+
   /* Кастомный курсор */
   .reviews-gratitude-cursor {
     position: absolute;
@@ -5988,7 +5978,7 @@ left: 0;
     transform: translate3d(-50%, -50%, 0) scale(0.84);
     transition: opacity 180ms ease, transform 180ms ease;
     pointer-events: none;
-    z-index: 18;
+    z-index: 100;
   }
 
   .reviews-gratitude-gallery.is-cursor-active .reviews-gratitude-cursor {
@@ -6020,6 +6010,12 @@ left: 0;
   .reviews-gratitude-gallery.is-left-zone .reviews-gratitude-cursor-arrow {
     transform: rotate(180deg);
   }
+
+  .reviews-gratitude-card.is-hidden {
+    opacity: 0;
+    pointer-events: none;
+    z-index: 1;
+  }
   
   /* --- Отзывы (Feedback): 3D-каскад задаётся в script.js (класс .reviews-feedback-3d на списке) --- */
   .reviews-media-stage-feedback {
@@ -6035,6 +6031,7 @@ left: 0;
   }
 
   .reviews-feedback-list.reviews-feedback-3d {
+    transform: scale(0.8);
     position: relative;
     width: 100%;
     height: 100%;
@@ -6045,23 +6042,37 @@ left: 0;
     isolation: isolate;
   }
 
-  .reviews-feedback-list.reviews-feedback-3d .reviews-feedback-card {
+ /* Базовый невидимый контейнер для математики каскада */
+.reviews-feedback-list.reviews-feedback-3d .reviews-feedback-card {
     position: absolute;
     display: block;
     margin: 0;
     box-sizing: border-box;
-    border: 20px solid #0f0f0f;
-    object-fit: contain;
-    object-position: center center;
-    transform-origin: 50% 50%;
     border-radius: 5px;
-    transition:
-      transform 0.55s cubic-bezier(0.22, 0.8, 0.22, 1),
-      width 0.55s cubic-bezier(0.22, 0.8, 0.22, 1),
-      height 0.55s cubic-bezier(0.22, 0.8, 0.22, 1),
-      visibility 0.35s ease;
+    overflow: visible !important; /* Ключевое: разрешаем контенту выходить за рамки */
+    transform-origin: 50% 50%;
+    transition: transform 0.55s cubic-bezier(0.22, 0.8, 0.22, 1), 
+                width 0.55s cubic-bezier(0.22, 0.8, 0.22, 1), 
+                height 0.55s cubic-bezier(0.22, 0.8, 0.22, 1), 
+                visibility 0.35s ease;
     will-change: transform;
-  }
+    border: black 20px solid;
+}
+
+/* Стилизуем саму картинку внутри без добавления ей новых классов */
+.reviews-feedback-list.reviews-feedback-3d .reviews-feedback-card img {
+    position: absolute;
+    top: -30px; /* Вылет за границы сверху */
+    left: -30px; /* Вылет за границы слева */
+    width: calc(100% + 60px); /* Ширина дива + компенсация вылетов */
+    height: calc(100% + 60px); /* Высота дива + компенсация вылетов */
+    max-width: none; /* Сбрасываем стандартные ограничения браузера для картинок */
+    object-fit: cover;
+    object-position: center center;
+    border: 20px solid #000000; /* Тот самый черный бордер 20px */
+    box-sizing: border-box;
+    border-radius: 5px;
+}
 
   .reviews-feedback-controls {
     position: absolute;
@@ -7966,7 +7977,6 @@ left: 0;
 }
 
 .interview {
-    transform: translateY(-1px);
     padding: 103px 0 100px;
     position: relative;
     min-height: 1560px;
@@ -11540,10 +11550,9 @@ a.interview-node {
 }
 
 
-.footer-cta-primary:hover,
 .footer-cta-primary:focus-visible {
-    background: #f01628;
-    border-color: #f01628;
+    background: #ca1220;
+    border-color: #ca1220;
 }
 
 .footer-cta-secondary:hover,
@@ -12602,41 +12611,56 @@ body.modal-open {
         min-height: var(--rg-card-h, 400px);
         height: auto;
         padding: 0;
+        overflow: visible;
+    }
+
+    .reviews-gratitude-slides-wrapper {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        min-height: var(--rg-card-h, 400px);
         overflow: hidden;
     }
     
     .reviews-gratitude-card {
-        width: var(--rg-card-w);
-        height: var(--rg-card-h);
+        width: var(--rg-card-w, 300px);
+        height: var(--rg-card-h, 400px);
+        position: absolute;
         top: 50%;
         transform: translateY(-50%);
         overflow: hidden;
         border: none;
         box-sizing: border-box;
+        opacity: 1;
+        pointer-events: auto;
     }
     
     .reviews-gratitude-card.is-main-right {
         left: 0;
         transform: translateY(-50%);
         z-index: 13;
+        opacity: 1;
     }
     
     .reviews-gratitude-card.is-right-edge {
         left: calc(var(--rg-card-w) + var(--rg-gap));
         transform: translateY(-50%);
         z-index: 12;
+        opacity: 0.6;
     }
     
     .reviews-gratitude-card.is-main-left {
         left: calc(-1 * (var(--rg-card-w) + var(--rg-gap)));
         transform: translateY(-50%);
         z-index: 11;
+        opacity: 0;
     }
     
     .reviews-gratitude-card.is-left-edge {
         left: calc(-2 * (var(--rg-card-w) + var(--rg-gap)));
         transform: translateY(-50%);
         z-index: 10;
+        opacity: 0;
     }
     
     .reviews-gratitude-card-frame {
@@ -12666,6 +12690,12 @@ body.modal-open {
     
     .reviews-gratitude-cursor {
         display: none;
+    }
+
+    .reviews-gratitude-card.is-hidden {
+        opacity: 0;
+        pointer-events: none;
+        z-index: 1;
     }
 }
 

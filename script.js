@@ -2093,16 +2093,22 @@ function initReviewsSliders() {
   const reviewsFeedbackCards = [...document.querySelectorAll("[data-feedback-card]")];
   const reviewsFeedbackPrev = document.querySelector(".reviews-feedback-nav-left");
   const reviewsFeedbackNext = document.querySelector(".reviews-feedback-nav-right");
+  
   const reviewsGratitudeGallery = document.getElementById("reviewsGratitudeGallery");
   const reviewsGratitudeCursor = document.getElementById("reviewsGratitudeCursor");
   const reviewsGratitudeCards = [...document.querySelectorAll("[data-gratitude-card]")];
+  
   const STEP_LOCK_MS = 820;
+  const FEEDBACK_CAROUSEL_LOCK_MS = 560;
+  
   const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
 
+  // =====================================
+  // СЛАЙДЕР: ОТЗЫВЫ (КАСКАД)
+  // =====================================
   let reviewsFeedbackActiveIndex = 0;
   let reviewsFeedbackStepLocked = false;
   let reviewsFeedbackStepUnlockTimer = 0;
-  const FEEDBACK_CAROUSEL_LOCK_MS = 560;
   const reviewsFeedbackList = reviewsFeedbackStage?.querySelector(".reviews-feedback-list");
 
   const signedFeedbackDistance = (index, center, total) => {
@@ -2117,6 +2123,7 @@ function initReviewsSliders() {
     reviewsFeedbackList.classList.add("reviews-feedback-3d");
     const total = reviewsFeedbackCards.length;
     const stageRect = reviewsFeedbackStage.getBoundingClientRect();
+    
     let w = reviewsFeedbackList.clientWidth || reviewsFeedbackList.offsetWidth;
     let h = reviewsFeedbackList.clientHeight || reviewsFeedbackList.offsetHeight;
     
@@ -2127,18 +2134,15 @@ function initReviewsSliders() {
 
     const isMobile = window.innerWidth <= 1200;
 
-    // Максимальные габариты, которые мы можем занять
     const maxCardW = isMobile ? Math.min(w * 0.88, 720) : Math.min(w * 0.5, 900);
     const maxCardH = isMobile ? Math.min(h * 0.88, 920) : Math.min(h * 0.95, 1100);
 
-    // Считываем реальные пропорции активной картинки
     const activeCard = reviewsFeedbackCards[reviewsFeedbackActiveIndex];
-    let imgRatio = 0.8; // Дефолтное соотношение, если картинка еще не прогрузилась
+    let imgRatio = 0.8; 
     if (activeCard && activeCard.naturalWidth && activeCard.naturalHeight) {
       imgRatio = activeCard.naturalWidth / activeCard.naturalHeight;
     }
 
-    // Вписываем карточку в максимальные размеры с сохранением пропорций (аналог object-fit: contain)
     let uniW = maxCardW;
     let uniH = uniW / imgRatio;
 
@@ -2147,21 +2151,26 @@ function initReviewsSliders() {
       uniW = uniH * imgRatio;
     }
 
-    // Масштаб для каскада
+    // Масштаб для каскада (каждый следующий строго меньше предыдущего)
     const scaleAd = (ad) => {
-      if (ad === 0) return 1.15; // Увеличиваем передний план
-      if (ad === 1) return 0.75; // Уменьшаем первый задний
-      if (ad === 2) return 0.55; // Уменьшаем второй задний
-      return Math.max(0.35, 1.15 - ad * 0.2); // Уменьшаем остальные
+      if (ad === 0) return 1.15; 
+      if (ad === 1) return 0.75; 
+      if (ad === 2) return 0.55; 
+      if (ad === 3) return 0.40; 
+      return Math.max(0.25, 0.40 - (ad - 3) * 0.15); 
     };
 
-    // Отступы теперь базируются на РЕАЛЬНОЙ ширине картинки (uniW), дыр не будет
+    // Точный расчет отступа: каждый следующий слайд выглядывает ровно на 124px
     const txAbsForRings = (ad) => {
       if (ad <= 0) return 0;
-      if (ad === 1) return uniW * 0.45;
-      if (ad === 2) return uniW * 0.80;
-      if (ad === 3) return uniW * 1.10;
-      return uniW * (1.10 + (ad - 3) * 0.25);
+      const PEEK_PX = 124; 
+      let tx = 0;
+      for (let i = 1; i <= ad; i++) {
+        const scalePrev = scaleAd(i - 1);
+        const scaleCurr = scaleAd(i);
+        tx += PEEK_PX + (uniW / 2) * (scalePrev - scaleCurr);
+      }
+      return tx;
     };
 
     const maxR = Math.min(3, Math.floor(total / 2));
@@ -2172,14 +2181,8 @@ function initReviewsSliders() {
       const sign = d === 0 ? 0 : d > 0 ? 1 : -1;
 
       card.classList.remove(
-        "is-center",
-        "is-left-1",
-        "is-left-2",
-        "is-left-3",
-        "is-right-1",
-        "is-right-2",
-        "is-right-3",
-        "is-hidden",
+        "is-center", "is-left-1", "is-left-2", "is-left-3",
+        "is-right-1", "is-right-2", "is-right-3", "is-hidden"
       );
 
       if (ad > maxR) {
@@ -2194,11 +2197,9 @@ function initReviewsSliders() {
         card.style.filter = "none";
         card.style.zIndex = "0";
         card.setAttribute("aria-hidden", "true");
-        card.alt = "";
         return;
       }
 
-      // Формирование трансформации для каскада
       const scale = scaleAd(ad);
       const tz = -ad * 50; 
       const txAbs = txAbsForRings(ad);
@@ -2220,10 +2221,8 @@ function initReviewsSliders() {
 
       if (ad === 0) {
         card.setAttribute("aria-hidden", "false");
-        card.alt = card.dataset.feedbackLabel || "";
       } else {
         card.setAttribute("aria-hidden", "true");
-        card.alt = "";
       }
     });
   };
@@ -2263,6 +2262,7 @@ function initReviewsSliders() {
       event.stopPropagation();
       stepReviewsFeedbackCarousel(-1);
     }, { capture: true });
+    
     reviewsFeedbackNext?.addEventListener("click", (event) => {
       event.preventDefault();
       event.stopPropagation();
@@ -2271,6 +2271,7 @@ function initReviewsSliders() {
 
     const swipeClickSuppressMs = 380;
     let feedbackLastSwipeAt = 0;
+    
     reviewsFeedbackList.addEventListener("click", (event) => {
       if (Date.now() - feedbackLastSwipeAt < swipeClickSuppressMs) return;
       const img = event.target.closest("[data-feedback-card]");
@@ -2293,6 +2294,7 @@ function initReviewsSliders() {
       feedbackPointerStartX = event.clientX;
       feedbackPointerStartY = event.clientY;
     });
+    
     reviewsFeedbackList.addEventListener("pointerup", (event) => {
       if (!feedbackPointerActive) return;
       const dx = event.clientX - feedbackPointerStartX;
@@ -2304,6 +2306,7 @@ function initReviewsSliders() {
       }
       feedbackPointerActive = false;
     });
+    
     reviewsFeedbackList.addEventListener("pointercancel", () => {
       feedbackPointerActive = false;
     });
@@ -2314,9 +2317,11 @@ function initReviewsSliders() {
         window.requestAnimationFrame(() => layoutReviewsFeedbackCarousel());
       });
     };
+    
     reviewsFeedbackCards.forEach((img) => {
       img.addEventListener("load", scheduleFeedbackLayout, { passive: true });
     });
+    
     window.addEventListener("resize", scheduleFeedbackLayout, { passive: true });
     window.addEventListener("reviews:tabchange", (event) => {
       if (event.detail?.tab === "feedback") scheduleFeedbackLayout();
@@ -2329,13 +2334,19 @@ function initReviewsSliders() {
     }
   }
 
-  let reviewsGratitudeActiveIndex = 0;
+  // =====================================
+  // СЛАЙДЕР: БЛАГОДАРНОСТИ
+  // =====================================
+  // СЛАЙДЕР: БЛАГОДАРНОСТИ (Бесконечная прокрутка)
+  // =====================================
+  let reviewsGratitudeOffset = 0;
   let reviewsGratitudeStepLocked = false;
   let reviewsGratitudeStepUnlockTimer = 0;
 
   const GRATITUDE_CARD_BORDER_PX = 0;
-  const GRATITUDE_SLIDE_W_PX = 600;
-  const GRATITUDE_SLIDE_H_PX = 800;
+  const GRATITUDE_SLIDE_W_PX = 578;
+  const GRATITUDE_SLIDE_H_PX = 780;
+  const GRATITUDE_SLIDE_GAP = 620; // Расстояние между центрами слайдов
 
   const layoutReviewsGratitudeIntrinsics = () => {
     if (!reviewsGratitudeGallery || !reviewsGratitudeCards.length) return;
@@ -2344,7 +2355,6 @@ function initReviewsSliders() {
     let slideW;
     let slideH;
     if (isMobile) {
-      /* Уже колонки; бордер 10px как в CSS; справа — «хвост» следующей карточки */
       b = GRATITUDE_CARD_BORDER_PX;
       const gw = reviewsGratitudeGallery.clientWidth;
       if (gw < 4) return;
@@ -2357,7 +2367,6 @@ function initReviewsSliders() {
     }
     const innerW = slideW - 2 * b;
     const innerH = slideH - 2 * b;
-    /* Рамка PNG — декор по краям; «окно» под грамоту меньше полного inner (см. reviews_gratitude_frames.png) */
     const CERT_APERTURE_W = 0.72;
     const CERT_APERTURE_H = 0.76;
     const certMaxW = innerW * CERT_APERTURE_W;
@@ -2390,22 +2399,66 @@ function initReviewsSliders() {
 
   const renderReviewsGratitudeCarousel = () => {
     if (!reviewsGratitudeCards.length) return;
-    const total = reviewsGratitudeCards.length;
-    const stateClasses = ["is-left-edge", "is-main-left", "is-main-right", "is-right-edge"];
-    reviewsGratitudeCards.forEach((card, index) => {
-      const slot = ((index - reviewsGratitudeActiveIndex) % total + total) % total;
-      card.classList.remove(...stateClasses);
-      card.classList.add(stateClasses[slot]);
-      card.setAttribute("aria-hidden", slot > 1 ? "true" : "false");
-    });
+    const isMobile = window.matchMedia("(max-width: 1200px)").matches;
+    
+    if (isMobile) {
+      // Мобильная версия - старая логика
+      const total = reviewsGratitudeCards.length;
+      const stateClasses = ["is-left-edge", "is-main-left", "is-main-right", "is-right-edge"];
+      const activeIndex = Math.abs(reviewsGratitudeOffset) % total;
+      
+      reviewsGratitudeCards.forEach((card, index) => {
+        const slot = ((index - activeIndex) % total + total) % total;
+        card.classList.remove(...stateClasses, "is-hidden");
+        if (slot < stateClasses.length) {
+          card.classList.add(stateClasses[slot]);
+        } else {
+          card.classList.add("is-hidden");
+        }
+        card.setAttribute("aria-hidden", slot > 1 ? "true" : "false");
+      });
+    } else {
+      // Десктопная версия - всегда 4 слайда: 2 по центру + 2 по краям
+      const total = reviewsGratitudeCards.length;
+      
+      // Позиции для 4 слайдов: левый край, левый центр, правый центр, правый край
+      const positions = [-930, -310, 310, 930];
+      
+      // Определяем какие слайды показывать
+      for (let i = 0; i < 4; i++) {
+        const cardIndex = ((reviewsGratitudeOffset + i) % total + total) % total;
+        const card = reviewsGratitudeCards[cardIndex];
+        
+        if (card) {
+          card.style.transform = `translate(calc(-50% + ${positions[i]}px), -50%)`;
+          card.classList.remove("is-hidden");
+        }
+      }
+      
+      // Скрываем остальные слайды
+      reviewsGratitudeCards.forEach((card, index) => {
+        let isVisible = false;
+        for (let i = 0; i < 4; i++) {
+          const visibleIndex = ((reviewsGratitudeOffset + i) % total + total) % total;
+          if (index === visibleIndex) {
+            isVisible = true;
+            break;
+          }
+        }
+        if (!isVisible) {
+          card.classList.add("is-hidden");
+        }
+      });
+    }
   };
 
   const stepReviewsGratitudeCarousel = (direction) => {
     if (!direction || reviewsGratitudeStepLocked || reviewsGratitudeCards.length < 2) return false;
     reviewsGratitudeStepLocked = true;
-    const total = reviewsGratitudeCards.length;
-    reviewsGratitudeActiveIndex = ((reviewsGratitudeActiveIndex + direction) % total + total) % total;
+    
+    reviewsGratitudeOffset += direction;
     renderReviewsGratitudeCarousel();
+    
     window.clearTimeout(reviewsGratitudeStepUnlockTimer);
     reviewsGratitudeStepUnlockTimer = window.setTimeout(() => {
       reviewsGratitudeStepLocked = false;
@@ -2416,17 +2469,22 @@ function initReviewsSliders() {
   if (reviewsGratitudeGallery && reviewsGratitudeCards.length) {
     renderReviewsGratitudeCarousel();
     scheduleGratitudeLayout();
+    
     reviewsGratitudeGallery.querySelectorAll("img").forEach((img) => {
       img.addEventListener("load", scheduleGratitudeLayout, { passive: true });
     });
+    
     window.addEventListener("resize", scheduleGratitudeLayout, { passive: true });
+    
     window.addEventListener("reviews:tabchange", (event) => {
       if (event.detail?.tab === "gratitude") scheduleGratitudeLayout();
     });
+    
     if (typeof ResizeObserver !== "undefined") {
       const gratitudeResizeObserver = new ResizeObserver(() => scheduleGratitudeLayout());
       gratitudeResizeObserver.observe(reviewsGratitudeGallery);
     }
+    
     const swipeThresholdPx = 36;
     const swipeClickSuppressMs = 400;
     let pointerStartX = 0;
@@ -2462,7 +2520,9 @@ function initReviewsSliders() {
       }
       updateCursor(event);
     });
+    
     reviewsGratitudeGallery.addEventListener("pointerenter", updateCursor);
+    
     reviewsGratitudeGallery.addEventListener("pointermove", (event) => {
       updateCursor(event);
       if (!pointerActive) return;
@@ -2475,18 +2535,22 @@ function initReviewsSliders() {
       pointerActive = false;
       releasePointer(event);
     });
+    
     reviewsGratitudeGallery.addEventListener("pointerleave", () => {
       reviewsGratitudeGallery.classList.remove("is-cursor-active", "is-left-zone", "is-right-zone");
     });
+    
     reviewsGratitudeGallery.addEventListener("pointerup", (event) => {
       if (!pointerActive) return;
       pointerActive = false;
       releasePointer(event);
     });
+    
     reviewsGratitudeGallery.addEventListener("pointercancel", (event) => {
       pointerActive = false;
       releasePointer(event);
     });
+    
     reviewsGratitudeGallery.addEventListener("click", (event) => {
       if (Date.now() - lastSwipeAt < swipeClickSuppressMs) return;
       const rect = reviewsGratitudeGallery.getBoundingClientRect();
