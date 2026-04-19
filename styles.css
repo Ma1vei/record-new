@@ -626,6 +626,7 @@ body.site-menu-open {
 
 .site-menu__subscribe-submit {
     width: 60px;
+    border: none;
     height: 60px;
     border-radius: 50%;
     background: transparent;
@@ -2009,7 +2010,7 @@ body.site-menu-open {
     text-align: center;
     text-transform: uppercase;
     font-family: "Roboto", sans-serif;
-    font-size: clamp(100px, 14vw, 268.608px);
+    font-size: 268.608px;
     font-weight: 300;
     line-height: 1;
     letter-spacing: -0.06em;
@@ -9941,10 +9942,9 @@ a.interview-node {
     width: 100%;
     overflow: visible;
 }
-
 .media-lib-scene {
     width: 100%;
-    height: 27.5vh;
+    height: 370px; /* Заменили 27.5vh на 370px */
     perspective: 4000px;
     display: flex;
     align-items: center;
@@ -13068,3 +13068,4 @@ body.modal-open {
     margin-left: -96px;
     pointer-events: none;
 }
+
