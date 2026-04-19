@@ -6611,7 +6611,7 @@ left: 0;
         top: 1px;
         left: 0;
         right: 0;
-        margin-left: -8px;
+        margin-left: 0;
         margin-right: -8px;
         margin-top: 0;
         transform: translateY(-28px);
@@ -12701,7 +12701,9 @@ body.modal-open {
         min-height: 0;
         padding: 12px 0px 12px;
     }
-    
+    .reviews-gratitude-slides-wrapper {
+        transform: scale(1.1);
+    }
     .reviews-gratitude-gallery {
         --rg-gap: 10px;
         /* --rg-card-w/h задаёт script.js; лента: активный слева, следующий — вправо с подглядом */
@@ -12710,6 +12712,7 @@ body.modal-open {
         min-height: var(--rg-card-h, 400px);
         height: auto;
         padding: 0;
+        
         overflow: visible;
     }
 
@@ -13176,20 +13179,32 @@ body.modal-open {
         font-weight: 500;
         letter-spacing: -6%;
     }
-    
+    .reviews-media-library-wrapper {
+        padding-bottom: 0 !important;
+    }
     .screen-advert-wrapp {
         overflow: visible;
     }
     
     .advert-3d-slider {
-        width: 100vw;
-        margin-left: calc(-50vw + 50%);
+        width: 100%;
+        margin-left: -16px;
         overflow: visible;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
     
     .advert-3d-slider .scene {
         transform: translateX(0);
         overflow: visible;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .advert-3d-slider .ring {
+        margin: 0 auto;
     }
 }
 
