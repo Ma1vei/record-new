@@ -11527,7 +11527,8 @@ a.interview-node {
 }
 
 .footer-cta-primary {
-    border: 1px solid rgba(255, 255, 255, 0.62);
+    background: #ca1220;
+    border: 1px solid #ca1220;
     color: #fff;
     width: 257px;
 }
@@ -11541,8 +11542,8 @@ a.interview-node {
 
 .footer-cta-primary:hover,
 .footer-cta-primary:focus-visible {
-    background: #ca1220;
-    border-color: #ca1220;
+    background: #f01628;
+    border-color: #f01628;
 }
 
 .footer-cta-secondary:hover,
