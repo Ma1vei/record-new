@@ -2404,7 +2404,12 @@ body.site-menu-open {
     .promo-item.is-over-text::before {
         display: none;
     }
-
+.partners-card {
+    border-radius: 2px !important;
+}
+    .partners-feature-badge {
+        border-radius: 2px !important;
+    }
     .promo-item {
         border: 1px solid #CBCBCB;
         border-radius: 4px;
@@ -3989,6 +3994,9 @@ left: 0;
         padding-top: 60px;
         padding-bottom: 40px;
     }
+    .partners-logo-new {  
+        width: 106px !important;
+}
 
     .media-content-overlay {
         position:unset !important;
@@ -4545,7 +4553,7 @@ left: 0;
 
 .partners-logo-wrap {
     width: 380px;
-    height: 150px;
+    height: 130px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -6855,7 +6863,7 @@ left: 0;
         width: 169px;
     }
     .partners-row-track {
-        gap: 5px;
+        gap: 5px !important;
     }
     .partners-row,
     .partners-row-dark,
@@ -13163,6 +13171,21 @@ body.modal-open {
         font-weight: 500;
         letter-spacing: -6%;
     }
+    
+    .screen-advert-wrapp {
+        overflow: visible;
+    }
+    
+    .advert-3d-slider {
+        width: 100vw;
+        margin-left: calc(-50vw + 50%);
+        overflow: visible;
+    }
+    
+    .advert-3d-slider .scene {
+        transform: translateX(0);
+        overflow: visible;
+    }
 }
 
 @media (max-height: 733px) and (min-width: 1201px) {
@@ -13250,8 +13273,8 @@ body.modal-open {
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    width: 106px;
-    height: 100px;
+    width: 253px;
+    height: 238px;
     background-image: url('./assets/runline.svg');
     background-size: contain;
     background-repeat: no-repeat;
