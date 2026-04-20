@@ -2495,12 +2495,9 @@ function initReviewsSliders() {
       reviewsGratitudeGallery.classList.toggle("is-left-zone", isLeftZone);
       reviewsGratitudeGallery.classList.toggle("is-right-zone", !isLeftZone);
       
-      // Используем координаты относительно viewport для более точного позиционирования
       if (reviewsGratitudeCursor) {
-        const cursorX = event.clientX - rect.left;
-        const cursorY = event.clientY - rect.top;
-        reviewsGratitudeCursor.style.left = `${cursorX}px`;
-        reviewsGratitudeCursor.style.top = `${cursorY}px`;
+        reviewsGratitudeCursor.style.setProperty("left", `${localX}px`);
+        reviewsGratitudeCursor.style.setProperty("top", `${localY}px`);
       }
     };
 
@@ -2599,14 +2596,24 @@ function initReviewsTabs() {
   reviewsTabs.forEach((tab) => {
     tab.addEventListener("click", () => {
       const tabName = tab.dataset.reviewsTab || "official";
-      setTab(tabName);
+      const previousTab = reviewsScreen.dataset.reviewsTab;
       
-      // Скролл к блоку reviewsScreen при переключении на любой таб
-      if (reviewsScreen) {
-        // Небольшая задержка для корректной отработки анимации переключения таба
-        setTimeout(() => {
-          reviewsScreen.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 50);
+      // При переключении с "official" на другие вкладки - СНАЧАЛА прокручиваем к началу блока
+      if (reviewsScreen && previousTab === "official" && (tabName === "gratitude" || tabName === "feedback")) {
+        // Мгновенно прокручиваем к началу блока ДО переключения таба
+        const reviewsTop = reviewsScreen.getBoundingClientRect().top + window.scrollY;
+        window.scrollTo({
+          top: reviewsTop,
+          behavior: 'auto'
+        });
+        
+        // Небольшая задержка перед переключением таба, чтобы прокрутка успела завершиться
+        requestAnimationFrame(() => {
+          setTab(tabName);
+        });
+      } else {
+        // Для других случаев переключаем таб сразу
+        setTab(tabName);
       }
     });
   });
