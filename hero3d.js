@@ -460,7 +460,7 @@ async function initHero3D() {
     const N1_REACTION_MUL = isMobileHero ? 0.55 : 0.55;
     const N1_REPULSION_MUL = 1.0; 
     
-    const SCATTER_DISTANCE = isMobileHero ? 4.5 : 8.0;
+    const SCATTER_DISTANCE = isMobileHero ? 3.0 : 5.5;
     
     const _force = new THREE.Vector3();
     const _curQ = new THREE.Quaternion();
@@ -534,7 +534,7 @@ async function initHero3D() {
         if (scatterPinScrollY === null) scatterPinScrollY = scrollY;
         scrollRaw = (scrollY - scatterPinScrollY) / windowHeight;
       }
-      const scatterScrollMul = isMobileHero ? 1.55 : 2.45;
+      const scatterScrollMul = isMobileHero ? 0.8 : 1.2;
       let targetScatter = Math.max(0, Math.min(1, scrollRaw * scatterScrollMul));
       
       const scatterLerp = 1 - Math.exp(-72 * dt);
