@@ -460,7 +460,7 @@ async function initHero3D() {
     const N1_REACTION_MUL = isMobileHero ? 0.55 : 0.55;
     const N1_REPULSION_MUL = 1.0; 
     
-    const SCATTER_DISTANCE = isMobileHero ? 6.1 : 11.2;
+    const SCATTER_DISTANCE = isMobileHero ? 4.5 : 8.0;
     
     const _force = new THREE.Vector3();
     const _curQ = new THREE.Quaternion();
