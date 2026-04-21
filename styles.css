@@ -36,7 +36,7 @@
 /* Мобилка: длиннее «дорожка» скролла пока промо sticky — жест сначала проигрывает карточки, потом уезжает страница */
 @media (max-width: 1200px) {
     :root {
-        --promo-overlap-scroll: 6400px;
+        --promo-overlap-scroll: 2400px;
     }
 }
 
@@ -1900,7 +1900,7 @@ body.site-menu-open {
     position: relative;
     z-index: 3;
     background: #0f0f0f;
-    margin-top: calc(-1 * var(--real-vh)); /* Добавленная строка */
+    margin-top: calc(-1 * var(--real-vh));
 }
 
 .status {
@@ -7756,7 +7756,7 @@ left: 0;
 
     .countdown-section {
         height: auto;
-        min-height: 100vh;
+        min-height: 400vh;
     }
 
     .countdown-pin {
@@ -9371,7 +9371,7 @@ a.interview-node {
 
     .countdown-section {
         height: auto;
-        min-height: 100vh;
+        min-height: 400vh;
     }
 
     .countdown-pin {
