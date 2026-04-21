@@ -856,7 +856,7 @@ requestAnimationFrame(raf);
           statusSection.style.transform = "translateX(-50%)";
           statusSection.style.width = "100%";
           statusSection.style.maxWidth = "1920px";
-          statusSection.style.zIndex = "-1";
+          statusSection.style.zIndex = "2";
           if (statusH >= stableVh) {
               statusSection.style.bottom = "0px";
               statusSection.style.top = "auto";
@@ -864,6 +864,8 @@ requestAnimationFrame(raf);
               statusSection.style.top = "0px";
               statusSection.style.bottom = "auto";
           }
+          // Скрываем только когда spacer полностью прокручен
+          statusSection.style.visibility = scrollY >= spacerTop + spacerH ? "hidden" : "";
       } else {
           statusSection.style.position = "";
           statusSection.style.bottom = "";
@@ -872,6 +874,7 @@ requestAnimationFrame(raf);
           statusSection.style.width = "";
           statusSection.style.maxWidth = "";
           statusSection.style.zIndex = "";
+          statusSection.style.visibility = "";
           statusSection.style.transform = "";
       }
     });

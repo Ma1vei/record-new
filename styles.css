@@ -13439,3 +13439,25 @@ body.modal-open {
         padding-bottom: 200px;
     }
 }
+
+/* ============================================
+   MOBILE PERFORMANCE: отключаем тяжёлые эффекты
+   ============================================ */
+@media (max-width: 1200px) {
+    /* Отключаем backdrop-filter везде кроме меню и попапа */
+    .reviews-letter-frame::before,
+    .media-book-shadow,
+    .partners-feature-badge,
+    .news-card::before,
+    .sales-nominee-cta {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
+
+    /* Отключаем will-change на элементах которые не анимируются активно */
+    .status-statue-img,
+    .promo-header,
+    .promo-item {
+        will-change: auto;
+    }
+}
