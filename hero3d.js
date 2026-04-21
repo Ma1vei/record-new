@@ -583,8 +583,8 @@ async function initHero3D() {
       if (oscarImg) {
         if (isMobileHero) {
           const tf = mobileFloatTime;
-          /* Заметное покачивание на мобилке */
-          oscarTargetX = Math.sin(tf * 0.32) * 8 + Math.sin(tf * 0.12) * 3;
+          /* Заметное покачивание на мобилке — только Y и поворот, X не трогаем */
+          oscarTargetX = 0;
           oscarTargetY = Math.cos(tf * 0.28) * 7 + Math.cos(tf * 0.13) * 2.5;
         }
         const oscarDelta = Math.abs(oscarParallaxX - oscarTargetX) + Math.abs(oscarParallaxY - oscarTargetY);
