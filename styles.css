@@ -1807,7 +1807,7 @@ body.site-menu-open {
 @media (max-width: 1200px) {
     .count-clock-video {
                clip-path: circle(9% at 47% 73.9%);
-        transform: translateX(calc(-50% + 33px));
+        transform: translateX(calc(-50% + 23px));
     }
 
     .count-clock-video {
