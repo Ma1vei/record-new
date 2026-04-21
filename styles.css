@@ -441,10 +441,15 @@ body.site-menu-open {
         background-image: url('./assets/images/hero/logo_2026.webp');
         background-size: contain;
         background-repeat: no-repeat;
-        background-position: left center;
-        transform: scale(0.7);
-        transform-origin: left center;
-        margin-left: 34px;
+        background-position: center center;
+        transform: scale(0.519) translateY(-30px);
+        transform-origin: center center;
+    }
+
+    @media (max-width: 1200px) {
+        .site-menu__media::after {
+            transform: scale(0.346) translateY(-90px);
+        }
     }
 }
 
