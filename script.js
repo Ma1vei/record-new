@@ -525,7 +525,7 @@ requestAnimationFrame(raf);
           el.style.setProperty('--promo-layer-y', `${getPromoLayerYForItem(i)}px`);
         });
 
-        const pCardsEased = pCards * (2 - pCards); // ease-out
+        const pCardsEased = pCards; // линейно — без ускорения в конце
         const riseCap = Math.min(layoutVh * 0.55, 480);
         const riseBase = pCardsEased * riseCap;
 
@@ -627,25 +627,21 @@ requestAnimationFrame(raf);
     /* Мобилка: слабее zoom, статуя ниже (больше translateY) */
     const narrowScale = 1.22;
     if (variant === "gold") {
-      if (narrow) {
-        statusOscarImg.style.transform = "translateY(148px)";
-      } else {
-        statusOscarImg.style.removeProperty("transform");
-      }
+      statusOscarImg.style.transform = narrow
+        ? `translateY(148px) scale(${narrowScale})`
+        : "translateY(-144px) scale(1.444)";
     } else if (variant === "black") {
       statusOscarImg.style.transform = narrow
         ? `translateY(152px) scale(${narrowScale})`
-        : "translateY(-144px) scale(1.444)";
+        : "translateY(106px) scale(1.444)";
     } else if (variant === "ruby") {
-      /* Достижения: для мобилки опускаем картинку один раз, для десктопа картинка ниже исходного положения */
       statusOscarImg.style.transform = narrow
         ? `translateY(290px) scale(${narrowScale})`
-        : "translateY(220px) scale(1.444)";
+        : "translateY(356px) scale(1.444)";
     } else if (variant === "rubyDeep") {
-      /* Виртуальный шаг после «Достижения»: для мобилки оставляем как в ruby (не меняем), для десктопа картинка ещё ниже */
       statusOscarImg.style.transform = narrow
-        ? `translateY(290px) scale(${narrowScale})`
-        : "translateY(500px) scale(1.444)";
+        ? `translateY(200px) scale(${narrowScale * 1.15})`
+        : "translateY(606px) scale(1.444)";
     }
   }
 
@@ -736,35 +732,73 @@ requestAnimationFrame(raf);
 
   updatePinSpacerHeight();
 
-  triggers[0].classList.add("is-active");
-  triggers[1].classList.remove("is-active");
-  triggers[2].classList.remove("is-active");
-  if (quotes[0]) quotes[0].classList.add("is-active");
-  if (quotes[1]) {
-    quotes[1].classList.remove("is-active");
-    quotes[1].classList.remove("is-leaving");
-  }
-  if (quotes[2]) {
-    quotes[2].classList.remove("is-active");
-    quotes[2].classList.remove("is-leaving");
+  // Начальное состояние — ничего не активно, без приближения
+  triggers.forEach(t => t.classList.remove("is-active"));
+  quotes.forEach(q => { if (q) { q.classList.remove("is-active"); q.classList.remove("is-leaving"); } });
+  statusSection.setAttribute("data-status-variant", "gold");
+  if (statusOscarImg) {
+    statusOscarImg.style.transition = "none";
+    if (statusStatueIsNarrowLayout()) {
+      statusOscarImg.style.transform = "translateY(148px)";
+    } else {
+      statusOscarImg.style.removeProperty("transform");
+    }
+    setTimeout(() => {
+      if (statusOscarImg) statusOscarImg.style.transition = "transform 1.2s cubic-bezier(0.22, 0.8, 0.22, 1)";
+    }, 50);
   }
 
-  statusSection.setAttribute("data-status-variant", activeVariant);
-  applyStatusStatueImgTransform(activeVariant);
+  // Флаг: был ли уже активирован хотя бы один шаг (чтобы не активировать gold до входа в зону)
+  let statusAnimStarted = false;
 
   let ticking = false;
 
-  const STATUS_PHASE_GOLD_END = 0.32;
-  const STATUS_PHASE_BLACK_END = 0.62;
-  /** После «Достижения» (ruby): вторая половина скролла в зоне pin — виртуальный шаг rubyDeep */
-  const STATUS_PHASE_RUBY_END = 0.81;
+  // Шаги: 0=gold(Статус), 1=black(Масштаб), 2=ruby(Достижения), 3=rubyDeep(финал)
+  // Каждый шаг занимает 25% диапазона скролла
+  const STATUS_PHASE_GOLD_END  = 0.25;
+  const STATUS_PHASE_BLACK_END = 0.50;
+  const STATUS_PHASE_RUBY_END  = 0.75;
 
   function stepFromProgress(p) {
     const t = Math.max(0, Math.min(1, p));
-    if (t < STATUS_PHASE_GOLD_END) return 0;
+    if (t < STATUS_PHASE_GOLD_END)  return 0;
     if (t < STATUS_PHASE_BLACK_END) return 1;
-    if (t < STATUS_PHASE_RUBY_END) return 2;
+    if (t < STATUS_PHASE_RUBY_END)  return 2;
     return 3;
+  }
+
+  function activateStep(step) {
+    const nextVariant = VARIANTS[step];
+    const idx = getTriggerIndexForVariant(nextVariant);
+    const qi  = getQuoteIndexForVariant(nextVariant);
+
+    triggers.forEach((t, i) => t.classList.toggle("is-active", i === idx));
+
+    if (qi !== getQuoteIndexForVariant(activeVariant) || !statusAnimStarted) {
+      quotes.forEach(q => { if (q) q.classList.remove("is-active", "is-leaving"); });
+      if (quotes[qi]) quotes[qi].classList.add("is-active");
+    }
+
+    statusAnimStarted = true;
+    activeVariant = nextVariant;
+    statusSection.setAttribute("data-status-variant", nextVariant);
+    applyStatusStatueImgTransform(nextVariant);
+  }
+
+  function deactivateAll() {
+    statusAnimStarted = false;
+    activeVariant = "gold";
+    triggers.forEach(t => t.classList.remove("is-active"));
+    quotes.forEach(q => { if (q) q.classList.remove("is-active", "is-leaving"); });
+    statusSection.setAttribute("data-status-variant", "gold");
+    if (statusOscarImg) {
+      statusOscarImg.style.transition = "transform 1.2s cubic-bezier(0.22, 0.8, 0.22, 1)";
+      if (statusStatueIsNarrowLayout()) {
+        statusOscarImg.style.transform = "translateY(148px)";
+      } else {
+        statusOscarImg.style.removeProperty("transform");
+      }
+    }
   }
 
   function onScrollStatus() {
@@ -775,59 +809,54 @@ requestAnimationFrame(raf);
       if (!pinSpacer) return;
 
       const svh = getScrollViewportHeight();
-      const bandVh = Math.min(svh, STATUS_PIN_VH_STRETCH_CAP);
       const spacerH = pinSpacer.offsetHeight;
       const spacerTop = getElementDocumentOffsetTop(pinSpacer);
       const scrollY = getDocumentScrollY();
       const sectionScrollRange = Math.max(1, spacerH - svh);
-      const startAfter =
-        window.innerWidth <= 1200 ? bandVh * 0.08 : bandVh * 0.02;
-      const denom = Math.max(1, sectionScrollRange - startAfter);
 
-      // --- ЛОГИКА ПЕРЕКЛЮЧЕНИЯ СТАТУЙ И ТЕКСТОВ ---
+      // --- ЛОГИКА ПЕРЕКЛЮЧЕНИЯ ---
       if (scrollY + svh <= spacerTop) {
+        // Блок ещё не вошёл в viewport
         statusStatuePastPin = false;
-        setActiveStatusVariant("gold");
+        if (statusAnimStarted) deactivateAll();
+
       } else if (scrollY >= spacerTop + spacerH) {
+        // Блок уже прокручен — фиксируем на последнем активном шаге
         if (!statusStatuePastPin) {
           resetStatusStatueImgAfterPin();
+          statusStatuePastPin = true;
         }
-        statusStatuePastPin = true;
-        setActiveStatusVariant("ruby", { skipStatueImg: true });
-      } else {
-        const reenteredPinFromBelow = statusStatuePastPin;
-        statusStatuePastPin = false;
+        // Оставляем ruby активным (не переключаем)
 
-        const scrolled = Math.max(
-          0,
-          Math.min(sectionScrollRange - startAfter, scrollY - spacerTop - startAfter),
-        );
-        const progress = Math.max(0, Math.min(1, scrolled / denom));
-        const step = stepFromProgress(progress);
-        const nextVariant = VARIANTS[step];
-        if (reenteredPinFromBelow && nextVariant === activeVariant) {
-          applyStatusStatueImgTransform(nextVariant);
+      } else {
+        statusStatuePastPin = false;
+        const rawScrolled = scrollY - spacerTop;
+        // Мёртвая зона: ждём пока блок войдёт на 50% высоты viewport
+        const deadZone = svh * 0.5;
+        if (rawScrolled < deadZone) {
+          if (statusAnimStarted) deactivateAll();
         } else {
-          setActiveStatusVariant(nextVariant);
+          const progress = Math.max(0, Math.min(1, (rawScrolled - deadZone) / (sectionScrollRange - deadZone)));
+          const step = stepFromProgress(progress);
+          const nextVariant = VARIANTS[step];
+          if (!statusAnimStarted || nextVariant !== activeVariant) {
+            activateStep(step);
+          }
         }
       }
 
-      // --- ИДЕАЛЬНАЯ ЛОГИКА ОСТАНОВКИ (БЕЗ ДРОЖАНИЯ) ---
+      // --- ЛОГИКА ОСТАНОВКИ ---
       const statusH = statusSection.offsetHeight;
       const stableVh = (window.innerHeight || document.documentElement.clientHeight) / getPageScale();
       const freezeY = spacerTop + spacerH - Math.min(statusH, stableVh);
 
       if (scrollY >= freezeY) {
-          // Отказываемся от конфликтующего JS-сдвига (transform).
-          // Намертво фиксируем блок относительно экрана телефона.
           statusSection.style.position = "fixed";
           statusSection.style.left = "50%";
           statusSection.style.transform = "translateX(-50%)";
           statusSection.style.width = "100%";
           statusSection.style.maxWidth = "1920px";
-          statusSection.style.zIndex = "1"; // Убираем под 4-й блок
-          
-          // Умное выравнивание: если блок выше экрана - прибиваем к низу, если ниже - к верху.
+          statusSection.style.zIndex = "-1";
           if (statusH >= stableVh) {
               statusSection.style.bottom = "0px";
               statusSection.style.top = "auto";
@@ -836,7 +865,6 @@ requestAnimationFrame(raf);
               statusSection.style.bottom = "auto";
           }
       } else {
-          // Возвращаем в обычное состояние, если пользователь скроллит обратно вверх
           statusSection.style.position = "";
           statusSection.style.bottom = "";
           statusSection.style.top = "";
@@ -2597,24 +2625,25 @@ function initReviewsTabs() {
     tab.addEventListener("click", () => {
       const tabName = tab.dataset.reviewsTab || "official";
       const previousTab = reviewsScreen.dataset.reviewsTab;
-      
-      // При переключении с "official" на другие вкладки - СНАЧАЛА прокручиваем к началу блока
-      if (reviewsScreen && previousTab === "official" && (tabName === "gratitude" || tabName === "feedback")) {
-        // Мгновенно прокручиваем к началу блока ДО переключения таба
-        const reviewsTop = reviewsScreen.getBoundingClientRect().top + window.scrollY;
-        window.scrollTo({
-          top: reviewsTop,
-          behavior: 'auto'
-        });
-        
-        // Небольшая задержка перед переключением таба, чтобы прокрутка успела завершиться
-        requestAnimationFrame(() => {
-          setTab(tabName);
-        });
-      } else {
-        // Для других случаев переключаем таб сразу
-        setTab(tabName);
+
+      if (tabName === previousTab) return;
+
+      // При любом переключении табов — сначала прокручиваем к началу блока
+      const reviewsTop = reviewsScreen.getBoundingClientRect().top + window.scrollY / getPageScale();
+      const currentScrollY = getDocumentScrollY();
+
+      // Прокручиваем только если мы не в начале блока
+      if (Math.abs(currentScrollY - reviewsTop) > 5) {
+        if (lenis && typeof lenis.scrollTo === "function") {
+          lenis.scrollTo(reviewsScreen, { offset: 0, immediate: true });
+        } else {
+          window.scrollTo({ top: reviewsTop * getPageScale(), behavior: "auto" });
+        }
       }
+
+      requestAnimationFrame(() => {
+        setTab(tabName);
+      });
     });
   });
 

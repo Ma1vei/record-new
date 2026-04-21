@@ -13,7 +13,7 @@
   --text-white: #ffffff;
   --real-vh: 100vh;
   /* Дистанция скролла, пока промо «прилипло», и наезд следующей секции поверх */
-  --promo-overlap-scroll: min(220vh, 3200px);
+  --promo-overlap-scroll: min(440vh, 6400px);
 }
 
 .videoteka-tabs-wrapper {
@@ -36,7 +36,7 @@
 /* Мобилка: длиннее «дорожка» скролла пока промо sticky — жест сначала проигрывает карточки, потом уезжает страница */
 @media (max-width: 1200px) {
     :root {
-        --promo-overlap-scroll: 3200px;
+        --promo-overlap-scroll: 6400px;
     }
 }
 
@@ -394,12 +394,58 @@ body.site-menu-open {
     overflow: hidden;
     width: 279px;
     height: 101px;
+    background: transparent;
 }
 
 .site-menu__logo-video {
     width: 119px;
     height: 117px;
     object-fit: cover;
+    background: transparent;
+    background-color: transparent;
+    -webkit-mask-composite: source-over;
+    mix-blend-mode: normal;
+}
+
+/* Safari fix: скрываем видео в Safari, показываем полный статичный логотип */
+@supports (-webkit-hyphens:none) {
+    .site-menu__logo-video,
+    .site-menu__video {
+        display: none !important;
+    }
+    
+    /* Скрываем текстовую часть логотипа в Safari, т.к. она уже есть на картинке */
+    .site-menu__logo-mark,
+    .site-menu__photo {
+        display: none !important;
+    }
+    
+    /* Показываем полный логотип с текстом */
+    .site-menu__logo::after {
+        content: '';
+        display: block;
+        width: 279px;
+        height: 101px;
+        background-image: url('./assets/images/hero/logo_2026.webp');
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: left center;
+        margin-left: 14px;
+    }
+    
+    .site-menu__media::after {
+        content: '';
+        display: block;
+        width: 279px;
+        height: 101px;
+        background-image: url('./assets/images/hero/logo_2026.webp');
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: left center;
+        transform: scale(0.7);
+        transform-origin: left center;
+        margin-left: 34px;
+    }
 }
 
 
@@ -456,7 +502,9 @@ body.site-menu-open {
 }
 
 .site-menu__btn--outline:hover {
-    border-color: #fff;
+    border-color: #dc1924;
+    background: #dc1924;
+    color: #fff;
 }
 
 .site-menu__nav {
@@ -529,11 +577,13 @@ body.site-menu-open {
     padding-left: 35px;
     border-left: 1px solid rgba(249, 240, 232, 0.71);
     transition: all 0.3s;
+    position: relative;
 }
 
 .site-menu__submenu-link:hover {
-    color: #fff;
+    color: #dc1924;
     border-left-color: #dc1924;
+    transform: translateX(2px);
 }
 
 .site-menu__socials {
@@ -550,6 +600,7 @@ body.site-menu-open {
     text-decoration: none;
     font-size: 26px;
     font-family: "Manrope", sans-serif;
+    transition: color 0.3s;
 }
 
 .site-menu__social-link::after {
@@ -563,8 +614,12 @@ body.site-menu-open {
     transition: background-color 0.3s;
 }
 
+.site-menu__social-link:hover {
+    color: #dc1924;
+}
+
 .site-menu__social-link:hover::after {
-    background: #fff;
+    background: #dc1924;
 }
 
 .site-menu__subscribe {
@@ -626,26 +681,44 @@ body.site-menu-open {
 }
 
 .site-menu__subscribe-submit {
-    width: 60px;
-    border: none;
-    height: 60px;
+    position: relative;
+    width: 61px;
+    height: 55px;
+    padding: 0;
+    border: 1.5px solid rgba(243, 182, 143, 0.6);
     border-radius: 50%;
     background: transparent;
+    cursor: pointer;
+    transition: border-color 300ms ease, background 300ms ease, transform 180ms ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s;
-}
-
-.site-menu__subscribe-submit:hover {
-    border-color: #fff;
-    background: rgba(255, 255, 255, 0.1);
 }
 
 .site-menu__subscribe-submit img {
-    width: 100%;
-    height: 100%;
+    display: none;
+}
+
+.site-menu__subscribe-submit::after {
+    content: '';
+    display: block;
+    width: 16px;
+    height: 16px;
+    background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 8H15M15 8L9 2M15 8L9 14' stroke='%23F3B68F' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-size: contain;
+    transition: transform 300ms ease, filter 300ms ease;
+}
+
+.site-menu__subscribe-submit:hover {
+    border-color: #F1A775;
+    background: #F1A775;
+    transform: translateX(2px);
+}
+
+.site-menu__subscribe-submit:hover::after {
+    transform: translateX(2px);
+    filter: brightness(0) invert(1);
 }
 
 .site-menu__footer {
@@ -2048,6 +2121,8 @@ body.site-menu-open {
 }
 
 .screen-media-library {
+    position: relative;
+    z-index: 6;
 }
 
 
@@ -4211,7 +4286,9 @@ left: 0;
 }
 
 .screen-subscribe {
-    
+    position: relative;
+    z-index: 6;
+    background-color: #0f0f0f;
 }
 
 .screen-organizer {
@@ -5062,6 +5139,7 @@ left: 0;
   height: 586px;
   background: rgba(255, 255, 255, 0.05);
   border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -5083,6 +5161,7 @@ left: 0;
   flex-shrink: 0;
   display: block;
   position: relative;
+  border-radius: 5px;
 }
 
 .advert-3d-slider .slide img::after {
@@ -5682,6 +5761,12 @@ left: 0;
     box-sizing: border-box;
   }
 
+  @media (max-width: 1200px) {
+    .news-gallery {
+        padding-right: 0;
+    }
+  }
+
   .news-gallery-viewport {
     overflow: hidden;
     width: 100%;
@@ -5799,6 +5884,9 @@ left: 0;
         min-height: 420px;
         height: auto;
         overflow: visible;
+    }
+    .news-gallery-viewport {
+      overflow: visible;
     }
     .news-card {
       flex: 0 0 calc(var(--news-card-width) * 1px);
@@ -6244,29 +6332,11 @@ left: 0;
     opacity: 1;
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* Планшет/Телефон */
 @media (max-width: 1200px) {
     /* Уменьшаем линии пульсации */
     .news-wrapp {
         width: 100%;
-        max-width: 380px;
         margin-left: auto;
         margin-right: auto;
         box-sizing: border-box;
@@ -9994,7 +10064,7 @@ a.interview-node {
 }
 
 .reviews-media-library {
-    margin: 0 0 40px;
+    margin: 0 0 0px;
     text-align: center;
     font-size: 264.17px;
     line-height: 264.17px;
@@ -10500,12 +10570,13 @@ a.interview-node {
 .videoteka-item-copy h3 {
     margin: 0 0 39px;
     font: 400 36px/1.04 "Roboto", sans-serif;
+    font-style: normal;
     text-transform: none;
     color: #F1F1F1;
 }
 
 .videoteka-item-copy p {
-    color: #F1F1F1;
+    color: #f1f1f1d6;
     margin: 0;
     max-width: 900px;
     font: 300 24px/1.38 "Manrope", sans-serif;
@@ -11494,17 +11565,20 @@ a.interview-node {
         top: -36.07px;
         width: 545px;
         height: 332.125px;
+        object-fit: cover;
     }
 
     .contacts-card-photo-valentina,
     .contacts-card-photo-ratnikova {
         width: 100%;
         height: 260.012px;
+        object-fit: cover;
     }
 
     .contacts-card-photo-pavel {
         width: 100%;
         height: 502.275px;
+        object-fit: cover;
     }
 
     .contacts-card-role {
@@ -13249,6 +13323,7 @@ body.modal-open {
     width: 279px;
     height: 101px;
     overflow: hidden;
+    background: transparent;
 }
 
 
@@ -13257,6 +13332,10 @@ body.modal-open {
     height: 61px;
     object-fit: cover;
     transform: translateX(34px);
+    background: transparent;
+    background-color: transparent;
+    -webkit-mask-composite: source-over;
+    mix-blend-mode: normal;
 }
 
 .site-menu__photo {
