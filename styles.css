@@ -3682,6 +3682,12 @@ body.site-menu-open {
     display: inline-block;
 }
 
+.sales-nominee-word-underline {
+    display: inline;
+    border-bottom: 2px solid currentColor;
+    padding-bottom: 4px;
+}
+
 .sales-nominee-note {
     margin-bottom: 60px;
     margin-top: 43px;
