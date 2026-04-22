@@ -11828,7 +11828,7 @@ a.interview-node {
 .footer-columns {
     display: flex;
     flex-wrap: wrap;
-    gap: 50px 132px;
+    gap: 50px 32px;
     margin-bottom: 100px;
 }
 

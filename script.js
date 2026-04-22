@@ -343,25 +343,24 @@ if (document.readyState === "loading") {
 // отдельный потолок шага (см. initMobileDocumentScrollCap), без «липкой» интерполяции.
 // ==========================================
 
-const isMobileDevice = window.innerWidth <= 1024;
+const LENIS_LAYOUT_BREAKPOINT = 1200;
+let lenis = null;
 
-const lenis = new Lenis({
-  duration: isMobileDevice ? 1.0 : 1.5, // Уменьшили длительность для отзывчивости
-  easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-  direction: 'vertical', 
-  gestureDirection: 'vertical',
-  smooth: !isMobileDevice, // Отключаем на мобильных для нативного скролла
-  mouseMultiplier: 1,
-  smoothTouch: false, 
-  touchMultiplier: 1.5,
-  infinite: false,
-});
-
-function raf(time) {
-  lenis.raf(time);
-  requestAnimationFrame(raf);
+// Инициализируем Lenis только для десктопа (>= 1200px)
+if (typeof Lenis === "function" && window.innerWidth >= LENIS_LAYOUT_BREAKPOINT) {
+  lenis = new Lenis({
+    wrapper: window,
+    content: document.documentElement,
+    orientation: "vertical",
+    gestureOrientation: "vertical",
+    infinite: false,
+    smoothWheel: true,
+    syncTouch: false,
+    wheelMultiplier: 0.6, // Баланс между 0.8 (летает) и 0.4 (туго)
+    duration: 1.0,        // Средняя продолжительность инерции
+    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+  });
 }
-requestAnimationFrame(raf);
 
 /**
  * Один источник правды для вертикального скролла (Lenis или window).
@@ -3179,13 +3178,7 @@ function initMediaLibCarousel() {
   });
 }
 
-if (!isMobileDevice) {
-  initMediaLibCarousel();
-} else {
-  // На мобильных можно просто показать статичный список или упрощенную версию
-  const carousel = document.getElementById('mediaLibCarousel');
-  if (carousel) carousel.style.overflowX = 'auto'; 
-}
+initMediaLibCarousel();
 
 // ============================================
 // VIDEOTEKA TABS WRAPPER
