@@ -343,24 +343,26 @@ if (document.readyState === "loading") {
 // отдельный потолок шага (см. initMobileDocumentScrollCap), без «липкой» интерполяции.
 // ==========================================
 
-const LENIS_LAYOUT_BREAKPOINT = 1200;
-let lenis = null;
+const isMobile = window.innerWidth <= 1200;
 
-// Инициализируем Lenis только для десктопа (>= 1200px)
-if (typeof Lenis === "function" && window.innerWidth >= LENIS_LAYOUT_BREAKPOINT) {
-  lenis = new Lenis({
-    wrapper: window,
-    content: document.documentElement,
-    orientation: "vertical",
-    gestureOrientation: "vertical",
-    infinite: false,
-    smoothWheel: true,
-    syncTouch: false,
-    wheelMultiplier: 0.6, // Баланс между 0.8 (летает) и 0.4 (туго)
-    duration: 1.0,        // Средняя продолжительность инерции
-    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-  });
+const lenis = new Lenis({
+  // Уменьшаем duration. 5.2 — это очень много, на мобилках создает эффект «киселя»
+  duration: isMobile ? 1.2 : 2.2, 
+  easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+  direction: 'vertical', 
+  gestureDirection: 'vertical',
+  smooth: !isMobile, // ВЫКЛЮЧАЕМ smooth для мобилок, чтобы не конфликтовать с нативным скроллом
+  mouseMultiplier: 1,
+  smoothTouch: false, 
+  touchMultiplier: 1.5,
+  infinite: false,
+});
+
+function raf(time) {
+  lenis.raf(time);
+  requestAnimationFrame(raf);
 }
+requestAnimationFrame(raf);
 
 /**
  * Один источник правды для вертикального скролла (Lenis или window).
