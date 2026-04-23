@@ -555,7 +555,11 @@ body.site-menu-open {
 }
 
 .site-menu__nav-item:hover {
-    opacity: 0.7;
+    color: #DC1924;
+}
+
+.site-menu__nav-item:hover img {
+    filter: brightness(0) saturate(100%) invert(18%) sepia(96%) saturate(2000%) hue-rotate(344deg) brightness(90%) contrast(95%);
 }
 
 .site-menu__nav-item img {
@@ -2881,7 +2885,7 @@ body.site-menu-open {
 .media-book-frame {
     display: block;
     position: absolute;
-    top: 50%;
+    top: 43%;
     left: 50%;
     z-index: 1;
     width: 1400px;
@@ -8742,21 +8746,26 @@ a.interview-node {
     .sales-ceremony-title {
         padding-left: 0;
         position: absolute;
-        left: 50%;
+        left: 56%;
         z-index: 10;
         transform: translateX(-50%);
     }
 
     .sales-ceremony-line-1 {
-        font-size: 45px !important;
-        letter-spacing: -6%;
+        font-size: 40px !important;
+        letter-spacing: -1%;
+    }
+
+    .sales-ceremony-o {
+        font-size: 40px !important;
+        margin-left: -8px;
     }
     .sales-ceremony-line-2 {
  
         letter-spacing: -6%;
     }
     .sales-ceremony-title  span {
-        font-size: 46px;
+        font-size: 36px;
         line-height: 40px;
     }
 
@@ -12194,11 +12203,11 @@ body.modal-open {
     background: #e7ddd3;
 }
 
-.sales-popup-field-name { left: 95px; top: 238px; }
-.sales-popup-field-company { left: 461px; top: 238px; }
-.sales-popup-field-role { left: 827px; top: 238px; }
-.sales-popup-field-email { left: 95px; top: 340px; }
-.sales-popup-field-phone { left: 461px; top: 340px; }
+.sales-popup-field-name { left: 95px; top: 198px; }
+.sales-popup-field-company { left: 461px; top: 198px; }
+.sales-popup-field-role { left: 827px; top: 198px; }
+.sales-popup-field-email { left: 95px; top: 300px; }
+.sales-popup-field-phone { left: 461px; top: 300px; }
 
 .sales-popup-input {
     width: 100%;
@@ -12223,7 +12232,7 @@ body.modal-open {
 .sales-popup-submit {
     position: absolute;
     left: 827px;
-    top: 340px;
+    top: 300px;
     width: 350px;
     height: 86px;
     border: 0;
@@ -12253,7 +12262,7 @@ body.modal-open {
 .sales-popup-consent {
     position: absolute;
     left: 230px;
-    top: 480px;
+    top: 440px;
     width: 780px;
     height: 64px;
 }
@@ -12613,7 +12622,7 @@ body.modal-open {
         width: calc(100vw - 30px);
         max-width: 345px;
         /* Весь контент по абсолютным координатам ~до 730px + запас; без внутреннего скролла */
-        height: 830px;
+        height: 700px;
         max-height: none;
         transform: translate(-50%, -50%);
         border-radius: 8px;
@@ -12637,7 +12646,7 @@ body.modal-open {
         letter-spacing: -1.2px;
         text-align: left;
         z-index: 1;
-        margin-bottom: 60px;
+        margin-bottom: 20px;
     }
 
     .sales-popup-field {
@@ -12649,11 +12658,11 @@ body.modal-open {
         z-index: 2;
     }
 
-    .sales-popup-field-name { left: 22px; top: 200px; }
-    .sales-popup-field-company { left: 22px; top: 270px; }
-    .sales-popup-field-role { left: 22px; top: 340px; }
-    .sales-popup-field-email { left: 22px; top: 410px; }
-    .sales-popup-field-phone { left: 22px; top: 480px; }
+    .sales-popup-field-name { left: 22px; top: 160px; }
+    .sales-popup-field-company { left: 22px; top: 230px; }
+    .sales-popup-field-role { left: 22px; top: 300px; }
+    .sales-popup-field-email { left: 22px; top: 370px; }
+    .sales-popup-field-phone { left: 22px; top: 440px; }
 
     .sales-popup-input {
         padding: 0 18px;
@@ -12663,7 +12672,7 @@ body.modal-open {
     .sales-popup-submit {
         position: absolute;
         left: 22px;
-        top: 560px;
+        top: 520px;
         width: calc(100% - 44px);
         max-width: 301px;
         height: 58px;
@@ -12676,7 +12685,7 @@ body.modal-open {
     .sales-popup-consent {
         position: absolute;
         left: 22px;
-        top: 640px;
+        top: 600px;
         width: calc(100% - 44px);
         max-width: 301px;
         height: auto;
@@ -13565,5 +13574,48 @@ br.mobile-only {
         display: flex;
         justify-content: center;
         align-items: baseline;
+    }
+}
+
+.promo-mobile-only {
+    display: none;
+}
+
+@media (max-width: 1200px) {
+    .promo-desktop-only {
+        display: none;
+    }
+    .promo-mobile-only {
+        display: block;
+    }
+}
+
+@media (max-width: 1200px) {
+    .hero .header {
+        justify-content: center;
+    }
+}
+
+/* Полоска прогресса слайдера ceremonia на мобилке */
+.sales-slider-progress {
+    display: none;
+}
+
+@media (max-width: 1200px) {
+    .sales-slider-progress {
+        display: block;
+        position: absolute;
+        bottom: 0;
+        left: 20px;
+        right: 20px;
+        height: 3px;
+        background: #444;
+        z-index: 10;
+    }
+
+    .sales-slider-progress-bar {
+        height: 100%;
+        background: #F1A775;
+        transition: width 0.4s ease, margin-left 0.4s ease;
     }
 }

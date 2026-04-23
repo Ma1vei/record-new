@@ -222,6 +222,16 @@ function initSalesSlider() {
     };
 
     const isMobile = window.innerWidth <= 1200;
+
+    const progressBar = wrapp.querySelector(".sales-slider-progress-bar");
+    function updateProgressBar(index) {
+      if (!progressBar || !isCeremonia) return;
+      const total = slides.length;
+      const segW = 100 / total;
+      progressBar.style.marginLeft = `${segW * index}%`;
+      progressBar.style.width = `${segW}%`;
+    }
+
     const swiper = new window.Swiper(salesGalleryMain, {
       slidesPerView: isMobile ? 1 : (isCeremoniaBlock ? 1 : 1.15),
       spaceBetween: isMobile ? 0 : (isCeremoniaBlock ? 40 : 20),
@@ -247,9 +257,11 @@ function initSalesSlider() {
       on: {
         init(instance) {
           updateMeta(instance.activeIndex, { animate: false });
+          if (isCeremonia) updateProgressBar(instance.activeIndex);
         },
         slideChange(instance) {
           updateMeta(instance.activeIndex);
+          if (isCeremonia) updateProgressBar(instance.activeIndex);
         },
       },
     });
@@ -637,7 +649,7 @@ requestAnimationFrame(raf);
         : "translateY(106px) scale(1.444)";
     } else if (variant === "ruby") {
       statusOscarImg.style.transform = narrow
-        ? `translateY(290px) scale(${narrowScale})`
+        ? `translateY(190px) scale(${narrowScale})`
         : "translateY(356px) scale(1.444)";
     } else if (variant === "rubyDeep") {
       statusOscarImg.style.transform = narrow
