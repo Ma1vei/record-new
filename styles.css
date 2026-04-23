@@ -450,7 +450,18 @@ body.site-menu-open {
         .site-menu__media::after {
             transform: scale(0.346) translateY(-90px);
         }
-    }
+
+        .site-menu__media {
+            width: 97px;
+            height: 35px;
+            overflow: visible;
+        }
+
+        .site-menu__media::after {
+            transform: translateX(42px) scale(0.346);
+            transform-origin: left top;
+            margin-left: 0;
+        }
 
     /* Покачивание оскара в Safari через CSS-анимацию */
     @keyframes oscarSway {
@@ -2885,7 +2896,7 @@ body.site-menu-open {
 .media-book-frame {
     display: block;
     position: absolute;
-    top: 43%;
+    top: 45%;
     left: 50%;
     z-index: 1;
     width: 1400px;
@@ -8752,12 +8763,12 @@ a.interview-node {
     }
 
     .sales-ceremony-line-1 {
-        font-size: 40px !important;
+        font-size: 46px !important;
         letter-spacing: -1%;
     }
 
     .sales-ceremony-o {
-        font-size: 40px !important;
+        font-size: 46px !important;
         margin-left: -8px;
     }
     .sales-ceremony-line-2 {
@@ -8765,7 +8776,7 @@ a.interview-node {
         letter-spacing: -6%;
     }
     .sales-ceremony-title  span {
-        font-size: 36px;
+        font-size: 40px;
         line-height: 40px;
     }
 
@@ -8959,6 +8970,7 @@ a.interview-node {
         margin-right: auto;
         padding-left: 20px;
         padding-right: 20px;
+        padding-top: 5px;
         box-sizing: border-box;
     }
 
@@ -13619,3 +13631,8 @@ br.mobile-only {
         transition: width 0.4s ease, margin-left 0.4s ease;
     }
 }
+
+        .hero .header {
+            justify-content: center;
+        }
+    }

@@ -641,7 +641,7 @@ requestAnimationFrame(raf);
     const narrowScale = 1.22;
     if (variant === "gold") {
       statusOscarImg.style.transform = narrow
-        ? `translateY(148px) scale(${narrowScale})`
+        ? `translateY(-2px) scale(${narrowScale})`
         : "translateY(-144px) scale(1.444)";
     } else if (variant === "black") {
       statusOscarImg.style.transform = narrow
@@ -664,7 +664,7 @@ requestAnimationFrame(raf);
     statusOscarImg.style.transition =
       "transform 1.2s cubic-bezier(0.22, 0.8, 0.22, 1)";
     if (statusStatueIsNarrowLayout()) {
-      statusOscarImg.style.transform = "translateY(148px)";
+      statusOscarImg.style.transform = "translateY(-2px)";
     } else {
       statusOscarImg.style.removeProperty("transform");
     }
@@ -752,7 +752,7 @@ requestAnimationFrame(raf);
   if (statusOscarImg) {
     statusOscarImg.style.transition = "none";
     if (statusStatueIsNarrowLayout()) {
-      statusOscarImg.style.transform = "translateY(148px)";
+      statusOscarImg.style.transform = "translateY(-2px)";
     } else {
       statusOscarImg.style.removeProperty("transform");
     }
@@ -807,7 +807,7 @@ requestAnimationFrame(raf);
     if (statusOscarImg) {
       statusOscarImg.style.transition = "transform 1.2s cubic-bezier(0.22, 0.8, 0.22, 1)";
       if (statusStatueIsNarrowLayout()) {
-        statusOscarImg.style.transform = "translateY(148px)";
+        statusOscarImg.style.transform = "translateY(-2px)";
       } else {
         statusOscarImg.style.removeProperty("transform");
       }
