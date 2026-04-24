@@ -708,8 +708,8 @@ requestAnimationFrame(raf);
     const statueStage = document.querySelector('.status-statue-stage');
     if (statueStage && narrow) {
       statueStage.style.transition = "transform 1.2s cubic-bezier(0.22, 0.8, 0.22, 1)";
-      if (variant === "gold") {
-        // Когда СТАТУС активен - блок опускается ниже (50px)
+      if (variant === "gold" || variant === "black") {
+        // Когда СТАТУС или МАСШТАБ активен - блок остаётся на месте (50px)
         statueStage.style.setProperty('transform', 'translateX(-50%) translateY(50px)', 'important');
       } else {
         // Когда другие кнопки активны - блок в обычном положении (0px)
@@ -808,8 +808,8 @@ requestAnimationFrame(raf);
       if (isGoldQuoteActive) {
         // Когда цитата gold активна - опускаем на 140px
         statueStage.style.setProperty('transform', 'translateX(-50%) translateY(140px)', 'important');
-      } else if (variant === "gold") {
-        // Когда только кнопка СТАТУС активна - опускаем на 50px
+      } else if (variant === "gold" || variant === "black") {
+        // Когда кнопка СТАТУС или МАСШТАБ активна - оставляем на 50px
         statueStage.style.setProperty('transform', 'translateX(-50%) translateY(50px)', 'important');
       } else {
         // В остальных случаях - обычное положение
@@ -885,8 +885,8 @@ requestAnimationFrame(raf);
       if (isGoldQuoteActive) {
         // Когда цитата gold активна - опускаем на 140px
         statueStage.style.setProperty('transform', 'translateX(-50%) translateY(140px)', 'important');
-      } else if (activeVariant === "gold") {
-        // Когда только кнопка СТАТУС активна - опускаем на 50px
+      } else if (activeVariant === "gold" || activeVariant === "black") {
+        // Когда кнопка СТАТУС или МАСШТАБ активна - оставляем на 50px
         statueStage.style.setProperty('transform', 'translateX(-50%) translateY(50px)', 'important');
       } else {
         // В остальных случаях - обычное положение
