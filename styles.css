@@ -712,6 +712,11 @@ body.site-menu-open {
 
 .site-menu__subscribe-input::placeholder {
     color: #fff;
+    transition: font-size 0.2s ease;
+}
+
+.site-menu__subscribe-input:focus::placeholder {
+    font-size: 18px;
 }
 
 .site-menu__subscribe-submit {
@@ -2897,7 +2902,7 @@ body.site-menu-open {
 .media-book-frame {
     display: block;
     position: absolute;
-    top: 45%;
+    top: 680px;
     left: 50%;
     z-index: 1;
     width: 1400px;
@@ -3720,6 +3725,9 @@ body.site-menu-open {
         left: 50%;
         transform: translate(-50%, 0);
     }
+    .media-book-frame {
+        top: 225px !important;
+    }
 }
 
 .sales-nominee-note {
@@ -4182,10 +4190,10 @@ left: 0;
         gap: 30px;
     }
 
-    /* Слайдер перед .screen-sales: на мобилке убираем сдвиг, оставляем cover */
+    /* Слайдер перед .screen-sales: на мобилке вся картинка влезает в слайд */
     .sales-top-layout-wrapp--before-sales .sales-gallery-image {
-        object-fit: cover;
-        object-position: center center;
+        object-fit: contain;
+        object-position: center top;
         transform: none;
     }
 }
@@ -6210,6 +6218,7 @@ left: 0;
 @media (max-width: 1550px) {
     .media-book-frame {
         transform: translate(-50%, -50%) translateZ(0) scale(1.1) !important;
+        top: 720px;
     }
 }
 
@@ -8764,11 +8773,16 @@ a.interview-node {
     .sales-ceremony-title {
         padding-left: 0;
         position: absolute;
-        left: 56%;
+        left: 50%;
         z-index: 10;
         transform: translateX(-50%);
     }
-
+    .advert-subtitle {
+        transform: none !important;
+    }
+    .section-heading {
+        transform: none;
+    }
     .sales-ceremony-line-1 {
         font-size: 46px !important;
         letter-spacing: -1%;
@@ -9799,7 +9813,7 @@ a.interview-node {
     }
 
     .book {
-        min-height: 600px;
+        min-height: 630px;
         height: auto;
         padding-bottom: 0;
         position: relative;
@@ -13142,16 +13156,15 @@ body.modal-open {
         padding-right: 0 !important;
     }
     .sales-top-layout-wrapp.ceremonia .swiper-slide[data-slide-index="0"] .sales-gallery-image {
-        transform: none !important;
+        transform: scale(1) translateY(-70px) !important;
         transform-origin: center center !important;
-        object-position: center center !important;
-        object-fit: cover !important;
+        object-position: 50% 100% !important;
     }
     .sales-top-layout-wrapp.ceremonia .swiper-slide[data-slide-index="1"] .sales-gallery-image {
         transform: none !important;
-        transform-origin: center center !important;
-        object-position: center center !important;
-        object-fit: cover !important;
+        transform-origin: center top !important;
+        object-position: center top !important;
+        object-fit: contain !important;
     }
 }
 
@@ -13401,7 +13414,7 @@ body.modal-open {
         transform: translateX(-50%);
         display: block;
         text-align: center;
-        bottom: 60px;
+        bottom: 50px;
         margin-top: 20px;
         font-size: 16px;
         color: #523A25;
@@ -13681,3 +13694,8 @@ br.mobile-only {
     }
 }
 
+@media(max-width: 399px) {
+    .media-book-frame {
+        top: 50% !important;
+    }
+}

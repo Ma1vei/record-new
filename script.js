@@ -110,6 +110,7 @@ const CEREMONIA_SLIDES = [
   {
     title: null,
     main: "./assets/ceremonia2.jpg",
+    mainMobile: "./assets/пряников.png",
     hostName: "Александр Пряников",
     copy: "Телеведущий и модератор, который умеет держать внимание зала и превращать церемонию в настоящее шоу.<br><br>За плечами — годы работы лицом, ведение премии «Муз-ТВ» и десятков корпоративных событий. Ироничные и остроумные реплики, безупречный темп, профессиональная подача.",
   },
@@ -150,18 +151,25 @@ function initSalesSlider() {
       return;
     }
 
-    wrapper.innerHTML = slides.map((slide, index) => `
+    const isMobile = window.innerWidth <= 1200;
+
+    wrapper.innerHTML = slides.map((slide, index) => {
+      // Выбираем картинку: если есть mainMobile и мобилка - используем её, иначе main
+      const imageSrc = (isMobile && slide.mainMobile) ? slide.mainMobile : slide.main;
+      
+      return `
     <div class="swiper-slide sales-gallery-slide" data-slide-index="${index}">
       <img
         class="sales-gallery-image"
-        src="${slide.main}"
+        src="${imageSrc}"
         alt="Слайд ${index + 1}"
         loading="${index === 0 ? "eager" : "lazy"}"
         decoding="async"
         style="${isCeremonia ? (index === 0 ? 'transform: scale(1.5); transform-origin: top center; object-position: 50% 35%;' : index === 1 ? 'transform: scale(1.75) translateY(-4%); transform-origin: top left; object-position: left 8%;' : '') : ''}"
       />
     </div>
-  `).join("");
+  `;
+    }).join("");
 
     const updateMeta = (index, options = {}) => {
       const animate = options.animate !== false;
@@ -221,11 +229,9 @@ function initSalesSlider() {
       }, 250);
     };
 
-    const isMobile = window.innerWidth <= 1200;
-
     const progressBar = wrapp.querySelector(".sales-slider-progress-bar");
     function updateProgressBar(index) {
-      if (!progressBar || !isCeremonia) return;
+      if (!progressBar || !isMobile) return;
       const total = slides.length;
       const segW = 100 / total;
       progressBar.style.marginLeft = `${segW * index}%`;
@@ -257,11 +263,11 @@ function initSalesSlider() {
       on: {
         init(instance) {
           updateMeta(instance.activeIndex, { animate: false });
-          if (isCeremonia) updateProgressBar(instance.activeIndex);
+          if (isMobile) updateProgressBar(instance.activeIndex);
         },
         slideChange(instance) {
           updateMeta(instance.activeIndex);
-          if (isCeremonia) updateProgressBar(instance.activeIndex);
+          if (isMobile) updateProgressBar(instance.activeIndex);
         },
       },
     });
@@ -279,6 +285,42 @@ function initSalesSlider() {
     salesGalleryMain.tabIndex = 0;
     salesGalleryMain.setAttribute("role", "group");
     salesGalleryMain.setAttribute("aria-label", "Слайдер продаж");
+
+    // Добавляем свайп на весь контейнер для мобильной версии
+    if (isMobile) {
+      const salesTopLayout = wrapp.querySelector('.sales-top-layout');
+      if (salesTopLayout) {
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let touchEndX = 0;
+        let touchEndY = 0;
+        const minSwipeDistance = 50;
+
+        salesTopLayout.addEventListener('touchstart', (e) => {
+          touchStartX = e.changedTouches[0].screenX;
+          touchStartY = e.changedTouches[0].screenY;
+        }, { passive: true });
+
+        salesTopLayout.addEventListener('touchend', (e) => {
+          touchEndX = e.changedTouches[0].screenX;
+          touchEndY = e.changedTouches[0].screenY;
+          
+          const deltaX = touchEndX - touchStartX;
+          const deltaY = touchEndY - touchStartY;
+          
+          // Проверяем что горизонтальный свайп больше вертикального
+          if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > minSwipeDistance) {
+            if (deltaX > 0) {
+              // Свайп вправо - предыдущий слайд
+              swiper.slidePrev();
+            } else {
+              // Свайп влево - следующий слайд
+              swiper.slideNext();
+            }
+          }
+        }, { passive: true });
+      }
+    }
   });
 }
 
